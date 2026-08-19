@@ -17,3 +17,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offline mode (`offline: true` or the `offline` tool argument): the snapshot layer is read from the storage domain or the newest on-disk version snapshot; zero outbound requests.
 - `fund-research/snapshot` and `fund-research/report` session audit events; a short compliance prompt section; and the bundled `fund-research` methodology skill (registered when the skills service is present).
 - Fail-loud Schemastery config, five-language READMEs, and real `Context`/`Session`/`ToolRuntime`/`JobRegistry` vitest coverage against the 0.1.0-rc.6 peers.
+- Quote resilience: per-stock valuation fetches fall back to Eastmoney's own delayed-quote host (`quoteFallbackBaseUrl`, default `push2delay.eastmoney.com`) when the primary push2 host fails; per-stock gaps stay loud and declared.
+- Opt-in live end-to-end suite (`pnpm run test:e2e`, gated by `LIVE_E2E=1`): seals a real network report for 161725 and spot-checks five key numbers against the sealed snapshot and a second independent fetch of the same endpoints.

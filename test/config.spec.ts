@@ -14,6 +14,7 @@ describe('resolveConfig', () => {
       eastmoneyBaseUrl: 'https://fund.eastmoney.com',
       f10BaseUrl: 'https://fundf10.eastmoney.com',
       quoteBaseUrl: 'https://push2.eastmoney.com',
+      quoteFallbackBaseUrl: 'https://push2delay.eastmoney.com',
       requestIntervalMs: 1000,
       timeoutMs: 15_000,
       retries: 2,
@@ -31,6 +32,12 @@ describe('resolveConfig', () => {
     expect(resolved.riskFreeRate).toBe(0.03)
     expect(resolved.offline).toBe(true)
     expect(resolved.reportRoot).toBe('reports')
+  })
+
+  it('accepts an empty quote fallback (disabled) but rejects a malformed one', () => {
+    expect(resolveConfig({ quoteFallbackBaseUrl: '' }).quoteFallbackBaseUrl).toBe('')
+    expect(() => resolveConfig({ quoteFallbackBaseUrl: 'not-a-url' })).toThrow(/quoteFallbackBaseUrl/u)
+    expect(() => resolveConfig({ quoteFallbackBaseUrl: 'https://push2delay.eastmoney.com/' })).toThrow(/quoteFallbackBaseUrl/u)
   })
 
   it('fails loud on invalid values', () => {

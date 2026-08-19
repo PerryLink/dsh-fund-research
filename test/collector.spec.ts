@@ -233,6 +233,48 @@ describe('collectFund', () => {
     expect(collected.sources.quotes.error).toContain('quote down')
   })
 
+  it('rescues every quote from the fallback host when the primary host fails', async () => {
+    const routes = await fixtureRoutes()
+    const fixtures = await loadFixtures()
+    const quoteEntries = Object.entries(fixtures.quotes)
+    routes.splice(routes.findIndex(route => route.match.startsWith('secid=')), quoteEntries.length)
+    for (const [secid, body] of quoteEntries) {
+      routes.push({ match: `push2.eastmoney.com/api/qt/stock/get?secid=${secid}`, fail: new Error('primary down') })
+      routes.push({ match: `push2delay.eastmoney.com/api/qt/stock/get?secid=${secid}`, body })
+    }
+    // The saved fixture set omits the flaky 600809 quote; give it a minimal one
+    // so the fallback can rescue all ten holdings.
+    routes.push({ match: 'push2.eastmoney.com/api/qt/stock/get?secid=1.600809', fail: new Error('primary down') })
+    routes.push({
+      match: 'push2delay.eastmoney.com/api/qt/stock/get?secid=1.600809',
+      body: '{"rc":0,"data":{"f57":"600809","f58":"山西汾酒","f116":1000,"f162":100,"f167":200}}',
+    })
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(routes))
+    const urls = sourceUrls({ ...BASES, quoteFallbackBaseUrl: 'https://push2delay.eastmoney.com' }, FIXTURE_CODE)
+    const collected = await collectFund(fetcher, urls, FIXTURE_CODE, { styleQuotes: true })
+    expect(collected.gaps).toEqual([])
+    expect(Object.keys(collected.raw.quotes?.rows ?? {}).length).toBe(quoteEntries.length + 1)
+    expect(collected.sources.quotes.ok).toBe(true)
+  })
+
+  it('records both failures per stock when the fallback host also fails', async () => {
+    const routes = await fixtureRoutes()
+    const fixtures = await loadFixtures()
+    const quoteKeys = Object.keys(fixtures.quotes)
+    routes.splice(routes.findIndex(route => route.match.startsWith('secid=')), quoteKeys.length)
+    for (const secid of quoteKeys) {
+      routes.push({ match: `push2.eastmoney.com/api/qt/stock/get?secid=${secid}`, fail: new Error('primary down') })
+      routes.push({ match: `push2delay.eastmoney.com/api/qt/stock/get?secid=${secid}`, fail: new Error('fallback down') })
+    }
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(routes))
+    const urls = sourceUrls({ ...BASES, quoteFallbackBaseUrl: 'https://push2delay.eastmoney.com' }, FIXTURE_CODE)
+    const collected = await collectFund(fetcher, urls, FIXTURE_CODE, { styleQuotes: true })
+    expect(collected.gaps).toContain('quotes')
+    expect(collected.raw.quotes).toBeNull()
+    expect(collected.sources.quotes.error).toContain('primary:')
+    expect(collected.sources.quotes.error).toContain('fallback:')
+  })
+
   it('keeps successful quotes and marks the layer partial when some fail', async () => {
     const routes = await fixtureRoutes()
     const fixtures = await loadFixtures()

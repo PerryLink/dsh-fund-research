@@ -485,16 +485,22 @@ export interface SourceUrls {
   managerHistory: string
   quoteReferer: string
   quoteBase: string
+  /** Fallback quote host ('' = disabled). */
+  quoteFallbackBase: string
 }
 
 /** Build the endpoint set for one fund code from configured base URLs. */
-export function sourceUrls(bases: { eastmoneyBaseUrl: string, f10BaseUrl: string, quoteBaseUrl: string }, code: string): SourceUrls {
+export function sourceUrls(
+  bases: { eastmoneyBaseUrl: string, f10BaseUrl: string, quoteBaseUrl: string, quoteFallbackBaseUrl?: string },
+  code: string,
+): SourceUrls {
   return {
     pingzhongdata: `${bases.eastmoneyBaseUrl}/pingzhongdata/${code}.js`,
     holdings: `${bases.f10BaseUrl}/FundArchivesDatas.aspx?type=jjcc&code=${code}&topline=10&year=&month=`,
     managerHistory: `${bases.f10BaseUrl}/jjjl_${code}.html`,
     quoteReferer: 'https://quote.eastmoney.com/',
     quoteBase: bases.quoteBaseUrl,
+    quoteFallbackBase: bases.quoteFallbackBaseUrl ?? '',
   }
 }
 
@@ -531,6 +537,11 @@ export interface CollectedSources {
   }
   raw: FundRawData
   gaps: string[]
+}
+
+/** Collect one error into the per-stock failure text. */
+function errorText(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }
 
 /**
@@ -603,8 +614,22 @@ export async function collectFund(
         const text = await fetcher.fetchText(url, urls.quoteReferer, options.signal)
         quotesText += text
         rows[secid] = parseQuote(text, secid)
-      } catch (error) {
-        failures.push(`${secid}: ${error instanceof Error ? error.message : String(error)}`)
+      } catch (primaryError) {
+        // Degradable per stock: retry on the fallback host (Eastmoney's own
+        // delayed-quote endpoint) when configured, then give up with a gap.
+        if (urls.quoteFallbackBase !== '' && urls.quoteFallbackBase !== urls.quoteBase) {
+          try {
+            const fallbackUrl = quoteUrl(urls.quoteFallbackBase, secid)
+            const text = await fetcher.fetchText(fallbackUrl, urls.quoteReferer, options.signal)
+            quotesText += text
+            rows[secid] = parseQuote(text, secid)
+            continue
+          } catch (fallbackError) {
+            failures.push(`${secid}: primary: ${errorText(primaryError)}; fallback: ${errorText(fallbackError)}`)
+            continue
+          }
+        }
+        failures.push(`${secid}: ${errorText(primaryError)}`)
       }
     }
     if (secids.length === 0) {

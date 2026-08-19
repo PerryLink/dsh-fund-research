@@ -20,6 +20,8 @@ export interface Config {
   f10BaseUrl?: string
   /** Base URL of the Eastmoney quote host (push2) used for per-stock valuation snapshots. */
   quoteBaseUrl?: string
+  /** Fallback quote host tried per stock when the primary fails (Eastmoney's own delayed-quote host). Empty string disables the fallback. */
+  quoteFallbackBaseUrl?: string
   /** Minimum gap between outbound requests in milliseconds (polite collection). Default 1000. */
   requestIntervalMs?: number
   /** Per-request timeout in milliseconds. Default 15000. */
@@ -44,6 +46,7 @@ export interface ResolvedConfig {
   readonly eastmoneyBaseUrl: string
   readonly f10BaseUrl: string
   readonly quoteBaseUrl: string
+  readonly quoteFallbackBaseUrl: string
   readonly requestIntervalMs: number
   readonly timeoutMs: number
   readonly retries: number
@@ -60,6 +63,7 @@ export const Config: z<Config> = z.object({
   eastmoneyBaseUrl: z.string().default('https://fund.eastmoney.com'),
   f10BaseUrl: z.string().default('https://fundf10.eastmoney.com'),
   quoteBaseUrl: z.string().default('https://push2.eastmoney.com'),
+  quoteFallbackBaseUrl: z.string().default('https://push2delay.eastmoney.com'),
   requestIntervalMs: z.number().default(1000),
   timeoutMs: z.number().default(15_000),
   retries: z.number().default(2),
@@ -108,9 +112,11 @@ export function resolveConfig(config: Config = {}): ResolvedConfig {
   const eastmoneyBaseUrl = config.eastmoneyBaseUrl ?? 'https://fund.eastmoney.com'
   const f10BaseUrl = config.f10BaseUrl ?? 'https://fundf10.eastmoney.com'
   const quoteBaseUrl = config.quoteBaseUrl ?? 'https://push2.eastmoney.com'
+  const quoteFallbackBaseUrl = config.quoteFallbackBaseUrl ?? 'https://push2delay.eastmoney.com'
   assertBaseUrl('eastmoneyBaseUrl', eastmoneyBaseUrl)
   assertBaseUrl('f10BaseUrl', f10BaseUrl)
   assertBaseUrl('quoteBaseUrl', quoteBaseUrl)
+  if (quoteFallbackBaseUrl !== '') assertBaseUrl('quoteFallbackBaseUrl', quoteFallbackBaseUrl)
 
   const requestIntervalMs = config.requestIntervalMs ?? 1000
   assertNonNegativeInt('requestIntervalMs', requestIntervalMs)
@@ -133,6 +139,7 @@ export function resolveConfig(config: Config = {}): ResolvedConfig {
     eastmoneyBaseUrl,
     f10BaseUrl,
     quoteBaseUrl,
+    quoteFallbackBaseUrl,
     requestIntervalMs,
     timeoutMs,
     retries,

@@ -30,6 +30,9 @@
         eastmoneyBaseUrl: 'https://fund.eastmoney.com'
         f10BaseUrl: 'https://fundf10.eastmoney.com'
         quoteBaseUrl: 'https://push2.eastmoney.com'
+        # Fallback quote host tried per stock when the primary fails
+        # (Eastmoney's own delayed-quote host). '' disables the fallback.
+        quoteFallbackBaseUrl: 'https://push2delay.eastmoney.com'
         # Polite collection: minimum gap between outbound requests.
         requestIntervalMs: 1000
         # Per-request timeout and retry budget (exponential backoff).
