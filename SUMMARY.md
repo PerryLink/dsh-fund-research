@@ -24,18 +24,21 @@
 | 检查 | 结果 |
 |---|---|
 | `pnpm run typecheck` / `typecheck:ci` | EXIT 0 / EXIT 0 |
-| `pnpm test` | **65/65 通过**（9 个 spec，真实 Context/Session/ToolRuntime/JobRegistry/存储接缝） |
+| `pnpm test` | **110/110 通过**（10 个 spec，真实 Context/Session/ToolRuntime/JobRegistry/存储接缝，网络仅在 fetch 边界以真实响应 fixture 替换） |
+| `pnpm run test:coverage` | **EXIT 0**（Stmts 100 / Branch 83.7 / Funcs 98 / Lines 100，阈值 90/80/90/90） |
 | `pnpm run build` + `verify:artifacts` | 通过（lib/index.js、lib/types、cordis.patch.yml、SKILL.md 均在） |
 | `verify:self-contained` | 通过（依赖规格全部来自 registry） |
 | `pnpm run lint`（oxlint） | 0 warnings / 0 errors（39 文件，`git init` 后生效） |
 | `node scripts/check-readme-sync.mjs` | 通过（五语章节结构与配置键一致） |
 | `pnpm pack` | tarball 完整（lib + src + skills + 五语 README + LICENSE + patch） |
 | **手动试装**（临时 DSH_HOME） | ✅ 装 tarball + dsh-base + dsh-headless；`--dump-config` 确认 storage 栈 + 插件行挂载；keyless headless 冒烟得 `MISSING_CREDENTIAL`（证明插件树加载、无 PENDING 卡死）；`dsh plugin remove` 后行移除、profile 完好 |
-| **git** | `main` 分支 7 个分主题 commit（见下），工作树干净 |
+| **git** | `main` 分支 8 个分主题 commit（见下），工作树干净 |
 
 Commit 清单：
 
 ```
+67bf3ef test: coverage gate green (collector + live acquisition + branch fixes)
+36e0459 docs: development summary (acceptance, limitations, follow-ups)
 5534f52 docs: five-language README, security policy, licenses, and CI workflows
 d8507d2 test: real-context suite against the 0.1.0-rc.6 peers (65 tests)
 ccf6832 feat(tools): fund_snapshot and fund_research tools with background job and audit events
@@ -61,4 +64,11 @@ c76bc74 chore: project scaffolding (package, tsconfigs, bundle patch, build scri
 - 扩充行业映射表（当前内置约 30 个行业名）与细分风格因子。
 - F10 债券持仓（`f10-jbgk`）解析器已备 fixture，可补债券型基金支持。
 - 定期报告 PDF 解析（如必要，作为独立来源接入并纳入缺口体系）。
-- 发布路径：`node scripts/release.mjs <x.y.z>` → `git push origin main --follow-tags`（CI 复跑门禁 + npm publish + GitHub Release）。
+- 发布路径：`node scripts/release.mjs <x.y.z>` → `git push origin main --follow-tags`（CI 复跑门禁 + npm publish + GitHub Release）。推送后设置 GitHub topics：`gh repo edit <owner>/dsh-fund-research --add-topic dsh,dsh-plugin,deepseek-harness,cordis,fund-research,mutual-fund,investment-research,finance,research-report`。
+
+## 发布会话（准备话术，push 后按序执行）
+
+1. `node scripts/release.mjs 0.1.0`（版本号已就绪；脚本跑全部门禁、盖章 CHANGELOG、commit + tag `v0.1.0`，不推送）。
+2. `git push origin main --follow-tags` → `.github/workflows/release.yml` 复跑门禁 → npm publish（provenance）+ GitHub Release（从盖章的 CHANGELOG 段生成）。
+3. 发布成功后设置 topics（命令见上）。
+4. 可选：带 `DEEPSEEK_API_KEY` 的真实 E2E（`pnpm run test:e2e` 若加入该脚本），验证 push2 上海个股端点在真实网络下的抖动表现（fixture 已覆盖断连路径）。
