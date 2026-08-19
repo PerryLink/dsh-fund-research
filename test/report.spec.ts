@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest'
 import { buildBody, assembleAppendix, sealReport, sealSnapshot, versionStamp, DISCLAIMER } from '../src/report.ts'
 import { builtinVerifyCitations } from '../src/verify-bridge.ts'
 import { sha256Of } from '../src/sources/eastmoney.ts'
+import { managerMetrics } from '../src/metrics/manager.ts'
 import { buildFixtureSnapshot, loadFixtures } from './fixtures.ts'
 
 describe('buildBody', () => {
@@ -52,6 +53,35 @@ describe('buildBody', () => {
     expect(body.markdown).toContain('免责声明')
     expect(body.markdown).not.toContain('## 业绩拆解')
     expect(body.renderedSections).toEqual(['overview', 'disclaimer'])
+  })
+
+  it('declares the missing previous-quarter details instead of inventing a comparison', async () => {
+    const snapshot = buildFixtureSnapshot(await loadFixtures())
+    const noPrevious = {
+      ...snapshot,
+      raw: {
+        ...snapshot.raw,
+        holdings: { ...snapshot.raw.holdings!, previousRows: [], previousAsOf: null },
+      },
+      computed: {
+        ...snapshot.computed,
+        holdings: { ...snapshot.computed.holdings!, quarterCompare: null },
+      },
+    }
+    const body = buildBody(noPrevious)
+    expect(body.markdown).toContain('上期持仓：数据源未提供可对比的上期明细，本版缺口。')
+  })
+
+  it('declares the manager-tenure gap when the F10 manager page is a gap', async () => {
+    const snapshot = buildFixtureSnapshot(await loadFixtures())
+    const gapped = {
+      ...snapshot,
+      raw: { ...snapshot.raw, managerHistory: null },
+      computed: { ...snapshot.computed, manager: managerMetrics(snapshot.raw.manager, null) },
+      gaps: [...snapshot.gaps, 'managerHistory'],
+    }
+    const body = buildBody(gapped)
+    expect(body.markdown).toContain('**数据缺口**：本基金任职沿革数据源（F10 经理页）本次不可用，任职起始/任期回报不编造。')
   })
 })
 

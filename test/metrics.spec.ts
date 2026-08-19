@@ -54,6 +54,26 @@ describe('windowMetrics', () => {
     expect(() => windowMetrics([{ t: 1, nav: 1, dailyReturn: 0 }], 'x', 0.02)).toThrow(/at least 2/u)
   })
 
+  it('rejects a non-positive first NAV', () => {
+    expect(() => windowMetrics([{ t: 1, nav: 0, dailyReturn: 0 }, { t: 2, nav: 1, dailyReturn: 0 }], 'w', 0.02)).toThrow(/non-positive/u)
+  })
+
+  it('throws when the first point is missing', () => {
+    expect(() => windowMetrics([undefined as never, { t: 1000, nav: 1, dailyReturn: 0 }], 'w', 0.02)).toThrow(/is empty/u)
+  })
+
+  it('skips non-positive middle points', () => {
+    const points = [
+      { t: 1, nav: 1, dailyReturn: 0 },
+      { t: 1 + DAY, nav: 0, dailyReturn: 0 },
+      { t: 1 + 3 * DAY, nav: 3, dailyReturn: 0 },
+    ]
+    const m = windowMetrics(points, 'w', 0.02)
+    expect(m.days).toBe(3)
+    expect(m.periodReturnPct).toBeCloseTo(200, 4)
+    expect(m.sharpe).toBe(0)
+  })
+
   it('tracks drawdown peak and trough dates', () => {
     const points = seriesFromReturns([0.2, -0.3, 0.05])
     const m = windowMetrics(points, 'dd', 0.02)
@@ -90,6 +110,20 @@ describe('decomposePerformance', () => {
   it('throws on an empty series', () => {
     expect(() => decomposePerformance([], 0.02)).toThrow(/at least 2/u)
   })
+
+  it('throws when the latest point is missing', () => {
+    expect(() => decomposePerformance([{ t: 1, nav: 1, dailyReturn: 0 }, undefined as never], 0.02)).toThrow(/empty NAV series/u)
+  })
+
+  it('skips windows with fewer than two points and windows with a missing first point', () => {
+    // Two points just under the 近1年 cutoff: 近3年/成立以来 share the range,
+    // 近1年 collapses to a single point.
+    const now = 1_700_000_000_000
+    const points = [{ t: now - 365 * DAY - 1, nav: 1, dailyReturn: 0 }, { t: now, nav: 2, dailyReturn: 0 }]
+    expect(decomposePerformance(points, 0.02).map(w => w.label)).toEqual(['成立以来'])
+    // A single full-history window whose first point is missing is skipped.
+    expect(decomposePerformance([undefined as never, { t: 1000, nav: 1, dailyReturn: 0 }], 0.02, [{ label: 'x', lookbackDays: null }])).toEqual([])
+  })
 })
 
 /** One holding row factory. */
@@ -123,9 +157,11 @@ describe('holdingsMetrics', () => {
 
 describe('style bands', () => {
   it('classifies size bands on fixed thresholds', () => {
-    expect(sizeBandOf(2000 * YI_YUAN)).toBe('大盘')
-    expect(sizeBandOf(500 * YI_YUAN)).toBe('中盘')
+    expect(sizeBandOf(-1)).toBe('小盘')
+    expect(sizeBandOf(0)).toBe('小盘')
     expect(sizeBandOf(100 * YI_YUAN)).toBe('小盘')
+    expect(sizeBandOf(500 * YI_YUAN)).toBe('中盘')
+    expect(sizeBandOf(2000 * YI_YUAN)).toBe('大盘')
   })
 
   it('classifies valuation bands on dynamic PE', () => {
@@ -133,6 +169,7 @@ describe('style bands', () => {
     expect(valueBandOf(20)).toBe('价值')
     expect(valueBandOf(30)).toBe('均衡')
     expect(valueBandOf(50)).toBe('成长')
+    expect(valueBandOf(Number.POSITIVE_INFINITY)).toBe('成长')
   })
 })
 
@@ -203,5 +240,21 @@ describe('managerMetrics', () => {
     expect(m.managedFundCount).toBeNull()
     expect(m.beatPeerCount).toBeNull()
     expect(m.profitComparison).toHaveLength(2)
+  })
+
+  it('falls back to the latest ended tenure when none is current', () => {
+    const history: ManagerHistory = {
+      tenures: [{ start: '2015-01-01', end: '2017-09-04', managers: ['M'], durationText: '2年', returnPct: 10 }],
+      managedFunds: [],
+    }
+    const m = managerMetrics(summary(), history)
+    expect(m.tenureStart).toBe('2015-01-01')
+    expect(m.tenureReturnPct).toBe(10)
+  })
+
+  it('pads missing profit values with zero', () => {
+    const s = { ...summary(), profitValues: [55] }
+    const m = managerMetrics(s, null)
+    expect(m.profitComparison).toEqual([{ label: '任期收益', valuePct: 55 }, { label: '同类平均', valuePct: 0 }])
   })
 })

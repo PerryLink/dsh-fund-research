@@ -5,14 +5,15 @@
  * @module dsh-fund-research/test/snapshot.spec
  */
 
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { PoliteFetcher } from '../src/sources/eastmoney.ts'
-import { acquireSnapshot, OfflineGapError } from '../src/sources/snapshot.ts'
+import { acquireSnapshot, computeMetrics, OfflineGapError } from '../src/sources/snapshot.ts'
 import { resolveConfig } from '../src/config.ts'
 import { buildFixtureSnapshot, FIXTURE_CODE, loadFixtures } from './fixtures.ts'
+import { stubFetch } from './helpers/http-stub.ts'
 import { mountBase, unmountBase } from './harness.ts'
 import { fundResearchDomainSpec } from '../src/store.ts'
 import { sealSnapshot } from '../src/report.ts'
@@ -25,7 +26,52 @@ function forbiddenFetch(): typeof fetch {
   }) as unknown as typeof fetch
 }
 
+/** Happy-path routes over the real fixtures for live acquisitions. */
+async function liveRoutes() {
+  const fixtures = await loadFixtures()
+  const quoteRoutes = Object.entries(fixtures.quotes).map(([secid, body]) => ({ match: `secid=${secid}`, body }))
+  return [
+    { match: '/pingzhongdata/', body: fixtures.pingzhongdata },
+    { match: 'type=jjcc', body: fixtures.holdings },
+    { match: '/jjjl_', body: fixtures.managerPage },
+    ...quoteRoutes,
+  ]
+}
+
 describe('acquireSnapshot', () => {
+  it('collects live, computes, and persists to the domain', async () => {
+    const base = await mountBase('snapshot-live')
+    try {
+      const domain = await base.ctx.storageDomain.open(fundResearchDomainSpec)
+      const store = {
+        domain,
+        config: resolveConfig({ offline: false }),
+        fetcher: new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(await liveRoutes())),
+      }
+      const acquired = await acquireSnapshot(store, FIXTURE_CODE)
+      expect(acquired.live).toBe(true)
+      expect(acquired.snapshot.code).toBe(FIXTURE_CODE)
+      expect(acquired.snapshot.gaps).toEqual([])
+      expect(acquired.snapshot.computed.style).not.toBeNull()
+      const record = domain.table('snapshots').get(FIXTURE_CODE)
+      expect(record?.snapshot.code).toBe(FIXTURE_CODE)
+      await domain.close()
+    } finally {
+      await unmountBase(base)
+    }
+  })
+
+  it('acquires live with no storage domain (persistence unavailable)', async () => {
+    const store = {
+      domain: null,
+      config: resolveConfig({ offline: false }),
+      fetcher: new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(await liveRoutes())),
+    }
+    const acquired = await acquireSnapshot(store, FIXTURE_CODE)
+    expect(acquired.live).toBe(true)
+    expect(acquired.snapshot.computed.performance.windows.length).toBeGreaterThan(0)
+  })
+
   it('serves offline mode from the storage domain with zero outbound calls', async () => {
     const base = await mountBase('snapshot-offline')
     try {
@@ -116,6 +162,28 @@ describe('readDiskSnapshot', () => {
     } finally {
       await rm(dir, { recursive: true, force: true })
     }
+  })
+
+  it('skips broken version directories instead of failing the read', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'fund-disk-'))
+    try {
+      await mkdir(path.join(dir, FIXTURE_CODE, '20260801-120000'), { recursive: true })
+      await writeFile(path.join(dir, FIXTURE_CODE, '20260801-120000', 'snapshot.json'), '{not json', 'utf8')
+      expect(await readDiskSnapshot(dir, FIXTURE_CODE)).toBeNull()
+    } finally {
+      await rm(dir, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('computeMetrics', () => {
+  it('computes a null style block when holdings or quotes are missing', async () => {
+    const fixtures = await loadFixtures()
+    const snapshot = buildFixtureSnapshot(fixtures)
+    const computed = computeMetrics({ ...snapshot.raw, holdings: null, quotes: null }, 0.02)
+    expect(computed.style).toBeNull()
+    expect(computed.holdings).toBeNull()
+    expect(computed.manager.tenureStart).not.toBeNull()
   })
 })
 

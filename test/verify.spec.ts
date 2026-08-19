@@ -69,6 +69,27 @@ describe('builtinVerifyCitations', () => {
     })
   })
 
+  it('refuses cross-type and zero-vs-nonzero comparisons', async () => {
+    await withDataset({ num: 5, zero: 0, text: '招商' }, async (dataset) => {
+      const result = await builtinVerifyCitations({
+        dataset,
+        citations: [
+          { id: 'zero-match', path: 'zero', value: 0 },
+          { id: 'zero-mismatch', path: 'num', value: 0 },
+          { id: 'num-vs-text', path: 'text', value: 5 },
+          { id: 'text-vs-num', path: 'num', value: '招商' },
+          { id: 'text-mismatch', path: 'text', value: '别的' },
+        ],
+      })
+      const byId = new Map(result.results.map(r => [r.id, r]))
+      expect(byId.get('zero-match')?.status).toBe('verified')
+      expect(byId.get('zero-mismatch')?.status).toBe('mismatch')
+      expect(byId.get('num-vs-text')?.status).toBe('unverifiable')
+      expect(byId.get('text-vs-num')?.status).toBe('unverifiable')
+      expect(byId.get('text-mismatch')?.status).toBe('mismatch')
+    })
+  })
+
   it('marks every citation unverifiable when the dataset is unreadable', async () => {
     const result = await builtinVerifyCitations({
       dataset: path.join(tmpdir(), 'fund-verify-does-not-exist.json'),
