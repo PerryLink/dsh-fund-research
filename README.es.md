@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-🧩-green)](https://github.com/topics/dsh-plugin)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-fund-research/actions)
+[![npm version](https://img.shields.io/npm/v/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
 
 [English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -73,6 +76,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Host pingzhongdata de Tiantian Fund. |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Host F10 de Tiantian Fund (páginas de posiciones y gestor). |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | Host de cotizaciones Eastmoney para valoraciones por acción. |
+| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | Host de cotizaciones alternativo probado por acción cuando el principal falla (host de cotizaciones diferidas propio de Eastmoney); `''` lo desactiva. |
 | `requestIntervalMs` | `1000` | Intervalo mínimo entre solicitudes salientes (colección cortés). |
 | `timeoutMs` | `15000` | Tiempo máximo por solicitud. |
 | `retries` | `2` | Reintentos por solicitud con backoff exponencial. |
@@ -131,7 +135,8 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # tipos, incl. modo estricto CI
-pnpm test                                     # 65 pruebas sobre seams reales
+pnpm test                                     # 113 pruebas sobre seams reales
+pnpm run test:e2e                              # E2E opcional en red REAL (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + declaraciones tsc
 pnpm run verify:self-contained                # sin specs de dependencias externas
 node scripts/check-readme-sync.mjs            # puerta README en cinco idiomas

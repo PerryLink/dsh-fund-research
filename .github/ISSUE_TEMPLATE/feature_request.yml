@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a new capability for dsh-fund-research (new source, metric, report section, or configuration)
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What gap or pain point does this address?
+      placeholder: |
+        Example: bond funds cannot be researched because holdings are equity-only.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the plugin do once this lands?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+      description: Workarounds or alternative designs you evaluated.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      description: Anything else — data-source references,口径 notes, examples.
+    validations:
+      required: false

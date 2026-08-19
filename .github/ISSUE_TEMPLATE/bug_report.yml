@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a bug in dsh-fund-research (data collection, metrics, report sealing, or the plugin lifecycle)
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Redact everything sensitive before pasting**: no tokens, API keys, secrets, Authorization/request headers, personal paths, or account identifiers. Placeholders like `TOKEN`, `HOST`, `PAYLOAD` are fine.
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: The `dsh-fund-research` version (from `package.json` or `npm ls dsh-fund-research`).
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: harness-version
+    attributes:
+      label: Harness (dsh) version
+      description: The DeepSeek Harness CLI version (`dsh --version` or the installed `@deepseek-ai/dsh` version).
+      placeholder: 0.1.0-rc.6
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11 23H2 / macOS 15 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: `node --version`.
+      placeholder: v22.19.0
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps (commands, tool arguments, config) that lead to the bug.
+      placeholder: |
+        1. Install the plugin into a profile with …
+        2. Run the tool `fund_research` with arguments `{ "code": "161725" }`
+        3. Observe …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened, including the exact error message if any.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: |
+        Relevant session/CLI logs. **Redact first**: remove tokens, API keys, secrets, and Authorization/request headers before pasting.
+      render: text
+    validations:
+      required: false

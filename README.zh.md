@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-🧩-green)](https://github.com/topics/dsh-plugin)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-fund-research/actions)
+[![npm version](https://img.shields.io/npm/v/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
 
 [English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -73,6 +76,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | 天天基金 pingzhongdata 主机。 |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | 天天基金 F10 主机（持仓 + 经理页）。 |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | 东方财富行情主机（个股估值快照）。 |
+| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | 主行情主机失败时逐股重试的兜底主机（东方财富自有的延时行情主机）；设为 `''` 关闭。 |
 | `requestIntervalMs` | `1000` | 出站请求最小间隔（礼貌采集）。 |
 | `timeoutMs` | `15000` | 单请求超时。 |
 | `retries` | `2` | 单请求重试次数（指数退避）。 |
@@ -131,7 +135,8 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # 类型（含 CI 严格档）
-pnpm test                                     # 65 个真实接缝测试
+pnpm test                                     # 113 个真实接缝测试
+pnpm run test:e2e                              # 可选的真网 E2E（LIVE_E2E=1）
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc 声明
 pnpm run verify:self-contained                # 无出仓依赖规格
 node scripts/check-readme-sync.mjs            # 五语 README 门禁

@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-🧩-green)](https://github.com/topics/dsh-plugin)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-fund-research/actions)
+[![npm version](https://img.shields.io/npm/v/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
 
 [English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -73,6 +76,7 @@ dsh plugin --profile web remove dsh-fund-research  # हटाएँ
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Tiantian Fund pingzhongdata होस्ट। |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Tiantian Fund F10 होस्ट (होल्डिंग्स + प्रबंधक पृष्ठ)। |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | प्रति-स्टॉक मूल्यांकन स्नैपशॉट हेतु Eastmoney कोट होस्ट। |
+| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | प्राथमिक होस्ट विफल होने पर प्रति-स्टॉक आज़माया जाने वाला वैकल्पिक कोट होस्ट (Eastmoney का अपना विलंबित-कोट होस्ट); `''` इसे बंद करता है। |
 | `requestIntervalMs` | `1000` | बाहरी अनुरोधों के बीच न्यूनतम अंतर (विनम्र संग्रह)। |
 | `timeoutMs` | `15000` | प्रति-अनुरोध समय-सीमा। |
 | `retries` | `2` | एक्सपोनेंशियल बैकऑफ़ के साथ प्रति-अनुरोध पुनर्प्रयास। |
@@ -131,7 +135,8 @@ dsh plugin --profile web remove dsh-fund-research  # हटाएँ
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # प्रकार, सहित। CI-सख्त
-pnpm test                                     # वास्तविक seams पर 65 परीक्षण
+pnpm test                                     # वास्तविक seams पर 113 परीक्षण
+pnpm run test:e2e                              # वैकल्पिक वास्तविक-नेटवर्क E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc घोषणाएँ
 pnpm run verify:self-contained                # रिपॉजिटरी के बाहर कोई निर्भरता स्पेक नहीं
 node scripts/check-readme-sync.mjs            # पाँच-भाषा README गेट

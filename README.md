@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-🧩-green)](https://github.com/topics/dsh-plugin)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-fund-research/actions)
+[![npm version](https://img.shields.io/npm/v/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
 
 [English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -73,6 +76,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Tiantian Fund pingzhongdata host. |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Tiantian Fund F10 host (holdings + manager pages). |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | Eastmoney quote host for per-stock valuation snapshots. |
+| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | Fallback quote host tried per stock when the primary fails (Eastmoney's own delayed-quote host); `''` disables it. |
 | `requestIntervalMs` | `1000` | Minimum gap between outbound requests (polite collection). |
 | `timeoutMs` | `15000` | Per-request timeout. |
 | `retries` | `2` | Retries per request with exponential backoff. |
@@ -131,7 +135,8 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # types, incl. CI-strict
-pnpm test                                     # 65 tests over real harness seams
+pnpm test                                     # 113 tests over real harness seams
+pnpm run test:e2e                              # opt-in LIVE-network E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc declarations
 pnpm run verify:self-contained                # no out-of-repo dependency specs
 node scripts/check-readme-sync.mjs            # five-language README gate
