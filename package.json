@@ -154,6 +154,7 @@
     "typecheck:ci": "tsc -p tsconfig.ci.json --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "vitest run test/e2e.live.spec.ts",
     "lint": "oxlint",
     "prepare": "node scripts/prepare.mjs",
     "verify:self-contained": "node scripts/verify-self-contained.mjs",
