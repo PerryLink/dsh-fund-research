@@ -1,0 +1,48 @@
+# dsh-fund-research bundle patch: mount the mutual-fund research plugin.
+#
+# The storage stack rows come first: the plugin injects `storageDomain` for its
+# snapshot layer, and the shipped `dsh-base` bundle does not compose it — a
+# bare profile would otherwise hang with `pending (waiting for service:
+# storageDomain)`. Every config key below is a Schemastery field of the owning
+# plugin; invalid values fail the profile load loudly. See README.md
+# "Configuration" for the full table.
+- insert:
+    - id: storage
+      name: '@deepseek-ai/dsh-storage'
+
+    - id: storage-json
+      name: '@deepseek-ai/dsh-storage-json'
+      config:
+        root: !!js dshHomePath('storages')
+
+    - id: storage-domain
+      name: '@deepseek-ai/dsh-storage-domain'
+      config:
+        backend: json
+
+    - id: dsh-fund-research
+      name: dsh-fund-research
+      config:
+        # Master switch. On by default; `false` mounts nothing at all.
+        enabled: true
+        # Data-source endpoints (public Tiantian Fund / Eastmoney pages; no
+        # key, no login). Override only to point at a mirror.
+        eastmoneyBaseUrl: 'https://fund.eastmoney.com'
+        f10BaseUrl: 'https://fundf10.eastmoney.com'
+        quoteBaseUrl: 'https://push2.eastmoney.com'
+        # Polite collection: minimum gap between outbound requests.
+        requestIntervalMs: 1000
+        # Per-request timeout and retry budget (exponential backoff).
+        timeoutMs: 15000
+        retries: 2
+        # Storage-domain snapshot reuse window; older snapshots are refetched.
+        cacheTtlHours: 12
+        # Annual risk-free rate used by the Sharpe ratio.
+        riskFreeRate: 0.02
+        # Offline mode: never send requests; read the snapshot layer only.
+        offline: false
+        # Workspace-relative directory the versioned report tree is sealed into.
+        reportRoot: fund-reports
+        # Fetch per-stock valuation quotes for the style-attribution section.
+        # Disable to skip that fetch layer (the section reports a data gap).
+        styleQuotes: true
