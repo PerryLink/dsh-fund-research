@@ -72,15 +72,21 @@ c76bc74 chore: project scaffolding (package, tsconfigs, bundle patch, build scri
 - 定期报告 PDF 解析（如必要，作为独立来源接入并纳入缺口体系）。
 - 带模型 key 的环境里可用 dsh-test-drive 的 `/testdrive` 命令跑 capability 断言（本会话 keyless 只到 smoke 阶段）。
 
-## 发布会话（准备事项，按 PHASE2-GROUP-PROMPTS.md §0.3 执行）
+## 发布会话（已执行完成 ✅，2026-08-19/20）
 
-**本会话已探明：`gh` 未安装、npm 未登录、DEEPSEEK_API_KEY 未设置 → GitHub 侧动作（push/topics/Discussions/分支保护/fork PR/npm publish）本会话无法执行，全部停在本地，不伪造成功。发布会话（有 §0.1 令牌的环境）按序执行：**
+**发布（标准件 C）**：0.1.0 由并行发布会话首发（npm + GitHub Release + topics）；本会话完成 0.1.1 补丁发布：`release.mjs 0.1.1`（全门禁绿 + annotated tag）→ `git push -u origin main --follow-tags` → CI ✅ + Release ✅ → **npm `dsh-fund-research@0.1.1`（latest）** + [GitHub Release v0.1.1](https://github.com/PerryLink/dsh-fund-research/releases/tag/v0.1.1)。
 
-1. **无需再跑 `release.mjs`**：版本 0.1.0、CHANGELOG、tag `v0.1.0` 均已就绪且指向最终 head，直接推送。
-2. `git push -u origin main --follow-tags`（当前 `main` 无 upstream；`origin/main` 仍停在 Initial commit）→ `.github/workflows/release.yml` 复跑门禁 → npm publish（provenance，需仓库配好 NPM_TOKEN secret）+ GitHub Release（由盖章的 CHANGELOG 段生成）。
-3. 发布后设置 GitHub topics（命令见 README Topics 段与 §0.3）：`gh repo edit PerryLink/dsh-fund-research --add-topic dsh,dsh-plugin,deepseek-harness,cordis,fund-research,mutual-fund,investment-research,finance,research-report`。
-4. 步骤 0 社区反馈检查（`gh auth status` 通过后）：`gh repo view --json ...`、issues/PR 全量列表、未回复评论清单与回复草稿（只草稿，不擅自回复）。
-5. 标准件 B 剩余（GitHub 侧）：About 区 homepage 指向 npm 包页；Discussions 开启（`PATCH has_discussions: true`）+ 四分类 + Announcements 欢迎帖；main 分支保护（`PUT /branches/main/protection`，CI job 名 `gates`，JSON 进验收报告）。本地文件（issue 表单 ×2、PR 模板、SECURITY.md、徽章、Contributors）已完成。
-6. 标准件 A 生态投递（阶段 0 合规自查后）：awesome-dsh-plugin / AdamPlatin123 / 0xsline / bruc3van 四仓按各自规则 fork + 分支 `add/dsh-fund-research` + 双语条目 PR；OMDSH_HUB INTAKE（`dshWorkshop.evidence` 四字段按 hub 实测填）；官方 Discussions showcase 帖。**阶段 0 门槛：`gh auth status` + 仓库公开 + `dsh-plugin` topic 已设。**
-7. 阶段四聚合核验：Oh-My-DSH / oh-my-dsh / YELEBAI registry 是否自动收录，记录预期延迟。
-8. 收尾输出「项目总览」现状更新建议一行（不直接改 ALL-PLUGIN-PROMPTS.md）。
+**社区反馈检查（步骤 0）**：issues/PR = 0，无未回复评论，无可处理项。
+
+**社区工程（标准件 B）**：topics ×9 已设；About homepage → npm 包页 ✅；徽章/issue 表单 ×2/PR 模板/SECURITY.md 已随 0.1.1 推送 ✅；Discussions 开启 ✅ + 四分类 + [欢迎帖](https://github.com/PerryLink/dsh-fund-research/discussions/1)；main 分支保护 ✅（required_status_checks contexts=["gates"]、strict=false、enforce_admins=false、allow_force_pushes=true、无 PR 强制）。
+
+**生态投递（标准件 A）**：
+- ✅ [AdamPlatin123/awesome-dsh-plugins#267](https://github.com/AdamPlatin123/awesome-dsh-plugins/pull/267)（📚 学习研究；分类器实跑输出贴 PR；运行级如实「待测」；@dsh-external scope 迁移备注已写）
+- ✅ [0xsline/awesome-deepseek-harness#432](https://github.com/0xsline/awesome-deepseek-harness/pull/432)（双语同一 PR，Domain & Specialist Skills）
+- ✅ 阶段二 [omdsh-dev/dsh-hub-workshop#82](https://github.com/omdsh-dev/dsh-hub-workshop/issues/82)：`dshWorkshop.capability` 已对齐 package-manifest schema（kind: tool，commit cc90d33），提交 JSON 经 `scripts/intake.mjs validate` 通过 → pending-review 队列
+- ✅ 阶段三 [官方 showcase 帖](https://github.com/deepseek-ai/deepseek-harness/discussions/3523)（Show Your Plugins! 类目）
+- ⏸ awesome-dsh-plugin：仓库创建于 2026-08-19T14:22Z，未满其「1 天」门槛，**2026-08-20T14:22Z 之后**重投（`data/plugins/PerryLink__dsh-fund-research.yml`，category `tools`，npm ci + generate-readme 已按规则就绪）
+- ⏸ bruc3van 作者自荐：需 stars > 10（当前 1）；其全量目录由每日 topic 快照自动收录
+- ⏳ 阶段四聚合核验：Oh-My-DSH / oh-my-dsh / YELEBAI 当前均未出现；预期延迟 Adam ≤8h（topic 设置 14:40 起）、bruc3van 每日快照，届时复核
+
+**人工待办（无需本会话处理）**：Discord 分享、中文渠道推广、「项目总览」更新一行（见本文件末尾建议）。
