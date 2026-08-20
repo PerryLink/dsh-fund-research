@@ -74,9 +74,9 @@
     },
     "capability": {
       "id": "fund-research",
-      "kind": "research",
-      "invocation": "fund_snapshot, fund_research",
-      "expected": "collects public mutual-fund data from Eastmoney/Tiantian Fund endpoints, computes deterministic metrics, and seals versioned Markdown research reports with a per-number traceability table"
+      "kind": "tool",
+      "invocation": "fund_research",
+      "expected": "seals a versioned Markdown research report whose per-number traceability appendix verifies against the source snapshot"
     },
     "evidence": {
       "install": null,
