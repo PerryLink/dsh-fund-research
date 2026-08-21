@@ -23,7 +23,7 @@
 
 | Componente | Versão |
 |---|---|
-| DeepSeek Harness | `0.1.0-rc.6` (peer dependencies fixadas) |
+| DeepSeek Harness | `0.1.0-rc.8` (peer dependencies fixadas) |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gerenciador de pacotes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin somente host) |
@@ -113,7 +113,7 @@ Todas as chaves são opcionais (padrões mostrados); valores inválidos falham r
 - **Lê** os endpoints públicos Tiantian Fund / Eastmoney (`fund.eastmoney.com/pingzhongdata/*.js`, páginas F10 de `fundf10.eastmoney.com`, cotações de `push2.eastmoney.com`) com User-Agent de navegador e ritmo cortês configurável. Sem chave, sem login, sem API paga, sem contornar anti-bot.
 - **Escreve** apenas sob a raiz de relatórios configurada dentro do workspace da sessão, mais o storage domain `dsh_fund_research` (último snapshot por fundo).
 - **Nunca** avalia JavaScript remoto (o bloco pingzhongdata é escaneado, nunca executado), nunca armazena credenciais, nunca opera.
-- Eventos de sessão são registros de auditoria somente-log; os peers 0.1.0-rc.6 fixados não oferecem envelope `ignorable`, então uma sessão restaurada por um build *sem* este plugin recusa essas linhas de log — a mesma compensação aceita por outros plugins de pesquisa desta família.
+- Eventos de sessão são registros de auditoria somente-log; os peers 0.1.0-rc.8 fixados não oferecem envelope `ignorable`, então uma sessão restaurada por um build *sem* este plugin recusa essas linhas de log — a mesma compensação aceita por outros plugins de pesquisa desta família.
 
 ## Security boundaries
 
@@ -143,7 +143,7 @@ node scripts/check-readme-sync.mjs            # gate README em cinco idiomas
 pnpm pack                                     # tarball
 ```
 
-Os testes usam os seams REAIS `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage dos peers 0.1.0-rc.6; a rede é substituída apenas na fronteira de fetch por fixtures de respostas reais salvas (`fixtures/`, fundo 161725). Atualize os fixtures com os scripts de `.tmp/`.
+Os testes usam os seams REAIS `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage dos peers 0.1.0-rc.8; a rede é substituída apenas na fronteira de fetch por fixtures de respostas reais salvas (`fixtures/`, fundo 161725). Atualize os fixtures com os scripts de `.tmp/`.
 
 ## Topics
 
@@ -155,7 +155,7 @@ Construído pelos contribuidores de dsh-fund-research. Issues e pull requests be
 
 ## PerryLink DSH Plugin Family
 
-Parte de uma família de plugins independentes do DeepSeek Harness compartilhando uma mesma base de engenharia: peers 0.1.0-rc.6 fixados, config Schemastery com falha ruidosa, READMEs em cinco idiomas e cobertura vitest sobre seams reais.
+Parte de uma família de plugins independentes do DeepSeek Harness compartilhando uma mesma base de engenharia: peers 0.1.0-rc.8 fixados, config Schemastery com falha ruidosa, READMEs em cinco idiomas e cobertura vitest sobre seams reais.
 
 ## License
 
