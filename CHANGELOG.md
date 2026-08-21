@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-08-21
+
+### Changed
+
+- Upgrade the `@deepseek-ai/dsh-*` peer family from `0.1.0-rc.6` to `0.1.0-rc.8`: devDependencies pin `0.1.0-rc.8`, peerDependencies widen to `>=0.1.0-rc.8 <0.2.0` (storage stack, session, tools, skill, agent, jobs, llm, system-prompt). All gates (typecheck, typecheck:ci, test, coverage, lint, build, verify:self-contained, verify:artifacts, readme-sync, pack) stay green against the published rc.8 peers, and the plugin mounts and answers a headless task in a scratch profile over rc.8 (`dsh-base` + `dsh-headless` + this plugin).
+
 ## [0.1.1] - 2026-08-19
 
 ### Added
