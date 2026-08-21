@@ -3,8 +3,8 @@
  * events are log-only records of facts the tool results already carry: the
  * snapshot acquisition (`fund-research/snapshot`) and the sealed report
  * (`fund-research/report`). The append stays two-argument: the pinned
- * 0.1.0-rc.6 peers have no append-envelope option, and the two-argument form
- * typechecks against both rc.6 and newer builds.
+ * 0.1.0-rc.8 peers have no append-envelope option, and the two-argument form
+ * typechecks against both rc.8 and newer builds.
  * @module dsh-fund-research/events
  */
 

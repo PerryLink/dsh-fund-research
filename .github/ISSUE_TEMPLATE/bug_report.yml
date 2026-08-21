@@ -20,7 +20,7 @@ body:
     attributes:
       label: Harness (dsh) version
       description: The DeepSeek Harness CLI version (`dsh --version` or the installed `@deepseek-ai/dsh` version).
-      placeholder: 0.1.0-rc.6
+      placeholder: 0.1.0-rc.8
     validations:
       required: true
   - type: input
