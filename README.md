@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📊 dsh-fund-research
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-fund-research)
 
 **Deterministic research reports for Chinese public mutual funds, on DeepSeek Harness.**
 
