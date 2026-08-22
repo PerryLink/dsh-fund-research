@@ -23,7 +23,7 @@
 
 | 组件 | 版本 |
 |---|---|
-| DeepSeek Harness | `0.1.0-rc.8`（peer 依赖钉版） |
+| DeepSeek Harness | `0.1.1-rc.2`（peer 依赖钉版） |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | 包管理器 | `pnpm@11.7.0` |
 | 平台 | Windows / macOS / Linux（纯宿主插件） |
@@ -113,7 +113,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 - **读取**天天基金 / 东方财富公开端点（`fund.eastmoney.com/pingzhongdata/*.js`、`fundf10.eastmoney.com` F10 页面、`push2.eastmoney.com` 行情），带浏览器 UA 与可配置的礼貌间隔。免 key、免登录、无付费 API、不绕反爬。
 - **只写**会话工作区内配置的报告根目录，以及 `dsh_fund_research` 存储域（每只基金最新快照）。
 - **绝不**执行远程 JavaScript（pingzhongdata 块只扫描不执行）、绝不存取凭据、绝不交易。
-- 会话事件为仅日志审计记录；钉版的 0.1.0-rc.8 peers 没有 `ignorable` 信封，因此由*未安装*本插件的 build 恢复会话时会拒绝这些日志行——与本家族其他研究插件接受的同一折衷。
+- 会话事件为仅日志审计记录；钉版的 0.1.1-rc.2 peers 没有 `ignorable` 信封，因此由*未安装*本插件的 build 恢复会话时会拒绝这些日志行——与本家族其他研究插件接受的同一折衷。
 
 ## Security boundaries
 
@@ -143,7 +143,7 @@ node scripts/check-readme-sync.mjs            # 五语 README 门禁
 pnpm pack                                     # tarball
 ```
 
-测试使用来自 0.1.0-rc.8 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
+测试使用来自 0.1.1-rc.2 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
 
 ## Topics
 
@@ -155,7 +155,7 @@ pnpm pack                                     # tarball
 
 ## PerryLink DSH Plugin Family
 
-PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.0-rc.8 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
+PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.1-rc.2 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
 
 ## License
 

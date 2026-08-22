@@ -14,7 +14,7 @@ published tarball except where noted; these are install-time dependencies:
 | [zod](https://github.com/colinhacks/zod) | `^4.4.3` | MIT | Runtime value schema for the `dsh_fund_research` storage-domain table (bundled into `lib/`; devDependency) |
 | [@deepseek-ai/cordis](https://www.npmjs.com/package/@deepseek-ai/cordis) | `^4.0.1` (peer) | See package | The plugin runtime |
 | [@deepseek-ai/schemastery](https://www.npmjs.com/package/@deepseek-ai/schemastery) | `^3.18.0` (peer) | See package | Configuration schema |
-| `@deepseek-ai/dsh-*` peers | `0.1.0-rc.8` (peer) | See packages | Official harness seams (`dsh-session`, `dsh-tools`, `dsh-storage`, `dsh-storage-json`, `dsh-storage-domain`, `dsh-skill-filesystem`) |
+| `@deepseek-ai/dsh-*` peers | `0.1.1-rc.2` (peer) | See packages | Official harness seams (`dsh-session`, `dsh-tools`, `dsh-storage`, `dsh-storage-json`, `dsh-storage-domain`, `dsh-skill-filesystem`) |
 
 At runtime the plugin talks to the harness services listed as peerDependencies
 plus the public Tiantian Fund / Eastmoney endpoints documented in the README;

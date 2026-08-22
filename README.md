@@ -24,7 +24,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `0.1.0-rc.8` (peer dependencies pinned) |
+| DeepSeek Harness | `0.1.1-rc.2` (peer dependencies pinned) |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
@@ -114,7 +114,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Reads** the public Tiantian Fund / Eastmoney endpoints (`fund.eastmoney.com/pingzhongdata/*.js`, `fundf10.eastmoney.com` F10 pages, `push2.eastmoney.com` quotes) with a browser User-Agent and configurable polite pacing. No key, no login, no paid API, no anti-crawler circumvention.
 - **Writes** only under the configured report root inside the session workspace, plus the `dsh_fund_research` storage domain (latest snapshot per fund).
 - **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
-- Session events are log-only audit records; the pinned 0.1.0-rc.8 peers offer no `ignorable` envelope, so a session restored by a build *without* this plugin refuses those log lines — the same accepted trade-off as other research plugins of this family.
+- Session events are log-only audit records; the pinned 0.1.1-rc.2 peers offer no `ignorable` envelope, so a session restored by a build *without* this plugin refuses those log lines — the same accepted trade-off as other research plugins of this family.
 
 ## Security boundaries
 
@@ -144,7 +144,7 @@ node scripts/check-readme-sync.mjs            # five-language README gate
 pnpm pack                                     # tarball
 ```
 
-Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.0-rc.8 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
+Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.1-rc.2 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
 
 ## Topics
 
@@ -156,7 +156,7 @@ Built by the dsh-fund-research contributors. Issues and pull requests welcome at
 
 ## PerryLink DSH Plugin Family
 
-Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.0-rc.8 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
+Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.1-rc.2 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
 
 ## License
 
