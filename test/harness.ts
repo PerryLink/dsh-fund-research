@@ -93,5 +93,17 @@ export async function unmountBase(base: BaseHarness): Promise<void> {
   if (!resolved.toLowerCase().startsWith(path.resolve(expected).toLowerCase())) {
     throw new Error(`refusing to remove non-harness dir: ${base.workspace}`)
   }
-  await rm(resolved, { recursive: true, force: true })
+  // The async fund-review job appends review-note.md after the report seals,
+  // racing teardown: its O_CREAT append can re-create a file between the
+  // recursive unlink pass and the final rmdir (ENOTEMPTY on Linux). Retry
+  // briefly to close that window.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await rm(resolved, { recursive: true, force: true })
+      return
+    } catch (error) {
+      if (attempt >= 20) throw error
+      await new Promise(resolve => setTimeout(resolve, 25))
+    }
+  }
 }
