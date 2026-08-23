@@ -37,6 +37,14 @@
 - **Trazabilidad como función estrella** — antes del sellado, cada cifra clave se verifica contra el `snapshot.json` sellado a través del servicio opcional [`dsh-data-quality`](https://github.com/topics/dsh-plugin) cuando está instalado, o del verificador integrado isomorfo (`builtin-fallback`) en caso contrario. La tabla del apéndice registra valor ↔ ruta ↔ veredicto.
 - **Huecos honestos** — una fuente fallida o degradada produce una declaración explícita de 数据缺口 (hueco de datos) en la sección afectada. El plugin nunca rellena un hueco con una cifra inventada.
 - **Modo offline** — `offline: true` (configuración o argumento de la herramienta) sirve todo desde la capa de instantáneas del dominio de almacenamiento o la instantánea de versión más reciente en disco, con cero solicitudes salientes. Ideal para pruebas y reproducción.
+- **Corte asOf** — `asOfDate` (ISO `YYYY-MM-DD`) trunca la serie de NAV a datos en/o antes de esa fecha y sella el corte en la instantánea y el informe; fechas inválidas o futuras fallan en voz alta.
+- **Reanudación por puntos de control** — `<reportRoot>/.run-state.json` registra cada etapa del pipeline con marcas de tiempo y una huella de entrada; `resume: true` continúa desde la primera etapa incompleta reutilizando artefactos sellados, y rechaza una huella que no coincida.
+- **Registro de descubrimiento de fuentes** — cada adquisición sella un `sources-discovery.json` generado por código (lista de endpoints, resolución primario/respaldo, cobertura y huecos por fuente, motivos de degradación) y lo incorpora al apéndice como 数据源与缺口声明.
+- **Fan-out de múltiples fondos** — `codes` acepta un array de códigos; cada fondo ejecuta el pipeline de forma independiente con aislamiento de fallos (los fallos se convierten en huecos del resumen) y el resultado es una tarjeta de resumen (code / asOf / hash de sellado / veredictos / motivo del fallo).
+- **Libro de seguimiento** — cada sellado correcto añade una línea determinista a `<reportRoot>/.tracking.jsonl`; `includeComparison: true` renderiza una sección determinista 与上次对比 (rango de NAV / escala / principales posiciones) con una declaración de hueco cuando no hay registro previo.
+- **Revisión de solo lectura** — tras el sellado, un job `fund-review` revisa los artefactos sellados (completitud de la declaración de huecos, consistencia de la tabla de trazabilidad, descargo) y escribe `review-note.md`; se omite con elegancia (registrado en run-state) cuando no hay servicio de jobs.
+- **Señales de calidad por fuente** — cada fuente lleva metadatos de calidad deterministas (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`), presentados en el apéndice y en los valores de herramienta para que el downstream pueda rebajar (nunca filtrar de forma dura) una fuente de baja calidad.
+- **Resumen de estabilidad walk-forward** — `includeWalkForward: true` añade una sección 样本外稳定性摘要: persistencia de signo de retorno/Sharpe en ventanas deslizantes y media/desviación, etiquetada explícitamente como descripción estadística, no una predicción.
 - **Eventos de auditoría de sesión** — los eventos solo-registro `fund-research/snapshot` y `fund-research/report` llevan el código, el directorio de versión, el hash del manifiesto y la lista de huecos (visible para el modelo ⟺ registrado).
 - **Skill de metodología** — un skill `fund-research` integrado enseña al modelo las definiciones de métricas (口径), el manejo de huecos y el lenguaje de cumplimiento. El cálculo permanece en el código.
 
@@ -92,9 +100,14 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 
 | Argumento | Tipo | Descripción |
 |---|---|---|
-| `code` (requerido) | string | Código de fondo de seis dígitos, p. ej. `"161725"`. |
+| `code` | string | Código de fondo de seis dígitos, p. ej. `"161725"` (fondo único). Mutuamente excluyente con `codes`. |
+| `codes` | string[] | Varios códigos de seis dígitos: fan-out con aislamiento de fallos por fondo (devuelve un resumen). Mutuamente excluyente con `code`. |
 | `sections` | string[] | Secciones a renderizar (`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`). Por defecto: todas. |
 | `offline` | boolean | Leer solo la capa de instantáneas (sin red). Por defecto: configuración del plugin. |
+| `asOfDate` | string | Corte ISO 8601 (`YYYY-MM-DD`): solo se usan datos en/o antes de esa fecha (serie NAV truncada). Vacío = sin corte; fechas futuras fallan en voz alta. |
+| `resume` | boolean | Reanuda la ejecución registrada en `.run-state.json` desde la primera etapa incompleta (reutiliza artefactos sellados); rechaza una huella que no coincida. Por defecto: `false`. |
+| `includeComparison` | boolean | Renderiza una sección determinista 与上次对比 frente al registro previo de `.tracking.jsonl`; la evidencia ausente se declara como hueco. Por defecto: `false`. |
+| `includeWalkForward` | boolean | Renderiza una sección determinista 样本外稳定性摘要: persistencia de signo de retorno/Sharpe en ventanas deslizantes y media/desviación. Solo descripción estadística, no una predicción. Por defecto: `false`. |
 | `background` | boolean | Ejecutar como trabajo en segundo plano `fund-report`; devuelve `{ kind: "background", jobId }`. Por defecto: `false`. |
 
 ### `fund_snapshot`
@@ -103,6 +116,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 |---|---|---|
 | `code` (requerido) | string | Código de fondo de seis dígitos. |
 | `offline` | boolean | Leer solo la capa de instantáneas. Por defecto: configuración del plugin. |
+| `asOfDate` | string | Corte ISO 8601 (`YYYY-MM-DD`): solo se usan datos en/o antes de esa fecha. Vacío = sin corte; fechas futuras fallan en voz alta. |
 
 ### Secciones del informe
 

@@ -38,6 +38,14 @@
 - **Traceability as a first-class feature** — before sealing, every key number is checked against the sealed `snapshot.json` through the optional [`dsh-data-quality`](https://github.com/topics/dsh-plugin) service when it is installed, or through the built-in isomorphic fallback checker (`builtin-fallback`) otherwise. The appendix table records value ↔ path ↔ verdict.
 - **Honest gaps** — a failed or degraded data source produces an explicit 数据缺口 (data gap) declaration in the affected section. The plugin never fills a gap with an invented number.
 - **Offline mode** — `offline: true` (config or tool argument) serves everything from the storage-domain snapshot layer or the newest on-disk version snapshot, with zero outbound requests. Ideal for tests and reproduction.
+- **asOf cutoff** — `asOfDate` (ISO `YYYY-MM-DD`) truncates the NAV series to data on or before that date and stamps the snapshot + report with the cutoff; invalid or future dates fail loudly.
+- **Checkpoint resume** — `<reportRoot>/.run-state.json` records each pipeline stage (snapshot/report) with timestamps and an input fingerprint; `resume: true` continues from the first incomplete stage, reusing sealed artifacts, and rejects a fingerprint mismatch.
+- **Source discovery record** — every acquisition seals a code-generated `sources-discovery.json` (endpoint roster, primary/fallback resolution, per-source coverage and gaps, degradation reasons) and folds it into the report appendix as 数据源与缺口声明.
+- **Multi-fund fan-out** — `codes` accepts an array of fund codes; each fund runs the pipeline independently with per-fund failure isolation (failures become summary gaps), and the result is a summary card (code / asOf / seal hash / verdicts / failure reason).
+- **Tracking ledger** — every successful seal appends a deterministic line to `<reportRoot>/.tracking.jsonl`; `includeComparison: true` renders a deterministic 与上次对比 section (NAV range / scale / top holdings) with a gap declaration when no prior record exists.
+- **Read-only review** — after sealing, a `fund-review` job reviews the sealed artifacts (gap-declaration completeness, traceability-table consistency, disclaimer) and writes `review-note.md`; it skips gracefully (recorded in run-state) when no jobs service is present.
+- **Per-source quality signals** — every source carries deterministic quality metadata (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`), rendered in the appendix and surfaced in tool values so downstream can downweight (never hard-filter) a low-quality source.
+- **Walk-forward stability summary** — `includeWalkForward: true` adds a 样本外稳定性摘要 section: deterministic rolling-window return/Sharpe sign persistence and mean/std, explicitly labelled as statistical description only, not a prediction.
 - **Session audit events** — `fund-research/snapshot` and `fund-research/report` log-only events carry the code, version directory, manifest hash, and gap list (model-visible ⟺ logged).
 - **Methodology skill** — a bundled `fund-research` skill teaches the model the metric口径 (definitions), gap handling, and compliance wording. Computation stays in code.
 
@@ -51,12 +59,13 @@ The agent calls `fund_research({ code: "161725" })`; a minute later the workspac
 
 ```text
 fund-reports/161725/20260819-153012/
-├── snapshot.json    # raw extracted data + computed metrics + per-source sha256
-├── report.md        # the research report with the traceability appendix
-└── manifest.json    # snapshot/report hashes, parameters, verify engine, gaps
+├── snapshot.json            # raw extracted data + computed metrics + per-source sha256
+├── sources-discovery.json   # code-generated endpoint roster + coverage + gaps
+├── report.md                # the research report with the traceability appendix
+└── manifest.json            # snapshot/report hashes, parameters, verify engine, gaps
 ```
 
-Every number in `report.md`'s appendix carries a `verified` / `mismatch` / `not-found` / `unverifiable` verdict against `snapshot.json` — recompute any of them from `raw.*` with the documented口径 to audit the plugin itself.
+`.run-state.json` sits at the report root and records the pipeline stages for `resume: true`. Every number in `report.md`'s appendix carries a `verified` / `mismatch` / `not-found` / `unverifiable` verdict against `snapshot.json` — recompute any of them from `raw.*` with the documented口径 to audit the plugin itself.
 
 ## Install & uninstall
 
@@ -93,9 +102,14 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 
 | Argument | Type | Description |
 |---|---|---|
-| `code` (required) | string | Six-digit fund code, e.g. `"161725"`. |
+| `code` | string | Six-digit fund code, e.g. `"161725"` (single fund). Mutually exclusive with `codes`. |
+| `codes` | string[] | Multiple six-digit fund codes: a fan-out with per-fund failure isolation (returns a summary). Mutually exclusive with `code`. |
 | `sections` | string[] | Section ids to render (`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`). Default: all. |
 | `offline` | boolean | Read the snapshot layer only (no network). Default: plugin config. |
+| `asOfDate` | string | ISO 8601 date (`YYYY-MM-DD`) cutoff: only data on or before it is used (NAV series truncated). Empty = no cutoff; future dates fail loudly. |
+| `resume` | boolean | Resume the recorded `.run-state.json` run from the first incomplete stage (reuses sealed artifacts); rejects a fingerprint mismatch. Default: `false`. |
+| `includeComparison` | boolean | Render a deterministic 与上次对比 section against the previous `.tracking.jsonl` record; missing evidence is declared as a gap. Default: `false`. |
+| `includeWalkForward` | boolean | Render a deterministic 样本外稳定性摘要 (walk-forward) section: rolling-window return/Sharpe sign persistence and mean/std. Statistical description only, not a prediction. Default: `false`. |
 | `background` | boolean | Run as a `fund-report` background job; returns `{ kind: "background", jobId }`. Default: `false`. |
 
 ### `fund_snapshot`
@@ -104,6 +118,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 |---|---|---|
 | `code` (required) | string | Six-digit fund code. |
 | `offline` | boolean | Read the snapshot layer only. Default: plugin config. |
+| `asOfDate` | string | ISO 8601 date (`YYYY-MM-DD`) cutoff: only data on or before it is used. Empty = no cutoff; future dates fail loudly. |
 
 ### Report sections
 

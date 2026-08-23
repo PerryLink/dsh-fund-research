@@ -20,6 +20,7 @@ import { holdingsMetrics } from '../metrics/holdings.ts'
 import { styleMetrics } from '../metrics/style.ts'
 import { managerMetrics } from '../metrics/manager.ts'
 import { PoliteFetcher, collectFund, secidOf, sourceUrls, SourceParseError } from './eastmoney.ts'
+import { buildSourcesDiscovery, type QuoteDiscoveryFacts, type SourcesDiscovery } from '../discovery.ts'
 
 /** Dependencies one acquisition needs; assembled by the plugin entry. */
 export interface SnapshotStore {
@@ -33,8 +34,9 @@ export interface SnapshotStore {
 
 /** Error raised when an offline acquisition finds no stored snapshot. */
 export class OfflineGapError extends Error {
-  constructor(code: string) {
-    super(`offline mode: no stored snapshot for fund ${code} in the storage domain or under the report root — run once online first`)
+  constructor(code: string, asOfDate?: string) {
+    const cutoff = asOfDate === undefined ? '' : ` (asOf ${asOfDate})`
+    super(`offline mode: no stored snapshot${cutoff} for fund ${code} in the storage domain or under the report root — run once online first`)
     this.name = 'OfflineGapError'
   }
 }
@@ -78,9 +80,10 @@ export function computationParameters(riskFreeRate: number): ComputationParamete
  * one holding a snapshot.json wins. Never throws on a missing root.
  * @param reportRoot - the resolved absolute report root.
  * @param code - the fund code.
+ * @param asOf - when set, only snapshots carrying this exact cutoff are returned.
  * @returns the parsed snapshot, or `null` when none is on disk.
  */
-export async function readDiskSnapshot(reportRoot: string, code: string): Promise<FundSnapshot | null> {
+export async function readDiskSnapshot(reportRoot: string, code: string, asOf?: string): Promise<FundSnapshot | null> {
   const fundDir = path.join(reportRoot, code)
   let entries: string[]
   try {
@@ -91,8 +94,9 @@ export async function readDiskSnapshot(reportRoot: string, code: string): Promis
   for (const entry of [...entries].sort().reverse()) {
     try {
       const text = await readFile(path.join(fundDir, entry, 'snapshot.json'), 'utf8')
-      const parsed = fundSnapshotSchema.parse(JSON.parse(text))
-      return parsed as FundSnapshot
+      const parsed = fundSnapshotSchema.parse(JSON.parse(text)) as FundSnapshot
+      if (asOf !== undefined && parsed.asOf !== asOf) continue
+      return parsed
     } catch {
       // A version directory without a valid snapshot.json is skipped, not fatal.
     }
@@ -130,6 +134,78 @@ export interface AcquireOptions {
   reportRootAbs?: string
   /** Caller cancellation. */
   signal?: AbortSignal
+  /** asOf cutoff date (ISO YYYY-MM-DD); data strictly after it is excluded. */
+  asOfDate?: string
+}
+
+/** One acquisition's result: the snapshot, its liveness, and the discovery record. */
+export interface AcquireResult {
+  snapshot: FundSnapshot
+  live: boolean
+  discovery: SourcesDiscovery
+}
+
+/**
+ * Validate an asOf cutoff date and reject future dates loudly. Returns the
+ * normalized YYYY-MM-DD date, or `undefined` for an empty/unset cutoff.
+ * @param input - the raw asOfDate argument (ISO 8601 date, or empty).
+ * @param now - the reference clock for the future-date check (tests inject it).
+ * @returns the normalized date, or `undefined` for no cutoff.
+ */
+export function parseAsOfDate(input: string | undefined, now: number = Date.now()): string | undefined {
+  if (input === undefined || input.trim() === '') return undefined
+  const value = input.trim()
+  if (!/^\d{4}-\d{2}-\d{2}$/u.test(value)) {
+    throw new TypeError(`asOfDate must be an ISO 8601 date (YYYY-MM-DD), got ${JSON.stringify(input)}`)
+  }
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year ?? 0, (month ?? 0) - 1, day ?? 0))
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== (month ?? 0) - 1 || date.getUTCDate() !== day) {
+    throw new TypeError(`asOfDate must be a real calendar date, got ${JSON.stringify(input)}`)
+  }
+  const today = new Date(now).toISOString().slice(0, 10)
+  if (value > today) {
+    throw new TypeError(`asOfDate must not be in the future, got ${JSON.stringify(input)} (today is ${today})`)
+  }
+  return value
+}
+
+/**
+ * Truncate the NAV series to points on or before the asOf cutoff. The sealed
+ * snapshot then only carries data the report is allowed to use, and every
+ * computed number traces to it.
+ * @param raw - the collected raw sections.
+ * @param asOfDate - normalized YYYY-MM-DD cutoff.
+ * @returns the raw sections with the NAV series truncated.
+ */
+export function applyAsOfCutoff(raw: FundSnapshot['raw'], asOfDate: string): FundSnapshot['raw'] {
+  const navTrend = raw.navTrend.filter(point => dateOf(point.t) <= asOfDate)
+  if (navTrend.length < 2) {
+    throw new Error(`asOfDate ${asOfDate} leaves fewer than 2 NAV points (${navTrend.length}); cannot compute performance`)
+  }
+  return { ...raw, navTrend }
+}
+
+/** Quote facts for a live collection (collector-reported fallback and coverage). */
+function quoteFactsOfLive(urls: ReturnType<typeof sourceUrls>, collected: Awaited<ReturnType<typeof collectFund>>): QuoteDiscoveryFacts {
+  return {
+    primaryUrl: urls.quoteBase,
+    fallbackUrl: urls.quoteFallbackBase === '' ? null : urls.quoteFallbackBase,
+    fallbackUsed: collected.quoteFallbackUsed,
+    requested: collected.quoteCoverage.requested,
+    succeeded: collected.quoteCoverage.succeeded,
+  }
+}
+
+/** Quote facts for a reuse path (configured hosts; coverage derived from the snapshot). */
+function quoteFactsOfReuse(store: SnapshotStore, snapshot: FundSnapshot): QuoteDiscoveryFacts {
+  return {
+    primaryUrl: store.config.quoteBaseUrl,
+    fallbackUrl: store.config.quoteFallbackBaseUrl === '' ? null : store.config.quoteFallbackBaseUrl,
+    fallbackUsed: false,
+    requested: snapshot.raw.holdings?.rows.length ?? 0,
+    succeeded: Object.keys(snapshot.raw.quotes?.rows ?? {}).length,
+  }
 }
 
 /**
@@ -140,29 +216,40 @@ export interface AcquireOptions {
  * result.
  * @param store - the acquisition dependencies.
  * @param code - six-digit fund code.
- * @param options - offline override, disk fallback root, cancellation.
- * @returns the snapshot and whether it came from a live fetch.
+ * @param options - offline override, disk fallback root, cancellation, asOf cutoff.
+ * @returns the snapshot, whether it came from a live fetch, and the discovery record.
  */
 export async function acquireSnapshot(
   store: SnapshotStore,
   code: string,
   options: AcquireOptions = {},
-): Promise<{ snapshot: FundSnapshot, live: boolean }> {
+): Promise<AcquireResult> {
   const offline = options.offline ?? store.config.offline
+  const asOfDate = parseAsOfDate(options.asOfDate)
   const record = readDomainSnapshot(store, code)
 
+  /** Build a reuse result for one already-stored snapshot. */
+  const reuse = (snapshot: FundSnapshot): AcquireResult => ({
+    snapshot,
+    live: false,
+    discovery: buildSourcesDiscovery(snapshot, quoteFactsOfReuse(store, snapshot), Date.now(), false),
+  })
+
+  /** A stored snapshot satisfies the asOf cutoff only when it was produced under the same one. */
+  const matchesAsOf = (snapshot: FundSnapshot): boolean => asOfDate === undefined || snapshot.asOf === asOfDate
+
   if (offline) {
-    if (record !== null) return { snapshot: record.snapshot, live: false }
+    if (record !== null && matchesAsOf(record.snapshot)) return reuse(record.snapshot)
     if (options.reportRootAbs !== undefined) {
-      const disk = await readDiskSnapshot(options.reportRootAbs, code)
-      if (disk !== null) return { snapshot: disk, live: false }
+      const disk = await readDiskSnapshot(options.reportRootAbs, code, asOfDate)
+      if (disk !== null) return reuse(disk)
     }
-    throw new OfflineGapError(code)
+    throw new OfflineGapError(code, asOfDate)
   }
 
   const ttlMs = store.config.cacheTtlHours * 3_600_000
-  if (record !== null && Date.now() - record.storedAt < ttlMs) {
-    return { snapshot: record.snapshot, live: false }
+  if (record !== null && Date.now() - record.storedAt < ttlMs && matchesAsOf(record.snapshot)) {
+    return reuse(record.snapshot)
   }
 
   const urls = sourceUrls(store.config, code)
@@ -170,19 +257,25 @@ export async function acquireSnapshot(
     styleQuotes: store.config.styleQuotes,
     ...(options.signal === undefined ? {} : { signal: options.signal }),
   })
+  const raw = asOfDate === undefined ? collected.raw : applyAsOfCutoff(collected.raw, asOfDate)
   const snapshot: FundSnapshot = {
     schema: SNAPSHOT_SCHEMA,
     code,
     name: collected.name,
     fetchedAt: collected.fetchedAt,
     sources: collected.sources,
-    raw: collected.raw,
-    computed: computeMetrics(collected.raw, store.config.riskFreeRate),
+    raw,
+    computed: computeMetrics(raw, store.config.riskFreeRate),
     parameters: computationParameters(store.config.riskFreeRate),
     gaps: collected.gaps,
+    ...(asOfDate === undefined ? {} : { asOf: asOfDate }),
   }
   await storeSnapshot(store, snapshot)
-  return { snapshot, live: true }
+  return {
+    snapshot,
+    live: true,
+    discovery: buildSourcesDiscovery(snapshot, quoteFactsOfLive(urls, collected), Date.now(), true),
+  }
 }
 
 /** Round one number for stable report output (re-exported for the tools). */

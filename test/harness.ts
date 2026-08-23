@@ -59,9 +59,10 @@ function makeAgent(session: Session, scopeCtx: Context): Agent {
  * Mount the real services the plugin consumes, plus a real session and agent
  * scoped to a fresh temp workspace.
  * @param sessionId - session id to create.
+ * @param options - `jobs: false` omits the job registry (for the review-skip path).
  * @returns the mounted base.
  */
-export async function mountBase(sessionId = 'fund-harness'): Promise<BaseHarness> {
+export async function mountBase(sessionId = 'fund-harness', options: { jobs?: boolean } = {}): Promise<BaseHarness> {
   const ctx = new Context()
   await ctx.plugin(SessionStore)
   const workspace = await mkdtemp(path.join(tmpdir(), 'fund-test-'))
@@ -75,8 +76,10 @@ export async function mountBase(sessionId = 'fund-harness'): Promise<BaseHarness
   ctx.provide('systemPrompt', { tools: () => () => undefined, section: () => () => undefined, context: () => () => undefined } as never)
   await ctx.plugin(ToolRuntime)
   await ctx.plugin(AgentRegistry)
-  await ctx.plugin(LocalJobRegistry)
-  ctx.jobs.attachController('test-harness')
+  if (options.jobs !== false) {
+    await ctx.plugin(LocalJobRegistry)
+    ctx.jobs.attachController('test-harness')
+  }
   const agentCtx = ctx.plugin(() => {}).ctx
   const agent = makeAgent(session, agentCtx)
   ctx.agents.register(agent)

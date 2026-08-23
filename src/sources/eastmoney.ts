@@ -537,6 +537,10 @@ export interface CollectedSources {
   }
   raw: FundRawData
   gaps: string[]
+  /** Whether at least one per-stock quote was rescued by the fallback host. */
+  quoteFallbackUsed: boolean
+  /** Quote-layer coverage: holdings attempted vs quotes succeeded. */
+  quoteCoverage: { requested: number, succeeded: number }
 }
 
 /** Collect one error into the per-stock failure text. */
@@ -599,12 +603,16 @@ export async function collectFund(
   // disabled or when every quote fails.
   let quotes: QuoteMap | null = null
   let quotesProv: SourceProvenance
+  let quoteFallbackUsed = false
+  let quoteRequested = 0
+  let quoteSucceeded = 0
   const quoteSummaryUrl = `${urls.quoteBase}/api/qt/stock/get (per-holding)`
   if (!options.styleQuotes) {
     quotesProv = { url: quoteSummaryUrl, sha256: '', fetchedAt, ok: false, error: 'disabled by config (styleQuotes: false)' }
     gaps.push('quotes')
   } else {
     const secids = (holdings?.rows ?? []).map(row => secidOf(row.code))
+    quoteRequested = secids.length
     const rows: Record<string, StockQuote> = {}
     const failures: string[] = []
     let quotesText = ''
@@ -623,6 +631,7 @@ export async function collectFund(
             const text = await fetcher.fetchText(fallbackUrl, urls.quoteReferer, options.signal)
             quotesText += text
             rows[secid] = parseQuote(text, secid)
+            quoteFallbackUsed = true
             continue
           } catch (fallbackError) {
             failures.push(`${secid}: primary: ${errorText(primaryError)}; fallback: ${errorText(fallbackError)}`)
@@ -632,6 +641,7 @@ export async function collectFund(
         failures.push(`${secid}: ${errorText(primaryError)}`)
       }
     }
+    quoteSucceeded = Object.keys(rows).length
     if (secids.length === 0) {
       quotesProv = { url: quoteSummaryUrl, sha256: '', fetchedAt, ok: false, error: 'no holdings to quote' }
       gaps.push('quotes')
@@ -667,6 +677,8 @@ export async function collectFund(
       quotes,
     },
     gaps,
+    quoteFallbackUsed,
+    quoteCoverage: { requested: quoteRequested, succeeded: quoteSucceeded },
   }
 }
 

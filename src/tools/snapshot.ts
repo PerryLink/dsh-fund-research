@@ -8,6 +8,7 @@
 
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { FundSnapshot } from '../model.ts'
+import { sourceQualityOf, type SourceQualityEntry, type SourcesDiscovery } from '../discovery.ts'
 import { runSnapshotCard, type ToolDeps } from './shared.ts'
 
 /** The canonical value of one `fund_snapshot` call. */
@@ -28,6 +29,10 @@ export interface SnapshotCardValue {
   live: boolean
   /** Whether the offline read path served this call. */
   offline: boolean
+  /** asOf cutoff applied (`null` = none). */
+  asOfDate: string | null
+  /** Per-source quality signals (requested/succeeded/fieldsPresent/warnings/degraded). */
+  sourceQuality: SourceQualityEntry[]
   /** Day-directory version stamp (`YYYYMMDD-snapshot`). */
   version: string
   cardPath: string
@@ -40,6 +45,9 @@ function renderCard(value: SnapshotCardValue): string {
     `${value.name}（${value.code}）快照 — 仅供研究参考，不构成投资建议`,
     `最新单位净值 ${value.latestNav}（${value.asOf}）；近1年 ${value.returns.year1}%、近6月 ${value.returns.month6}%、近3月 ${value.returns.month3}%、近1月 ${value.returns.month1}%`,
   ]
+  if (value.asOfDate !== null) {
+    lines.push(`asOf 截点：${value.asOfDate}（仅采用不晚于该日期的数据）`)
+  }
   if (value.latestScaleYi !== null) lines.push(`最新规模 ${value.latestScaleYi} 亿元`)
   lines.push(`基金经理 ${value.manager}`)
   if (value.top3.length > 0) lines.push(`前三大重仓：${value.top3.map(row => `${row.name} ${row.navPct}%`).join('、')}`)
@@ -49,7 +57,7 @@ function renderCard(value: SnapshotCardValue): string {
 }
 
 /** Project the canonical value into the card model. */
-function cardValueOf(snapshot: FundSnapshot, run: { version: string, cardPathRel: string, snapshotPathRel: string, live: boolean }, offline: boolean): SnapshotCardValue {
+function cardValueOf(snapshot: FundSnapshot, run: { version: string, cardPathRel: string, snapshotPathRel: string, live: boolean, discovery: SourcesDiscovery }, offline: boolean): SnapshotCardValue {
   const lastScale = snapshot.raw.scaleHistory.values[snapshot.raw.scaleHistory.values.length - 1]
   return {
     code: snapshot.code,
@@ -63,6 +71,8 @@ function cardValueOf(snapshot: FundSnapshot, run: { version: string, cardPathRel
     gaps: snapshot.gaps,
     live: run.live,
     offline,
+    asOfDate: snapshot.asOf ?? null,
+    sourceQuality: sourceQualityOf(run.discovery),
     version: run.version,
     cardPath: run.cardPathRel,
     snapshotPath: run.snapshotPathRel,
@@ -81,6 +91,7 @@ export function buildSnapshotTool(deps: ToolDeps) {
     parameters: {
       code: { type: 'string', required: true, description: 'Six-digit fund code, e.g. "161725"' },
       offline: { type: 'boolean', description: 'Read the stored snapshot layer only (no network). Defaults to the plugin config.' },
+      asOfDate: { type: 'string', description: 'ISO 8601 date (YYYY-MM-DD) cutoff: only data on or before this date is used. Empty = no cutoff. Future dates fail loudly.' },
     },
     output: {
       schema: {
@@ -119,6 +130,23 @@ export function buildSnapshotTool(deps: ToolDeps) {
           gaps: { type: 'array', items: { type: 'string' }, required: true },
           live: { type: 'boolean', required: true },
           offline: { type: 'boolean', required: true },
+          asOfDate: { oneOf: [{ type: 'string' }, { type: 'null' }], required: true },
+          sourceQuality: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                source: { type: 'string', required: true },
+                requested: { type: 'integer', required: true },
+                succeeded: { type: 'integer', required: true },
+                fieldsPresent: { type: 'integer', required: true },
+                parseWarnings: { type: 'array', items: { type: 'string' }, required: true },
+                degraded: { type: 'boolean', required: true },
+              },
+              additionalProperties: false,
+            },
+            required: true,
+          },
           version: { type: 'string', required: true },
           cardPath: { type: 'string', required: true },
           snapshotPath: { type: 'string', required: true },
@@ -132,6 +160,7 @@ export function buildSnapshotTool(deps: ToolDeps) {
       const offline = args.offline ?? deps.config.offline
       const run = await runSnapshotCard(deps, args.code, exec.agent, {
         ...(args.offline === undefined ? {} : { offline: args.offline }),
+        ...(args.asOfDate === undefined ? {} : { asOfDate: args.asOfDate }),
         signal: exec.signal,
       })
       return cardValueOf(run.snapshot, run, offline)

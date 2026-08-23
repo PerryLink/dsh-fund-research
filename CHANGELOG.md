@@ -5,6 +5,29 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- asOf-date cutoff: `fund_research` and `fund_snapshot` accept an optional `asOfDate` (ISO `YYYY-MM-DD`); data strictly after the cutoff is excluded (the NAV series is truncated before computation), the snapshot and report carry the asOf semantics, invalid or future dates fail loudly, and cached-snapshot TTL reuse stays consistent with the cutoff.
+- Checkpoint resume: the `fund-report` pipeline records stage progress (snapshot/report, timestamps, input fingerprint) in `<reportRoot>/.run-state.json`; `resume: true` continues from the first incomplete stage, reusing the sealed artifacts of completed stages, and rejects a fingerprint mismatch loudly.
+- Data-source discovery record: every acquisition seals a code-generated `sources-discovery.json` (endpoint roster, primary/fallback resolution, per-source coverage and gaps, degradation reasons) and folds it into the report appendix as the 数据源与缺口声明 section.
+- Multi-fund fan-out: `fund_research` accepts a `codes` array (single `code` stays compatible); each fund runs the pipeline independently with per-fund failure isolation and a summary card (code/asOf/seal hash/verdicts/failure reason), sharing one polite fetcher and the storage-domain cache per call.
+- Long-term tracking ledger: every successful seal appends a deterministic line to `<reportRoot>/.tracking.jsonl` (code/asOf/snapshot+quotes+report hashes/record time + comparison facts); `includeComparison: true` renders a deterministic 与上次对比 section (NAV range/scale/top holdings) with a gap declaration when no prior record exists.
+- Read-only review stage: after sealing, the pipeline schedules a `fund-review` job (via `ctx.jobs`) that reviews the sealed artifacts (gap-declaration completeness, traceability-table consistency, disclaimer) and writes `review-note.md`; with no jobs service it skips gracefully and records `review: skipped(jobs unavailable)` in run-state.
+- Methodology-skill trigger expansion: the `fund-research` skill description/whenToUse and a new capability section cover asOf/resume/multi-fund/tracking-comparison/review.
+- Per-source metadata quality signals: `SourcesDiscovery` now carries deterministic per-source quality (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`) derived from collection facts (quote coverage, parse soft-degradation), rendered in the 数据源与缺口声明 appendix and surfaced in both tool values so downstream can downweight (never hard-filter) low-quality sources.
+- Minimal walk-forward stability summary: `fund_research` gains `includeWalkForward` (default false) — a deterministic rolling-window summary (window count, return/Sharpe sign persistence, mean/std) over the NAV series, rendered as 样本外稳定性摘要 with an explicit statistical-description-only disclaimer; an insufficient series is declared a gap.
+
+### Deviations
+
+Documented items intentionally not implemented across these batches:
+
+- (a) **Local SQLite accumulation cache** — the existing storage-domain TTL cache plus the on-disk snapshot fallback already cover reuse without a new dependency.
+- (b) **AKShare second data source** — requires a Python sidecar / external process, which breaks this repository's zero-dependency plugin contract.
+- (c) **Bull/bear debate multi-agent review** — model orchestration contradicts this repository's "computation stays in code" principle; the deterministic `review-note.md` stage is the substitute.
+- (d) **Desktop notifications** — DeepSeek Harness exposes no cross-platform notification seam to depend on directly.
+
 ## [0.1.4] - 2026-08-23
 
 ### Added

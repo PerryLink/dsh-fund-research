@@ -360,6 +360,11 @@ export interface FundSnapshot {
   parameters: ComputationParameters
   /** Gap labels for sections whose sources failed or are disabled, e.g. "holdings". */
   gaps: string[]
+  /**
+   * asOf cutoff date (YYYY-MM-DD) applied to the NAV series; points strictly
+   * after this date are excluded before computation. `undefined` = no cutoff.
+   */
+  asOf?: string | undefined
 }
 
 /** One row of the report's number-traceability table. */
@@ -403,6 +408,8 @@ export interface ReportManifest {
   verifyEngine: string
   /** Gap labels declared in this report. */
   gaps: string[]
+  /** asOf cutoff date (YYYY-MM-DD) the snapshot was truncated to; `undefined` = no cutoff. */
+  asOf?: string | undefined
   /** Plugin version that produced the report. */
   generator: string
 }

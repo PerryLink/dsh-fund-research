@@ -37,6 +37,14 @@
 - **回溯是第一卖点** —— 封存前，每个关键数字都会对照封存的 `snapshot.json` 核查：安装了 [`dsh-data-quality`](https://github.com/topics/dsh-plugin) 时走该服务，否则走内置同构兜底核查（`builtin-fallback`）。附录表记录 数值 ↔ 路径 ↔ 结论。
 - **诚实缺口** —— 数据源失败或降级时，对应章节显式渲染"数据缺口"声明；插件绝不用编造的数字填坑。
 - **离线模式** —— `offline: true`（配置或工具参数）下一切从存储域快照层或最新磁盘版本快照读取，零外呼。适合测试与复现。
+- **asOf 截点** —— `asOfDate`（ISO `YYYY-MM-DD`）把净值序列截断到该日期（含）之前，并在快照与报告中标注截点；非法或未来日期响亮失败。
+- **断点续跑** —— `<reportRoot>/.run-state.json` 记录各阶段（快照/报告）进度、时间戳与输入指纹；`resume: true` 从首个未完成阶段继续，复用封存产物，指纹不匹配则拒绝。
+- **数据源发现记录** —— 每次采集封存代码生成的 `sources-discovery.json`（端点清单、主/回退源、逐源覆盖与缺口、降级原因），并作为"数据源与缺口声明"并入报告附录。
+- **多基金 fan-out** —— `codes` 接受基金代码数组：逐基金独立跑管线、失败隔离（失败项进入汇总缺口），输出汇总卡（code / asOf / seal 哈希 / verdicts / 失败原因）。
+- **追踪账本** —— 每次成功封存向 `<reportRoot>/.tracking.jsonl` 确定性追加一行；`includeComparison: true` 时渲染确定性的"与上次对比"章节（净值区间 / 规模 / 前 N 重仓），无上一期记录则声明缺口。
+- **只读复核** —— 封存后派生 `fund-review` 只读复核 job（缺口声明完整性、数字回溯表一致性、免责声明）并写回 `review-note.md`；无 jobs 服务时优雅跳过（记录于状态文件）。
+- **逐源质量信号** —— 每源携带确定性质量元数据（`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`），呈现在附录并进入工具值，供下游降权（而非硬过滤）低质量源。
+- **样本外稳定性摘要** —— `includeWalkForward: true` 追加"样本外稳定性摘要"章节：确定性滚动窗口的收益/夏普符号持续率与均值/标准差，显式标注仅为统计描述、不构成预测。
 - **会话审计事件** —— `fund-research/snapshot` 与 `fund-research/report` 仅日志事件，携带代码、版本目录、manifest 哈希与缺口清单（模型可见 ⟺ 已记录）。
 - **方法论 skill** —— 内置 `fund-research` skill 教模型指标口径、缺口处理与合规话术；计算始终在代码里。
 
@@ -92,9 +100,14 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 
 | 参数 | 类型 | 说明 |
 |---|---|---|
-| `code`（必填） | string | 六位基金代码，如 `"161725"`。 |
+| `code` | string | 六位基金代码，如 `"161725"`（单基金）。与 `codes` 互斥。 |
+| `codes` | string[] | 多个六位基金代码：逐基金 fan-out、失败隔离（返回汇总）。与 `code` 互斥。 |
 | `sections` | string[] | 渲染章节（`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`），默认全部。 |
 | `offline` | boolean | 只读快照层（无网络），默认取插件配置。 |
+| `asOfDate` | string | ISO 8601 日期（`YYYY-MM-DD`）截点：只采用不晚于该日期的数据（净值序列截断）。空 = 无截点；未来日期响亮失败。 |
+| `resume` | boolean | 从 `.run-state.json` 记录的运行自首个未完成阶段续跑（复用封存产物）；指纹不匹配则拒绝。默认 `false`。 |
+| `includeComparison` | boolean | 针对上一期 `.tracking.jsonl` 记录渲染确定性的"与上次对比"章节；证据缺失声明为缺口。默认 `false`。 |
+| `includeWalkForward` | boolean | 渲染确定性的"样本外稳定性摘要"章节：滚动窗口收益/夏普符号持续率与均值/标准差。仅为统计描述，不构成预测。默认 `false`。 |
 | `background` | boolean | 以 `fund-report` 后台任务运行，返回 `{ kind: "background", jobId }`，默认 `false`。 |
 
 ### `fund_snapshot`
@@ -103,6 +116,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 |---|---|---|
 | `code`（必填） | string | 六位基金代码。 |
 | `offline` | boolean | 只读快照层，默认取插件配置。 |
+| `asOfDate` | string | ISO 8601 日期（`YYYY-MM-DD`）截点：只采用不晚于该日期的数据。空 = 无截点；未来日期响亮失败。 |
 
 ### 报告章节
 

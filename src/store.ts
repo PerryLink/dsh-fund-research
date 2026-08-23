@@ -202,6 +202,7 @@ export const fundSnapshotSchema = z.object({
     calendarDaysPerYear: z.number(),
   }),
   gaps: z.array(z.string()),
+  asOf: z.string().optional(),
 })
 
 /** The stored record: the snapshot plus its acquisition time for TTL reuse. */

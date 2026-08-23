@@ -13,6 +13,7 @@ import path from 'node:path'
 import type { FundSnapshot, ReportManifest, TraceRow } from './model.ts'
 import { sha256Of } from './sources/eastmoney.ts'
 import type { VerifyOutcome } from './verify-bridge.ts'
+import { renderSourcesDiscoverySection, type SourcesDiscovery } from './discovery.ts'
 
 /** All report section ids in default order. */
 export const ALL_SECTIONS = ['overview', 'performance', 'holdings', 'style', 'manager', 'risk', 'disclaimer', 'appendix'] as const
@@ -59,6 +60,7 @@ function buildOverview(snapshot: FundSnapshot): BuiltSection {
     `# ${snapshot.name}（${snapshot.code}）研究报告`,
     '',
     `- 数据截止：净值 ${computed.performance.latestDate}；采集时间 ${ymd(snapshot.fetchedAt)}（asOf 逐源见附录）`,
+    ...(snapshot.asOf === undefined ? [] : [`- asOf 截点：仅采用不晚于 ${snapshot.asOf} 的数据（净值序列已按截点截断）`]),
     `- 最新单位净值：**${computed.performance.latestNav}**（${computed.performance.latestDate}）`,
     `- 近1年收益率（数据源发布口径）：**${raw.returns.year1}%**`,
   ]
@@ -308,9 +310,10 @@ export function buildBody(snapshot: FundSnapshot, sections?: readonly SectionId[
  * @param citations - the citations with verdicts filled in.
  * @param outcome - the verification outcome (engine + verdicts).
  * @param snapshot - the fund snapshot.
+ * @param discovery - the data-source discovery record (appended as 数据源与缺口声明).
  * @returns the appendix markdown.
  */
-export function assembleAppendix(citations: readonly TraceRow[], outcome: VerifyOutcome, snapshot: FundSnapshot): string {
+export function assembleAppendix(citations: readonly TraceRow[], outcome: VerifyOutcome, snapshot: FundSnapshot, discovery?: SourcesDiscovery): string {
   const lines = [
     '## 附录：数字回溯表',
     '',
@@ -331,6 +334,12 @@ export function assembleAppendix(citations: readonly TraceRow[], outcome: Verify
     '口径与复现：snapshot.json 同目录封存（含原始提取数据 raw 与确定性计算 computed 及参数 parameters），任何方可由 raw 重算 computed 逐一对账。',
     `采集时间：${ymd(snapshot.fetchedAt)}；计算参数：riskFreeRate=${snapshot.parameters.riskFreeRate}，tradingDaysPerYear=${snapshot.parameters.tradingDaysPerYear}。`,
   )
+  if (snapshot.asOf !== undefined) {
+    lines.push(`asOf 截点：本报告仅采用不晚于 ${snapshot.asOf} 的数据（净值序列已截断；逐源披露时点见风险声明）。`)
+  }
+  if (discovery !== undefined) {
+    lines.push('', renderSourcesDiscoverySection(discovery))
+  }
   return lines.join('\n')
 }
 
@@ -435,6 +444,7 @@ export async function sealReport(
     reportSha256: sha256Of(markdown),
     verifyEngine: options.outcome.engine,
     gaps: snapshot.gaps,
+    ...(snapshot.asOf === undefined ? {} : { asOf: snapshot.asOf }),
     generator: options.generator,
   }
   const manifestPathAbs = path.join(versionDir, 'manifest.json')
