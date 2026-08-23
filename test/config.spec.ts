@@ -41,8 +41,12 @@ describe('resolveConfig', () => {
   })
 
   it('fails loud on invalid values', () => {
+    expect(() => resolveConfig({ requestIntervalMs: -1 })).toThrow(/requestIntervalMs/u)
+    expect(() => resolveConfig({ requestIntervalMs: 1.5 })).toThrow(/requestIntervalMs/u)
     expect(() => resolveConfig({ timeoutMs: 0 })).toThrow(/timeoutMs/u)
+    expect(() => resolveConfig({ timeoutMs: -100 })).toThrow(/timeoutMs/u)
     expect(() => resolveConfig({ retries: -1 })).toThrow(/retries/u)
+    expect(() => resolveConfig({ retries: 0.5 })).toThrow(/retries/u)
     expect(() => resolveConfig({ riskFreeRate: 1.5 })).toThrow(/riskFreeRate/u)
     expect(() => resolveConfig({ riskFreeRate: -0.1 })).toThrow(/riskFreeRate/u)
     expect(() => resolveConfig({ eastmoneyBaseUrl: 'not-a-url' })).toThrow(/eastmoneyBaseUrl/u)

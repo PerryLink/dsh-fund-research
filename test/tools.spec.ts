@@ -96,6 +96,56 @@ describe('fund_snapshot (offline)', () => {
   })
 })
 
+describe('tool contract (schema + canonical value + content blocks)', () => {
+  it('registers fund_snapshot with a model-facing schema, canonical value, and text content blocks', async () => {
+    const base = await mountOfflinePlugin()
+    const definition = base.ctx.tools.get('fund_snapshot')
+    expect(definition).toBeDefined()
+    const parameters = definition?.parameters as Record<string, unknown>
+    const code = parameters?.properties as Record<string, unknown>
+    expect(code?.code).toBeDefined()
+    expect((code?.code as Record<string, unknown> | undefined)?.type).toBe('string')
+    expect(parameters?.required as string[] | undefined).toContain('code')
+
+    const result = await callTool(base, 'fund_snapshot', { code: FIXTURE_CODE })
+    expect(result.isError).toBe(false)
+    expect((result.value as Record<string, unknown>).code).toBe(FIXTURE_CODE)
+
+    const blocks = result.content
+    expect(Array.isArray(blocks)).toBe(true)
+    expect(blocks.length).toBeGreaterThan(0)
+    expect(blocks[0]?.type).toBe('text')
+    expect((blocks[0] as { text: string }).text).toContain('快照')
+  })
+
+  it('registers fund_research with a sealed canonical value and text content blocks', async () => {
+    const base = await mountOfflinePlugin()
+    const definition = base.ctx.tools.get('fund_research')
+    expect(definition).toBeDefined()
+    const properties = (definition?.parameters as Record<string, unknown>).properties as Record<string, unknown>
+    expect(properties?.code).toBeDefined()
+    expect(properties?.background).toBeDefined()
+
+    const result = await callTool(base, 'fund_research', { code: FIXTURE_CODE })
+    expect(result.isError).toBe(false)
+    expect((result.value as Record<string, unknown>).kind).toBe('sealed')
+
+    const blocks = result.content
+    expect(blocks.length).toBeGreaterThan(0)
+    expect(blocks[0]?.type).toBe('text')
+    expect((blocks[0] as { text: string }).text).toContain('研究报告已封存')
+  })
+
+  it('projects both tools through the model-facing schemas() surface', async () => {
+    const base = await mountOfflinePlugin()
+    const byName = new Map(base.ctx.tools.schemas().map(schema => [schema.name, schema]))
+    expect(byName.get('fund_snapshot')?.description).toContain('snapshot')
+    expect(byName.get('fund_research')?.description).toContain('research')
+    const researchProperties = (byName.get('fund_research')?.parameters as Record<string, unknown>).properties as Record<string, unknown>
+    expect(researchProperties?.background).toBeDefined()
+  })
+})
+
 describe('fund_research (offline)', () => {
   it('seals a versioned report whose traceability table fully verifies', async () => {
     const base = await mountOfflinePlugin()
