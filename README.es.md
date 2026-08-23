@@ -152,7 +152,10 @@ Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJ
 
 ## Contributors
 
-Construido por los contribuidores de dsh-fund-research. Issues y pull requests bienvenidos en el repositorio indicado arriba.
+- **PerryLink** — mantenedor: el pipeline de recopilación/métricas/sellado de informes, la sonda de vida de endpoints, CI y releases, y la documentación en cinco idiomas.
+- **dsh-fund-research contributors** — autoría colectiva de la construcción fundacional (contrato del plugin, esquema de configuración, herramientas, tests, empaquetado).
+
+Sin contribuidores externos aún — 0 PRs/issues de la comunidad fusionados. Abre un issue con los formularios de `.github/ISSUE_TEMPLATE/` o un pull request contra `main` para aparecer aquí.
 
 ## PerryLink DSH Plugin Family
 

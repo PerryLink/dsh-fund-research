@@ -152,7 +152,10 @@ pnpm pack                                     # tarball
 
 ## Contributors
 
-dsh-fund-research योगदानकर्ताओं द्वारा निर्मित। ऊपर दिए गए रिपॉजिटरी में issues और pull requests स्वागत हैं।
+- **PerryLink** — अनुरक्षक: संग्रह/मेट्रिक्स/रिपोर्ट-सील पाइपलाइन, endpoint-जीवंतता जाँच, CI व रिलीज़, और पाँच-भाषा दस्तावेज़।
+- **dsh-fund-research contributors** — आधारभूत निर्माण की सामूहिक लेखक पहचान (प्लगइन अनुबंध, कॉन्फ़िग स्कीमा, टूल्स, टेस्ट, पैकेजिंग)।
+
+अभी कोई बाहरी योगदानकर्ता नहीं — 0 सामुदायिक PRs/issues मर्ज किए गए। यहाँ सूचीबद्ध होने के लिए `.github/ISSUE_TEMPLATE/` के फ़ॉर्म से issue खोलें या `main` पर pull request दें।
 
 ## PerryLink DSH Plugin Family
 

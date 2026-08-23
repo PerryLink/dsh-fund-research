@@ -152,7 +152,10 @@ Os testes usam os seams REAIS `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRe
 
 ## Contributors
 
-Construído pelos contribuidores de dsh-fund-research. Issues e pull requests bem-vindos no repositório acima.
+- **PerryLink** — mantenedor: o pipeline de coleta/métricas/selo de relatórios, a sonda de vivacidade de endpoints, CI e releases, e a documentação em cinco idiomas.
+- **dsh-fund-research contributors** — autoria coletiva da construção fundacional (contrato do plugin, schema de configuração, ferramentas, testes, empacotamento).
+
+Sem contribuidores externos ainda — 0 PRs/issues da comunidade mesclados. Abra um issue pelos formulários em `.github/ISSUE_TEMPLATE/` ou um pull request contra `main` para aparecer aqui.
 
 ## PerryLink DSH Plugin Family
 

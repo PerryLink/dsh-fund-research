@@ -152,7 +152,10 @@ pnpm pack                                     # tarball
 
 ## Contributors
 
-由 dsh-fund-research contributors 构建。欢迎到上方仓库提交 issue 与 pull request。
+- **PerryLink** — 维护者：采集/指标/报告密封管线、端点存活探测、CI 与发布、五语文档。
+- **dsh-fund-research contributors** — 基础构建的集体署名（插件契约、配置 schema、工具、测试、打包）。
+
+暂无外部贡献者——合并的社区 PR/issue 为 0。欢迎通过 `.github/ISSUE_TEMPLATE/` 的表单提 issue，或向 `main` 提交 pull request，即可被列在此处。
 
 ## PerryLink DSH Plugin Family
 

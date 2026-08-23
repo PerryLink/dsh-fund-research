@@ -153,7 +153,10 @@ Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/sto
 
 ## Contributors
 
-Built by the dsh-fund-research contributors. Issues and pull requests welcome at the repository above.
+- **PerryLink** — maintainer: the collector/metrics/report-seal pipeline, the endpoint-liveness probe, CI and releases, and the five-language docs.
+- **dsh-fund-research contributors** — collective author of the foundational build (plugin contract, config schema, tools, tests, packaging).
+
+No external contributors yet — 0 community PRs/issues merged. Open an issue via the forms in `.github/ISSUE_TEMPLATE/` or a pull request against `main` to be listed here.
 
 ## PerryLink DSH Plugin Family
 
