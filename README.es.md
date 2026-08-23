@@ -135,11 +135,12 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # tipos, incl. modo estricto CI
-pnpm test                                     # 113 pruebas sobre seams reales
+pnpm test                                     # 124 pruebas sobre seams reales
 pnpm run test:e2e                              # E2E opcional en red REAL (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + declaraciones tsc
 pnpm run verify:self-contained                # sin specs de dependencias externas
 node scripts/check-readme-sync.mjs            # puerta README en cinco idiomas
+node scripts/check-endpoints.mjs              # sondeo de actividad M3 (4 hosts eastmoney)
 pnpm pack                                     # tarball
 ```
 

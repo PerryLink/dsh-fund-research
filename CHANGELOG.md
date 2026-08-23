@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Real Loader composition suite (C3): `test/composition.spec.ts` + `scripts/loader-runner.mjs` mount the plugin through the real `@deepseek-ai/cordis-plugin-loader` Loader over a cordis.yml (real harness services + the real storage seam + the built `lib/index.js` entry), assert both tools through the authoritative registry, and prove an out-of-bounds `requestIntervalMs` fails loud at load.
+- Tool-contract assertions (U2): compiled JSON-schema projection, canonical value, and rendered content blocks asserted together for both `fund_snapshot` and `fund_research`.
+- Adversarial HTTP fixtures (U5/U6): `PoliteFetcher` fail-closed coverage for 401/404/429 statuses and a timeout-signal hang, plus `collectFund` loud aborts for a malformed 200 core body and a 404 core response.
+- Config negatives (U4): out-of-bounds and non-integer `requestIntervalMs`/`timeoutMs`/`retries` values fail loud.
+- Endpoint liveness (M3): `scripts/check-endpoints.mjs` probes the four public Tiantian Fund / Eastmoney endpoints (401/403/405/5xx = alive; 404/410/DNS/TLS/timeout = fail) and `.github/workflows/check-endpoints.yml` runs it monthly and on demand.
+
 ## [0.1.3] - 2026-08-22
 
 ### Changed

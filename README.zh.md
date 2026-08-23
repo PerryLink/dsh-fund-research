@@ -135,11 +135,12 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # 类型（含 CI 严格档）
-pnpm test                                     # 113 个真实接缝测试
+pnpm test                                     # 124 个真实接缝测试
 pnpm run test:e2e                              # 可选的真网 E2E（LIVE_E2E=1）
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc 声明
 pnpm run verify:self-contained                # 无出仓依赖规格
 node scripts/check-readme-sync.mjs            # 五语 README 门禁
+node scripts/check-endpoints.mjs              # M3 端点存活探测（4 个 eastmoney 主机）
 pnpm pack                                     # tarball
 ```
 

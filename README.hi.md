@@ -135,11 +135,12 @@ dsh plugin --profile web remove dsh-fund-research  # हटाएँ
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # प्रकार, सहित। CI-सख्त
-pnpm test                                     # वास्तविक seams पर 113 परीक्षण
+pnpm test                                     # वास्तविक seams पर 124 परीक्षण
 pnpm run test:e2e                              # वैकल्पिक वास्तविक-नेटवर्क E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc घोषणाएँ
 pnpm run verify:self-contained                # रिपॉजिटरी के बाहर कोई निर्भरता स्पेक नहीं
 node scripts/check-readme-sync.mjs            # पाँच-भाषा README गेट
+node scripts/check-endpoints.mjs              # M3 एंडपॉइंट-लाइवनेस प्रोब (4 eastmoney होस्ट)
 pnpm pack                                     # tarball
 ```
 

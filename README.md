@@ -136,11 +136,12 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # types, incl. CI-strict
-pnpm test                                     # 113 tests over real harness seams
+pnpm test                                     # 124 tests over real harness seams
 pnpm run test:e2e                              # opt-in LIVE-network E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc declarations
 pnpm run verify:self-contained                # no out-of-repo dependency specs
 node scripts/check-readme-sync.mjs            # five-language README gate
+node scripts/check-endpoints.mjs              # M3 endpoint-liveness probe (4 eastmoney hosts)
 pnpm pack                                     # tarball
 ```
 
