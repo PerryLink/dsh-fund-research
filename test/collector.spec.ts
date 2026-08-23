@@ -70,6 +70,25 @@ describe('PoliteFetcher', () => {
     expect(calls).toBe(2)
   })
 
+  it.each([401, 404, 429])('fails closed on an HTTP %i response', async (status) => {
+    let calls = 0
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 },
+      (async () => {
+        calls += 1
+        return { ok: false, status } as never
+      }) as unknown as typeof fetch)
+    await expect(fetcher.fetchText('u', 'r')).rejects.toThrowError(new RegExp(`HTTP ${status}`))
+    expect(calls).toBe(1)
+  })
+
+  it('times out a hanging request through the timeout signal', async () => {
+    const hang = ((_url: string, init?: { signal?: AbortSignal }) => new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener('abort', () => reject(new Error('aborted: timeout')))
+    })) as unknown as typeof fetch
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 20, retries: 0 }, hang)
+    await expect(fetcher.fetchText('u', 'r')).rejects.toThrowError(/aborted: timeout/u)
+  })
+
   it('honours caller cancellation before fetching', async () => {
     const controller = new AbortController()
     controller.abort()
@@ -174,6 +193,30 @@ describe('collectFund', () => {
     expect(collected.sources.managerHistory.ok).toBe(true)
     expect(collected.sources.quotes.ok).toBe(false)
     expect(collected.sources.quotes.error).toContain('partial:')
+  })
+
+  it('aborts loudly when the core block returns a malformed 200 body', async () => {
+    const routes = await fixtureRoutes()
+    routes.splice(
+      routes.findIndex(route => route.match === '/pingzhongdata/'),
+      1,
+      { match: '/pingzhongdata/', body: '<html>upstream error page</html>' },
+    )
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(routes))
+    await expect(collectFund(fetcher, sourceUrls(BASES, FIXTURE_CODE), FIXTURE_CODE, { styleQuotes: true }))
+      .rejects.toThrowError(/fS_name/u)
+  })
+
+  it('aborts loudly when the core block returns HTTP 404', async () => {
+    const routes = await fixtureRoutes()
+    routes.splice(
+      routes.findIndex(route => route.match === '/pingzhongdata/'),
+      1,
+      { match: '/pingzhongdata/', httpStatus: 404 },
+    )
+    const fetcher = new PoliteFetcher({ requestIntervalMs: 0, timeoutMs: 1000, retries: 0 }, stubFetch(routes))
+    await expect(collectFund(fetcher, sourceUrls(BASES, FIXTURE_CODE), FIXTURE_CODE, { styleQuotes: true }))
+      .rejects.toThrowError(/HTTP 404/u)
   })
 
   it('degrades the holdings layer into a declared gap', async () => {
