@@ -1,0 +1,19 @@
+name: Endpoint liveness
+
+on:
+  schedule:
+    - cron: '0 5 1 * *'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Probe declared endpoints
+        run: node scripts/check-endpoints.mjs
+        env:
+          TIMEOUT_MS: '15000'
