@@ -104,7 +104,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 |---|---|---|
 | `code` | string | Six-digit fund code, e.g. `"161725"` (single fund). Mutually exclusive with `codes`. |
 | `codes` | string[] | Multiple six-digit fund codes: a fan-out with per-fund failure isolation (returns a summary). Mutually exclusive with `code`. |
-| `sections` | string[] | Section ids to render (`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`). Default: all. |
+| `sections` | string[] | Section ids to render (`overview`/`performance`/`holdings`/`style`/`manager`/`benchmark`/`risk`/`disclaimer`). Default: all. |
 | `offline` | boolean | Read the snapshot layer only (no network). Default: plugin config. |
 | `asOfDate` | string | ISO 8601 date (`YYYY-MM-DD`) cutoff: only data on or before it is used (NAV series truncated). Empty = no cutoff; future dates fail loudly. |
 | `resume` | boolean | Resume the recorded `.run-state.json` run from the first incomplete stage (reuses sealed artifacts); rejects a fingerprint mismatch. Default: `false`. |
@@ -122,7 +122,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 
 ### Report sections
 
-概览 overview · 业绩拆解 performance decomposition · 持仓穿透 holdings penetration · 风格归因 style attribution (simplified) · 经理画像 manager profile · 风险与缺口声明 risk & gaps · 免责声明 disclaimer · 附录：数字回溯表 traceability appendix.
+概览 overview · 业绩拆解 performance decomposition · 持仓穿透 holdings penetration · 风格归因 style attribution (simplified) · 经理画像 manager profile · 同类/指数基准对比 benchmark & peer comparison · 风险与缺口声明 risk & gaps · 免责声明 disclaimer · 附录：数字回溯表 traceability appendix.
 
 ## Permissions & data
 

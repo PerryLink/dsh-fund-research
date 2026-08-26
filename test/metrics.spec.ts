@@ -11,6 +11,7 @@ import { decomposePerformance, windowMetrics, TRADING_DAYS_PER_YEAR, CALENDAR_DA
 import { holdingsMetrics, UNMAPPED_INDUSTRY } from '../src/metrics/holdings.ts'
 import { sizeBandOf, styleMetrics, valueBandOf, YI_YUAN } from '../src/metrics/style.ts'
 import { managerMetrics } from '../src/metrics/manager.ts'
+import { benchmarkMetrics } from '../src/metrics/benchmark.ts'
 
 const DAY = 86_400_000
 
@@ -256,5 +257,49 @@ describe('managerMetrics', () => {
     const s = { ...summary(), profitValues: [55] }
     const m = managerMetrics(s, null)
     expect(m.profitComparison).toEqual([{ label: '任期收益', valuePct: 55 }, { label: '同类平均', valuePct: 0 }])
+  })
+})
+
+describe('benchmarkMetrics', () => {
+  it('computes excess returns vs peer average and index from the profit comparison', () => {
+    const s: ManagerSummary = {
+      ...summary(),
+      profitCategories: ['任期收益', '同类平均', '沪深300'],
+      profitValues: [56.04, 20, 30],
+    }
+    const history: ManagerHistory = {
+      tenures: [{ start: '2017-09-05', end: null, managers: ['M'], durationText: '8年又350天', returnPct: 56.04 }],
+      managedFunds: [],
+    }
+    const b = benchmarkMetrics(history, managerMetrics(s, history))
+    expect(b.tenureReturnPct).toBe(56.04)
+    expect(b.rows).toEqual([
+      { label: '同类平均', valuePct: 20, fundPct: 56.04, excessPct: 36.04 },
+      { label: '沪深300', valuePct: 30, fundPct: 56.04, excessPct: 26.04 },
+    ])
+  })
+
+  it('aggregates per-fund peer ranks into the peer-rank summary', () => {
+    const history: ManagerHistory = {
+      tenures: [{ start: '2017-09-05', end: null, managers: ['M'], durationText: '8年', returnPct: 10 }],
+      managedFunds: [
+        { code: '000001', name: 'A', fundType: '指数-股票', start: '2020-01-01', end: null, durationText: '1年', returnPct: 10, peerAvgPct: 5, peerRank: 10, peerTotal: 100 },
+        { code: '000002', name: 'B', fundType: '指数-股票', start: '2020-01-01', end: null, durationText: '1年', returnPct: 1, peerAvgPct: 5, peerRank: 90, peerTotal: 100 },
+        { code: '000003', name: 'C', fundType: '指数-股票', start: '2020-01-01', end: null, durationText: '1年', returnPct: 2, peerAvgPct: 5, peerRank: 0, peerTotal: 0 },
+      ],
+    }
+    const b = benchmarkMetrics(history, managerMetrics(summary(), history))
+    expect(b.peerRank).not.toBeNull()
+    expect(b.peerRank!.managedFundCount).toBe(3)
+    expect(b.peerRank!.beatPeerCount).toBe(1)
+    expect(b.peerRank!.avgRank).toBe(50)
+    expect(b.peerRank!.avgTotal).toBe(100)
+  })
+
+  it('keeps the peer-rank summary null when the history source is a gap', () => {
+    const b = benchmarkMetrics(null, managerMetrics(summary(), null))
+    expect(b.tenureReturnPct).toBeNull()
+    expect(b.rows).toEqual([])
+    expect(b.peerRank).toBeNull()
   })
 })

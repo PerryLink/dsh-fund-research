@@ -324,6 +324,40 @@ export interface ManagerMetrics {
   profitComparison: { label: string; valuePct: number }[]
 }
 
+/** One benchmark comparison row (see {@link BenchmarkMetrics}). */
+export interface BenchmarkRow {
+  /** Reference label as published (e.g. 同类平均 / 沪深300). */
+  label: string
+  /** Benchmark return over the same window (%). */
+  valuePct: number
+  /** Fund's return over the same window (%). */
+  fundPct: number
+  /** Excess return (fund − benchmark), in percentage points. */
+  excessPct: number
+}
+
+/** Peer-rank summary over the published managed-funds scoreboard. */
+export interface PeerRankSummary {
+  /** Number of managed-fund rows published. */
+  managedFundCount: number
+  /** Managed funds whose tenure return beat their peer average. */
+  beatPeerCount: number
+  /** Average peer rank (1-based) over funds that publish a rank; `null` when none do. */
+  avgRank: number | null
+  /** Average peer-group size over funds that publish a rank; `null` when none do. */
+  avgTotal: number | null
+}
+
+/** Benchmark/peer comparison: tenure return vs peer average and indexes, plus peer-rank stats. */
+export interface BenchmarkMetrics {
+  /** Fund's tenure return (%), the baseline for every comparison row; `null` when a gap. */
+  tenureReturnPct: number | null
+  /** Comparison rows vs peer average and index benchmarks. */
+  rows: BenchmarkRow[]
+  /** Peer-rank summary; `null` when the manager-history source is a gap. */
+  peerRank: PeerRankSummary | null
+}
+
 /** All deterministic computations over one snapshot. */
 export interface ComputedMetrics {
   performance: PerformanceMetrics
@@ -332,6 +366,8 @@ export interface ComputedMetrics {
   /** `null` when quotes are a gap. */
   style: StyleMetrics | null
   manager: ManagerMetrics
+  /** Benchmark/peer comparison (rows may be empty when sources gap). */
+  benchmark: BenchmarkMetrics
 }
 
 /** Computation parameters recorded for reproduction. */

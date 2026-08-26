@@ -180,6 +180,21 @@ const computedSchema = z.object({
       valuePct: z.number(),
     })),
   }),
+  benchmark: z.object({
+    tenureReturnPct: z.number().nullable(),
+    rows: z.array(z.object({
+      label: z.string(),
+      valuePct: z.number(),
+      fundPct: z.number(),
+      excessPct: z.number(),
+    })),
+    peerRank: z.object({
+      managedFundCount: z.number(),
+      beatPeerCount: z.number(),
+      avgRank: z.number().nullable(),
+      avgTotal: z.number().nullable(),
+    }).nullable(),
+  }),
 })
 
 /** Zod schema for one full {@link FundSnapshot}. */

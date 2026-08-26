@@ -31,7 +31,7 @@
 
 ## What you get
 
-- **`fund_research` 工具** —— 输入基金代码，产出版本化 Markdown 研究报告：概览、业绩拆解、持仓穿透、风格归因（简版）、经理画像、风险与缺口声明、免责声明，以及**数字回溯表附录**——把每个关键数字映射到快照 JSON 路径与核查结论。封存到 `fund-reports/{code}/{YYYYMMDD-HHmmss}/`：`report.md` + `manifest.json` + `snapshot.json`。`background: true` 可作为 `fund-report` 后台任务运行。
+- **`fund_research` 工具** —— 输入基金代码，产出版本化 Markdown 研究报告：概览、业绩拆解、持仓穿透、风格归因（简版）、经理画像、同类/指数基准对比、风险与缺口声明、免责声明，以及**数字回溯表附录**——把每个关键数字映射到快照 JSON 路径与核查结论。封存到 `fund-reports/{code}/{YYYYMMDD-HHmmss}/`：`report.md` + `manifest.json` + `snapshot.json`。`background: true` 可作为 `fund-report` 后台任务运行。
 - **`fund_snapshot` 工具** —— 轻量快照卡（最新净值、发布口径阶段收益、规模、经理、前三大重仓），封存进该基金当日目录。
 - **确定性指标，零模型心算** —— 区间/年化收益、波动率、最大回撤、Sharpe；前 N 大集中度、HHI、行业分布、重仓环比；规模-估值风格分档；经理任期与同类对比。全部是作用于封存快照的纯函数。
 - **回溯是第一卖点** —— 封存前，每个关键数字都会对照封存的 `snapshot.json` 核查：安装了 [`dsh-data-quality`](https://github.com/topics/dsh-plugin) 时走该服务，否则走内置同构兜底核查（`builtin-fallback`）。附录表记录 数值 ↔ 路径 ↔ 结论。
@@ -102,7 +102,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 |---|---|---|
 | `code` | string | 六位基金代码，如 `"161725"`（单基金）。与 `codes` 互斥。 |
 | `codes` | string[] | 多个六位基金代码：逐基金 fan-out、失败隔离（返回汇总）。与 `code` 互斥。 |
-| `sections` | string[] | 渲染章节（`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`），默认全部。 |
+| `sections` | string[] | 渲染章节（`overview`/`performance`/`holdings`/`style`/`manager`/`benchmark`/`risk`/`disclaimer`），默认全部。 |
 | `offline` | boolean | 只读快照层（无网络），默认取插件配置。 |
 | `asOfDate` | string | ISO 8601 日期（`YYYY-MM-DD`）截点：只采用不晚于该日期的数据（净值序列截断）。空 = 无截点；未来日期响亮失败。 |
 | `resume` | boolean | 从 `.run-state.json` 记录的运行自首个未完成阶段续跑（复用封存产物）；指纹不匹配则拒绝。默认 `false`。 |
@@ -120,7 +120,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 
 ### 报告章节
 
-概览 · 业绩拆解 · 持仓穿透 · 风格归因（简版） · 经理画像 · 风险与缺口声明 · 免责声明 · 附录：数字回溯表。
+概览 · 业绩拆解 · 持仓穿透 · 风格归因（简版） · 经理画像 · 同类/指数基准对比 · 风险与缺口声明 · 免责声明 · 附录：数字回溯表。
 
 ## Permissions & data
 

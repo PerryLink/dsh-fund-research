@@ -19,6 +19,7 @@ import { CALENDAR_DAYS_PER_YEAR, decomposePerformance, TRADING_DAYS_PER_YEAR, da
 import { holdingsMetrics } from '../metrics/holdings.ts'
 import { styleMetrics } from '../metrics/style.ts'
 import { managerMetrics } from '../metrics/manager.ts'
+import { benchmarkMetrics } from '../metrics/benchmark.ts'
 import { PoliteFetcher, collectFund, secidOf, sourceUrls, SourceParseError } from './eastmoney.ts'
 import { buildSourcesDiscovery, type QuoteDiscoveryFacts, type SourcesDiscovery } from '../discovery.ts'
 
@@ -51,6 +52,7 @@ export function computeMetrics(raw: FundSnapshot['raw'], riskFreeRate: number): 
   const windows = decomposePerformance(raw.navTrend, riskFreeRate)
   const latest = raw.navTrend[raw.navTrend.length - 1]
   if (latest === undefined) throw new SourceParseError('snapshot', 'navTrend', 'empty NAV series')
+  const manager = managerMetrics(raw.manager, raw.managerHistory)
   return {
     performance: {
       latestNav: latest.nav,
@@ -61,7 +63,8 @@ export function computeMetrics(raw: FundSnapshot['raw'], riskFreeRate: number): 
     style: raw.holdings === null || raw.quotes === null
       ? null
       : styleMetrics(raw.holdings.rows, raw.quotes, secidOf),
-    manager: managerMetrics(raw.manager, raw.managerHistory),
+    manager,
+    benchmark: benchmarkMetrics(raw.managerHistory, manager),
   }
 }
 

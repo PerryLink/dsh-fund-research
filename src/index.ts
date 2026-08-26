@@ -63,6 +63,7 @@ export { windowMetrics, decomposePerformance, dateOf, round4, TRADING_DAYS_PER_Y
 export { holdingsMetrics, BUILTIN_INDUSTRY_MAP, UNMAPPED_INDUSTRY } from './metrics/holdings.ts'
 export { styleMetrics, sizeBandOf, valueBandOf, SIZE_BANDS, VALUE_BANDS, YI_YUAN } from './metrics/style.ts'
 export { managerMetrics } from './metrics/manager.ts'
+export { benchmarkMetrics } from './metrics/benchmark.ts'
 export { buildBody, assembleAppendix, sealSnapshot, sealReport, versionStamp, ALL_SECTIONS, DISCLAIMER } from './report.ts'
 export type { SectionId, BuiltSection, ReportBody, SealOptions, SealResult } from './report.ts'
 export { builtinVerifyCitations, verifyCitations, resolvePath } from './verify-bridge.ts'

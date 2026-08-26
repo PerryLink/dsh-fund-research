@@ -16,7 +16,7 @@ import type { VerifyOutcome } from './verify-bridge.ts'
 import { renderSourcesDiscoverySection, type SourcesDiscovery } from './discovery.ts'
 
 /** All report section ids in default order. */
-export const ALL_SECTIONS = ['overview', 'performance', 'holdings', 'style', 'manager', 'risk', 'disclaimer', 'appendix'] as const
+export const ALL_SECTIONS = ['overview', 'performance', 'holdings', 'style', 'manager', 'benchmark', 'risk', 'disclaimer', 'appendix'] as const
 
 /** A report section id. */
 export type SectionId = (typeof ALL_SECTIONS)[number]
@@ -237,6 +237,53 @@ function buildManager(snapshot: FundSnapshot): BuiltSection {
   return { id: 'manager', markdown: lines.join('\n'), traces }
 }
 
+/** Build the 同类/指数基准对比 section (gap-aware). */
+function buildBenchmark(snapshot: FundSnapshot): BuiltSection {
+  const benchmark = snapshot.computed.benchmark
+  const traces: TraceRow[] = []
+  if (benchmark.rows.length === 0 && benchmark.peerRank === null) {
+    return {
+      id: 'benchmark',
+      markdown: '## 同类/指数基准对比\n\n**数据缺口**：本次采集未取得可用的同类平均/指数基准或经理在管基金排行（来源基金详情与 F10 经理页），本版不产出基准对比，不编造。',
+      traces,
+    }
+  }
+  const lines = ['## 同类/指数基准对比', '']
+  if (benchmark.tenureReturnPct === null) {
+    lines.push('**数据缺口**：本基金任职沿革数据源本次不可用，任职区间基准对比不编造。')
+  } else if (benchmark.rows.length > 0) {
+    lines.push(
+      `本基金任职回报 **${pct(benchmark.tenureReturnPct)}**（数据源发布口径）与同类/指数基准对比如下：`,
+      '',
+      '| 基准 | 基准回报 | 本基金回报 | 超额（百分点） |',
+      '|---|---|---|---|',
+    )
+    benchmark.rows.forEach((row, index) => {
+      lines.push(`| ${row.label} | ${pct(row.valuePct)} | ${pct(row.fundPct)} | ${row.excessPct >= 0 ? '+' : ''}${row.excessPct.toFixed(2)} |`)
+      traces.push(
+        trace(`benchmark.rows[${index}].valuePct`, `基准回报·${row.label}`, row.valuePct, `computed.benchmark.rows[${index}].valuePct`),
+        trace(`benchmark.rows[${index}].excessPct`, `超额收益·${row.label}`, row.excessPct, `computed.benchmark.rows[${index}].excessPct`),
+      )
+    })
+  }
+  if (benchmark.peerRank !== null) {
+    lines.push(
+      '',
+      `- 同类排名（经理在管基金，按只由数据源给出）：在管 ${benchmark.peerRank.managedFundCount} 只，其中 ${benchmark.peerRank.beatPeerCount} 只任期回报跑赢同类平均。`,
+      benchmark.peerRank.avgRank === null
+        ? '- 有排名的同类排名与同类规模：数据源未给出可用的按只排名。'
+        : `- 平均同类排名：**${benchmark.peerRank.avgRank}** / 平均同类规模 **${benchmark.peerRank.avgTotal}** 只（有排名的基金口径）。`,
+    )
+    traces.push(
+      trace('benchmark.peerRank.beatPeerCount', '跑赢同类平均只数', benchmark.peerRank.beatPeerCount, 'computed.benchmark.peerRank.beatPeerCount'),
+    )
+    if (benchmark.peerRank.avgRank !== null) {
+      traces.push(trace('benchmark.peerRank.avgRank', '平均同类排名', benchmark.peerRank.avgRank, 'computed.benchmark.peerRank.avgRank'))
+    }
+  }
+  return { id: 'benchmark', markdown: lines.join('\n'), traces }
+}
+
 /** Build the 风险与缺口声明 section. */
 function buildRisk(snapshot: FundSnapshot): BuiltSection {
   const gapLines = snapshot.gaps.length === 0
@@ -270,6 +317,7 @@ const SECTION_BUILDERS: Record<Exclude<SectionId, 'appendix'>, (snapshot: FundSn
   holdings: buildHoldings,
   style: buildStyle,
   manager: buildManager,
+  benchmark: buildBenchmark,
   risk: buildRisk,
   disclaimer: buildDisclaimer,
 }
