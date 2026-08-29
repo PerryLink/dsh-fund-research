@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📊 dsh-fund-research
+- **1024 स्टोर चैनल**: एक बार `npm i -g dsh1024`, फिर `dsh1024 plugin --profile web add dsh-fund-research` ([deepseek1024.com](https://deepseek1024.com) इंस्टॉल रैंकिंग में गिना जाता है)।
 
 **DeepSeek Harness पर चीनी सार्वजनिक म्यूचुअल फंडों के लिए नियतिवादी शोध रिपोर्ट।**
 

@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📊 dsh-fund-research
+- **Canal 1024 store**: `npm i -g dsh1024` una vez, luego `dsh1024 plugin --profile web add dsh-fund-research` (cuenta para el ranking de instalaciones de [deepseek1024.com](https://deepseek1024.com)).
 
 **Informes de investigación deterministas para fondos mutuos públicos chinos, sobre DeepSeek Harness.**
 

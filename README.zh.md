@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📊 dsh-fund-research
+- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-fund-research`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）。
 
 **DeepSeek Harness 上的中国公募基金确定性研究报告插件。**
 

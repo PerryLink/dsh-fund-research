@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📊 dsh-fund-research
+- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-fund-research` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-fund-research)
 
 **Deterministic research reports for Chinese public mutual funds, on DeepSeek Harness.**
