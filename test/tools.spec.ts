@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { Context } from '@deepseek-ai/cordis'
-import { CallId } from '@deepseek-ai/dsh-llm'
+import { CallId } from './call-id.ts'
 import { JobId } from '@deepseek-ai/dsh-jobs'
 import type { ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -84,9 +84,9 @@ describe('fund_snapshot (offline)', () => {
     expect(card).toContain('快照卡')
     expect(card).toContain('不构成投资建议')
 
-    // The session audit event was appended.
+    // rc.2-shaped host: no append envelope → the adaptive gate skips the audit append.
     const events = base.session.events.filter(event => event.type === 'fund-research/snapshot')
-    expect(events.length).toBe(1)
+    expect(events).toHaveLength(0)
   })
 
   it('rejects a malformed fund code loudly', async () => {
@@ -174,10 +174,10 @@ describe('fund_research (offline)', () => {
     const sealed = JSON.parse(await readFile(snapshotAbs, 'utf8')) as Record<string, unknown>
     expect(sealed.schema).toBe('dsh-fund-research/snapshot@v1')
 
-    // Both audit events landed in the session log.
+    // rc.2-shaped host: no append envelope → the adaptive gate skips both audit appends.
     const types = base.session.events.map(event => event.type)
-    expect(types).toContain('fund-research/snapshot')
-    expect(types).toContain('fund-research/report')
+    expect(types).not.toContain('fund-research/snapshot')
+    expect(types).not.toContain('fund-research/report')
   })
 
   it('tallies mixed verdicts from the dsh-data-quality service and tags its engine', async () => {

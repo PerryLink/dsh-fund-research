@@ -6,7 +6,7 @@
  * @module dsh-fund-research/test/multi.spec
  */
 
-import { CallId } from '@deepseek-ai/dsh-llm'
+import { CallId } from './call-id.ts'
 import type { ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 import { afterEach, describe, expect, it } from 'vitest'
 import { mountBase, unmountBase, type BaseHarness } from './harness.ts'

@@ -18,7 +18,7 @@ import type { FundSnapshot, ReportManifest } from '../model.ts'
 import { acquireSnapshot, parseAsOfDate, type SnapshotStore } from '../sources/snapshot.ts'
 import { buildBody, assembleAppendix, sealReport, sealSnapshot, versionStamp, type SectionId, type SealResult } from '../report.ts'
 import { builtinVerifyCitations, verifyCitations, type VerifyOutcome } from '../verify-bridge.ts'
-import { REPORT_EVENT, SNAPSHOT_EVENT } from '../events.ts'
+import { appendAuditEvent, REPORT_EVENT, SNAPSHOT_EVENT } from '../events.ts'
 import { buildSourcesDiscovery, type SourcesDiscovery } from '../discovery.ts'
 import { renderWalkForwardSection, walkForwardSummary } from '../walkforward.ts'
 import { fundSnapshotSchema } from '../store.ts'
@@ -56,12 +56,12 @@ export function reportRootOf(config: ResolvedConfig, workspace: string): string 
   return path.isAbsolute(config.reportRoot) ? path.resolve(config.reportRoot) : path.resolve(workspace, config.reportRoot)
 }
 
-/** Append one audit event; a failed append never changes the tool outcome. */
+/** Append one audit event through the adaptive gate; a failed append never changes the tool outcome. */
 export function audit(agent: Agent | undefined, type: typeof REPORT_EVENT | typeof SNAPSHOT_EVENT, event: Record<string, unknown>): void {
   const session = agent?.session as Session | undefined
   if (session === undefined) return
   try {
-    session.append(type, event as never)
+    appendAuditEvent(session, type, event as never)
   } catch {
     // The tool result still logs the model-visible content.
   }

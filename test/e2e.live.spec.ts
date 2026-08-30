@@ -13,7 +13,7 @@
 
 import { cp, mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { CallId } from '@deepseek-ai/dsh-llm'
+import { CallId } from './call-id.ts'
 import { afterEach, describe, expect, it } from 'vitest'
 import { mountBase, unmountBase, type BaseHarness } from './harness.ts'
 import { parsePingzhongdata } from '../src/sources/eastmoney.ts'

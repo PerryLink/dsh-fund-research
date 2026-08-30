@@ -6,7 +6,7 @@
  * @module dsh-fund-research/test/quality.spec
  */
 
-import { CallId } from '@deepseek-ai/dsh-llm'
+import { CallId } from './call-id.ts'
 import { afterEach, describe, expect, it } from 'vitest'
 import { buildSourcesDiscovery, renderSourcesDiscoverySection, sourceQualityOf } from '../src/discovery.ts'
 import { buildFixtureSnapshot, FIXTURE_CODE, loadFixtures } from './fixtures.ts'

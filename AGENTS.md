@@ -24,7 +24,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-fund-research`). Development
 - **Gaps are declared, never filled.** A failed/degradable source adds a gap label; the section renders an explicit 数据缺口 declaration. No invented numbers.
 - **Research only.** Every tool description and report carries 仅供研究、不构成投资建议; no trading, no predictions, no target prices.
 - **No tunables hardcoded.** Base URLs, pacing, timeout, retries, TTL, risk-free rate, offline, report root are all validated `Config` fields (cordis.patch.yml comments + the five-language README table).
-- **Session events are log-only audit.** `fund-research/snapshot` / `fund-research/report` append two-argument (the rc.2 peers have no `ignorable` envelope option): a build without this plugin refuses those logs on restore — the same accepted trade-off as dsh-defend/dsh-library. A failed append never changes a tool outcome.
+- **Session events are log-only audit.** `fund-research/snapshot` / `fund-research/report` ride the adaptive gate in `src/events.ts`: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (`0.1.0-rc.6`–`0.1.0-rc.8`, `0.1.1-rc.2`, and `0.1.2-alpha.1`, which removed the envelope and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail. A failed append never changes a tool outcome.
 - **This plugin registers no waterfall listeners.** If one is ever added, allow/passthrough MUST call `next()`.
 - **Cordis identity.** `@deepseek-ai/cordis` stays a peerDependency (+dev); scoped/unscoped mixing splits the identity.
 

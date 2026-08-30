@@ -128,7 +128,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 - **读取**天天基金 / 东方财富公开端点（`fund.eastmoney.com/pingzhongdata/*.js`、`fundf10.eastmoney.com` F10 页面、`push2.eastmoney.com` 行情），带浏览器 UA 与可配置的礼貌间隔。免 key、免登录、无付费 API、不绕反爬。
 - **只写**会话工作区内配置的报告根目录，以及 `dsh_fund_research` 存储域（每只基金最新快照）。
 - **绝不**执行远程 JavaScript（pingzhongdata 块只扫描不执行）、绝不存取凭据、绝不交易。
-- 会话事件为仅日志审计记录；钉版的 0.1.1-rc.2 peers 没有 `ignorable` 信封，因此由*未安装*本插件的 build 恢复会话时会拒绝这些日志行——与本家族其他研究插件接受的同一折衷。
+- 会话事件为仅日志审计记录，走自适应门：认识该词汇的宿主直接追加，带 `ignorable` 信封的宿主带标记追加，无信封宿主（rc.6–rc.8、`0.1.1-rc.2` 以及移除信封并对未知类型读取即失败的 `0.1.2-alpha.1`）不追加——工具结果与封存产物仍是可重建的审计轨迹。
 
 ## Security boundaries
 

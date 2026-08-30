@@ -128,7 +128,7 @@ Todas as chaves são opcionais (padrões mostrados); valores inválidos falham r
 - **Lê** os endpoints públicos Tiantian Fund / Eastmoney (`fund.eastmoney.com/pingzhongdata/*.js`, páginas F10 de `fundf10.eastmoney.com`, cotações de `push2.eastmoney.com`) com User-Agent de navegador e ritmo cortês configurável. Sem chave, sem login, sem API paga, sem contornar anti-bot.
 - **Escreve** apenas sob a raiz de relatórios configurada dentro do workspace da sessão, mais o storage domain `dsh_fund_research` (último snapshot por fundo).
 - **Nunca** avalia JavaScript remoto (o bloco pingzhongdata é escaneado, nunca executado), nunca armazena credenciais, nunca opera.
-- Eventos de sessão são registros de auditoria somente-log; os peers 0.1.1-rc.2 fixados não oferecem envelope `ignorable`, então uma sessão restaurada por um build *sem* este plugin recusa essas linhas de log — a mesma compensação aceita por outros plugins de pesquisa desta família.
+- Eventos de sessão são registros de auditoria somente-log que cruzam uma porta adaptativa: hosts que conhecem o vocabulário acrescentam diretamente, hosts com o envelope `ignorable` acrescentam com o marcador, e hosts sem envelope (rc.6–rc.8, `0.1.1-rc.2` e `0.1.2-alpha.1`, que removeu o envelope e falha fechado para tipos desconhecidos na leitura) não recebem append — os resultados das ferramentas e os artefatos selados continuam sendo a trilha reconstruível.
 
 ## Security boundaries
 

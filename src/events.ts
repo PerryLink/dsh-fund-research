@@ -1,12 +1,21 @@
 /**
- * Session audit events for `dsh-fund-research` (model-visible ⟺ logged). Both
- * events are log-only records of facts the tool results already carry: the
- * snapshot acquisition (`fund-research/snapshot`) and the sealed report
- * (`fund-research/report`). The append stays two-argument: the pinned
- * 0.1.1-rc.2 peers have no append-envelope option, and the two-argument form
- * typechecks against both rc.2 and newer builds.
+ * Session audit events for `dsh-fund-research` (model-visible ⟺ logged) and
+ * the adaptive append gate. Both events are log-only records of facts the
+ * tool results already carry: the snapshot acquisition
+ * (`fund-research/snapshot`) and the sealed report (`fund-research/report`).
+ *
+ * The gate appends only when the host can carry the events safely:
+ * - hosts whose known-type set covers the vocabulary append plainly;
+ * - hosts with an `ignorable` append option (pre-0.1.2 master builds) append
+ *   with the marker, so builds that do not know the type skip it on restore;
+ * - envelope-less hosts (0.1.0-rc.6/rc.8, 0.1.1-rc.2, and 0.1.2-alpha.1,
+ *   which removed the envelope and fails closed on unknown types at read)
+ *   get no append — the tool results and the sealed snapshot/report remain
+ *   the reconstructable audit trail.
  * @module dsh-fund-research/events
  */
+
+import { KNOWN_SESSION_EVENT_TYPES, type Session } from '@deepseek-ai/dsh-session'
 
 declare module '@deepseek-ai/dsh-session/types' {
   interface SessionEventMap {
@@ -58,3 +67,51 @@ export const SNAPSHOT_EVENT = 'fund-research/snapshot' as const
 
 /** The report audit event type. */
 export const REPORT_EVENT = 'fund-research/report' as const
+
+/** Snapshot audit payload. */
+export interface SnapshotAuditData {
+  code: string
+  name: string
+  fetchedAt: number
+  live: boolean
+  sourceHashes: Record<string, string>
+  gaps: string[]
+}
+
+/** Report audit payload. */
+export interface ReportAuditData {
+  code: string
+  name: string
+  version: string
+  reportPath: string
+  manifestSha256: string
+  reportSha256: string
+  verifyEngine: string
+  gaps: string[]
+}
+
+/** Loose append shape probed at runtime (envelope-less hosts take no options; pre-0.1.2 master builds took `ignorable`). */
+type AppendProbe = (type: string, data: unknown, options?: { ignorable: true }) => unknown
+
+/**
+ * Append one fund-research audit event when the host can carry it safely;
+ * skip silently otherwise (see the module doc for the three host classes).
+ * @param session - the calling session.
+ * @param type - the audit event type.
+ * @param data - the audit payload.
+ */
+export function appendAuditEvent(
+  session: Session,
+  type: typeof SNAPSHOT_EVENT | typeof REPORT_EVENT,
+  data: SnapshotAuditData | ReportAuditData,
+): void {
+  if (KNOWN_SESSION_EVENT_TYPES.has(type)) {
+    if (type === SNAPSHOT_EVENT) session.append(type, data as SnapshotAuditData)
+    else session.append(type, data as ReportAuditData)
+    return
+  }
+  const append = session.append as AppendProbe
+  if (Function.prototype.toString.call(append).includes('ignorable')) {
+    append.call(session, type, data, { ignorable: true })
+  }
+}
