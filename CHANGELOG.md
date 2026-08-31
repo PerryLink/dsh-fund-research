@@ -5,17 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Changed
-
-- Align devDeps pins to the published dsh 0.1.2-alpha.2 line (0.1.1-rc.2 -> 0.1.2-alpha.2); no behavior change to envelope/gating semantics.
-
 ## [0.4.0] - 2026-08-30
 
 ### Changed
 
-- The `fund-research/snapshot` / `fund-research/report` audit appends now ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (`0.1.0-rc.6`鈥揱0.1.0-rc.8`, `0.1.1-rc.2`, and `0.1.2-alpha.1`, which removed the envelope and fails closed on unknown types at read) get no append 鈥?their tool results and sealed artifacts remain the reconstructable audit trail. This prevents polluting session logs with unknown event types on 0.1.2-alpha.1 and later.
+- The `fund-research/snapshot` / `fund-research/report` audit appends now ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (`0.1.0-rc.6`–`0.1.0-rc.8`, `0.1.1-rc.2`, and `0.1.2-alpha.1`, which removed the envelope and fails closed on unknown types at read) get no append — their tool results and sealed artifacts remain the reconstructable audit trail. This prevents polluting session logs with unknown event types on 0.1.2-alpha.1 and later.
 
 ### Fixed
 
@@ -37,22 +31,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - asOf-date cutoff: `fund_research` and `fund_snapshot` accept an optional `asOfDate` (ISO `YYYY-MM-DD`); data strictly after the cutoff is excluded (the NAV series is truncated before computation), the snapshot and report carry the asOf semantics, invalid or future dates fail loudly, and cached-snapshot TTL reuse stays consistent with the cutoff.
 - Checkpoint resume: the `fund-report` pipeline records stage progress (snapshot/report, timestamps, input fingerprint) in `<reportRoot>/.run-state.json`; `resume: true` continues from the first incomplete stage, reusing the sealed artifacts of completed stages, and rejects a fingerprint mismatch loudly.
-- Data-source discovery record: every acquisition seals a code-generated `sources-discovery.json` (endpoint roster, primary/fallback resolution, per-source coverage and gaps, degradation reasons) and folds it into the report appendix as the 鏁版嵁婧愪笌缂哄彛澹版槑 section.
+- Data-source discovery record: every acquisition seals a code-generated `sources-discovery.json` (endpoint roster, primary/fallback resolution, per-source coverage and gaps, degradation reasons) and folds it into the report appendix as the 数据源与缺口声明 section.
 - Multi-fund fan-out: `fund_research` accepts a `codes` array (single `code` stays compatible); each fund runs the pipeline independently with per-fund failure isolation and a summary card (code/asOf/seal hash/verdicts/failure reason), sharing one polite fetcher and the storage-domain cache per call.
-- Long-term tracking ledger: every successful seal appends a deterministic line to `<reportRoot>/.tracking.jsonl` (code/asOf/snapshot+quotes+report hashes/record time + comparison facts); `includeComparison: true` renders a deterministic 涓庝笂娆″姣?section (NAV range/scale/top holdings) with a gap declaration when no prior record exists.
+- Long-term tracking ledger: every successful seal appends a deterministic line to `<reportRoot>/.tracking.jsonl` (code/asOf/snapshot+quotes+report hashes/record time + comparison facts); `includeComparison: true` renders a deterministic 与上次对比 section (NAV range/scale/top holdings) with a gap declaration when no prior record exists.
 - Read-only review stage: after sealing, the pipeline schedules a `fund-review` job (via `ctx.jobs`) that reviews the sealed artifacts (gap-declaration completeness, traceability-table consistency, disclaimer) and writes `review-note.md`; with no jobs service it skips gracefully and records `review: skipped(jobs unavailable)` in run-state.
 - Methodology-skill trigger expansion: the `fund-research` skill description/whenToUse and a new capability section cover asOf/resume/multi-fund/tracking-comparison/review.
-- Per-source metadata quality signals: `SourcesDiscovery` now carries deterministic per-source quality (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`) derived from collection facts (quote coverage, parse soft-degradation), rendered in the 鏁版嵁婧愪笌缂哄彛澹版槑 appendix and surfaced in both tool values so downstream can downweight (never hard-filter) low-quality sources.
-- Minimal walk-forward stability summary: `fund_research` gains `includeWalkForward` (default false) 鈥?a deterministic rolling-window summary (window count, return/Sharpe sign persistence, mean/std) over the NAV series, rendered as 鏍锋湰澶栫ǔ瀹氭€ф憳瑕?with an explicit statistical-description-only disclaimer; an insufficient series is declared a gap.
+- Per-source metadata quality signals: `SourcesDiscovery` now carries deterministic per-source quality (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`) derived from collection facts (quote coverage, parse soft-degradation), rendered in the 数据源与缺口声明 appendix and surfaced in both tool values so downstream can downweight (never hard-filter) low-quality sources.
+- Minimal walk-forward stability summary: `fund_research` gains `includeWalkForward` (default false) — a deterministic rolling-window summary (window count, return/Sharpe sign persistence, mean/std) over the NAV series, rendered as 样本外稳定性摘要 with an explicit statistical-description-only disclaimer; an insufficient series is declared a gap.
 
 ### Deviations
 
 Documented items intentionally not implemented across these batches:
 
-- (a) **Local SQLite accumulation cache** 鈥?the existing storage-domain TTL cache plus the on-disk snapshot fallback already cover reuse without a new dependency.
-- (b) **AKShare second data source** 鈥?requires a Python sidecar / external process, which breaks this repository's zero-dependency plugin contract.
-- (c) **Bull/bear debate multi-agent review** 鈥?model orchestration contradicts this repository's "computation stays in code" principle; the deterministic `review-note.md` stage is the substitute.
-- (d) **Desktop notifications** 鈥?DeepSeek Harness exposes no cross-platform notification seam to depend on directly.
+- (a) **Local SQLite accumulation cache** — the existing storage-domain TTL cache plus the on-disk snapshot fallback already cover reuse without a new dependency.
+- (b) **AKShare second data source** — requires a Python sidecar / external process, which breaks this repository's zero-dependency plugin contract.
+- (c) **Bull/bear debate multi-agent review** — model orchestration contradicts this repository's "computation stays in code" principle; the deterministic `review-note.md` stage is the substitute.
+- (d) **Desktop notifications** — DeepSeek Harness exposes no cross-platform notification seam to depend on directly.
 
 ## [0.1.4] - 2026-08-23
 
@@ -90,7 +84,7 @@ Documented items intentionally not implemented across these batches:
 
 - First release: deterministic research reports for Chinese public mutual funds. Public data collection from Tiantian Fund / Eastmoney endpoints (pingzhongdata JS block, F10 holdings and manager pages, per-stock valuation quotes) with polite pacing, per-source SHA-256 provenance, and loud failure on structural drift.
 - `fund_snapshot` tool: a light snapshot card (latest NAV, published stage returns, scale, manager, top-3 holdings) sealed with its source snapshot into the fund's day directory.
-- `fund_research` tool: the full pipeline (acquire 鈫?compute 鈫?assemble 鈫?verify 鈫?seal) producing a versioned Markdown report (`fund-reports/{code}/{YYYYMMDD-HHmmss}/report.md` + `manifest.json` + `snapshot.json`) whose appendix maps every key number to a snapshot JSON path and a verification verdict. `background: true` runs the pipeline as a `fund-report` background job over `ctx.jobs`.
+- `fund_research` tool: the full pipeline (acquire → compute → assemble → verify → seal) producing a versioned Markdown report (`fund-reports/{code}/{YYYYMMDD-HHmmss}/report.md` + `manifest.json` + `snapshot.json`) whose appendix maps every key number to a snapshot JSON path and a verification verdict. `background: true` runs the pipeline as a `fund-report` background job over `ctx.jobs`.
 - Deterministic metrics as pure functions: performance decomposition (period/annualized return, volatility, max drawdown, Sharpe), holdings penetration (top-N concentration, HHI, industry distribution, quarter-over-quarter comparison), simplified size-value style attribution, and manager profile.
 - Citation verification against the sealed snapshot through the optional `dsh-data-quality` service (`ctx.get('dataQuality')`, never injected) with an isomorphic built-in fallback (`builtin-fallback`).
 - Offline mode (`offline: true` or the `offline` tool argument): the snapshot layer is read from the storage domain or the newest on-disk version snapshot; zero outbound requests.
