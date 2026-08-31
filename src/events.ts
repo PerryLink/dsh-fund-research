@@ -1,5 +1,5 @@
 /**
- * Session audit events for `dsh-fund-research` (model-visible ⟺ logged) and
+ * Session audit events for `dsh-fund-research` (model-visible 鉄?logged) and
  * the adaptive append gate. Both events are log-only records of facts the
  * tool results already carry: the snapshot acquisition
  * (`fund-research/snapshot`) and the sealed report (`fund-research/report`).
@@ -10,8 +10,8 @@
  *   with the marker, so builds that do not know the type skip it on restore;
  * - envelope-less hosts (0.1.0-rc.6/rc.8, 0.1.1-rc.2, and 0.1.2-alpha.1,
  *   which removed the envelope and fails closed on unknown types at read)
- *   get no append — the tool results and the sealed snapshot/report remain
- *   the reconstructable audit trail.
+ *   get no append 鈥?the tool results and the sealed snapshot/report remain
+ *   the reconstructable audit trail. On 0.1.2-alpha.2 the envelope field is restored for stored-log read compatibility only - its Session.append still cannot stamp the marker, so the gate behavior is unchanged.
  * @module dsh-fund-research/events
  */
 
