@@ -85,7 +85,7 @@ describe('fund_snapshot (offline)', () => {
     expect(card).toContain('不构成投资建议')
 
     // rc.2-shaped host: no append envelope → the adaptive gate skips the audit append.
-    const events = base.session.events.filter(event => event.type === 'fund-research/snapshot')
+    const events = base.session.snapshotEvents().filter(event => event.type === 'fund-research/snapshot')
     expect(events).toHaveLength(0)
   })
 
@@ -175,7 +175,7 @@ describe('fund_research (offline)', () => {
     expect(sealed.schema).toBe('dsh-fund-research/snapshot@v1')
 
     // rc.2-shaped host: no append envelope → the adaptive gate skips both audit appends.
-    const types = base.session.events.map(event => event.type)
+    const types = base.session.snapshotEvents().map(event => event.type)
     expect(types).not.toContain('fund-research/snapshot')
     expect(types).not.toContain('fund-research/report')
   })
