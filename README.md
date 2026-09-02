@@ -25,7 +25,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `0.1.2-alpha.3` (peer dependencies pinned) |
+| DeepSeek Harness | `0.1.2-alpha.5` (peer dependencies pinned) |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
@@ -130,8 +130,8 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Reads** the public Tiantian Fund / Eastmoney endpoints (`fund.eastmoney.com/pingzhongdata/*.js`, `fundf10.eastmoney.com` F10 pages, `push2.eastmoney.com` quotes) with a browser User-Agent and configurable polite pacing. No key, no login, no paid API, no anti-crawler circumvention.
 - **Writes** only under the configured report root inside the session workspace, plus the `dsh_fund_research` storage domain (latest snapshot per fund).
 - **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
-- Session events are log-only audit records that ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (rc.6–rc.8, `0.1.1-rc.2`, and `0.1.2-alpha.3`, which removed the envelope and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail.
-0.1.2-alpha.3 (adapted 2026-09-01): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged.
+- Session events are log-only audit records that ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (rc.6–rc.8, `0.1.1-rc.2`, and `0.1.2-alpha.5`, which removed the envelope and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail.
+0.1.2-alpha.5 (adapted 2026-09-02): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged.
 
 ## Security boundaries
 
@@ -162,7 +162,7 @@ node scripts/check-endpoints.mjs              # M3 endpoint-liveness probe (4 ea
 pnpm pack                                     # tarball
 ```
 
-Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.2-alpha.3 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
+Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.2-alpha.5 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
 
 ## Topics
 
@@ -177,7 +177,7 @@ No external contributors yet — 0 community PRs/issues merged. Open an issue vi
 
 ## PerryLink DSH Plugin Family
 
-Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.2-alpha.3 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
+Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.2-alpha.5 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
 
 ## PerryLink DSH Plugin Family
 

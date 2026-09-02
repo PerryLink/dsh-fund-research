@@ -24,7 +24,7 @@
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `0.1.2-alpha.3` (dependencias peer fijadas) |
+| DeepSeek Harness | `0.1.2-alpha.5` (dependencias peer fijadas) |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
@@ -128,8 +128,8 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 - **Lee** los endpoints públicos de Tiantian Fund / Eastmoney (`fund.eastmoney.com/pingzhongdata/*.js`, páginas F10 de `fundf10.eastmoney.com`, cotizaciones de `push2.eastmoney.com`) con User-Agent de navegador y ritmo cortés configurable. Sin clave, sin login, sin API de pago, sin eludir anti-bots.
 - **Escribe** solo bajo la raíz de informes configurada dentro del workspace de la sesión, más el dominio de almacenamiento `dsh_fund_research` (última instantánea por fondo).
 - **Nunca** evalúa JavaScript remoto (el bloque pingzhongdata se escanea, nunca se ejecuta), nunca almacena credenciales, nunca opera.
-- Los eventos de sesión son registros de auditoría solo-registro que cruzan una puerta adaptativa: los hosts que conocen el vocabulario agregan directamente, los hosts con el sobre `ignorable` agregan con el marcador, y los hosts sin sobre (rc.6–rc.8, `0.1.1-rc.2` y `0.1.2-alpha.3`, que eliminó el sobre y falla cerrado ante tipos desconocidos en lectura) no reciben append — los resultados de las herramientas y los artefactos sellados siguen siendo la pista reconstruible.
-0.1.2-alpha.3 (adaptado el 2026-09-01): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia.
+- Los eventos de sesión son registros de auditoría solo-registro que cruzan una puerta adaptativa: los hosts que conocen el vocabulario agregan directamente, los hosts con el sobre `ignorable` agregan con el marcador, y los hosts sin sobre (rc.6–rc.8, `0.1.1-rc.2` y `0.1.2-alpha.5`, que eliminó el sobre y falla cerrado ante tipos desconocidos en lectura) no reciben append — los resultados de las herramientas y los artefactos sellados siguen siendo la pista reconstruible.
+0.1.2-alpha.5 (adaptado el 2026-09-02): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia.
 
 ## Security boundaries
 
@@ -160,7 +160,7 @@ node scripts/check-endpoints.mjs              # sondeo de actividad M3 (4 hosts 
 pnpm pack                                     # tarball
 ```
 
-Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.2-alpha.3; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
+Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.2-alpha.5; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
 
 ## Topics
 
@@ -175,7 +175,7 @@ Sin contribuidores externos aún — 0 PRs/issues de la comunidad fusionados. Ab
 
 ## PerryLink DSH Plugin Family
 
-Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.2-alpha.3 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
+Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.2-alpha.5 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
 
 ## PerryLink DSH Plugin Family
 
