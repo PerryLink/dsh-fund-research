@@ -221,3 +221,7 @@ Este projeto é um dos [33 plugins de DeepSeek Harness](https://github.com/Perry
 [Apache-2.0](LICENSE). Avisos de terceiros: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 **Aviso: este plugin produz apenas artefatos de pesquisa. Nada do que emite constitui aconselhamento de investimento.**
+
+### Instalar a partir do mercado do DSH Desktop
+
+Todos os plugins PerryLink podem ser explorados no mercado integrado do DSH Desktop: **Market → Sources → add source → colar** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ selecionar**. A instalação continua passando pela verificação de identidade npm do mercado e pela sua confirmação.

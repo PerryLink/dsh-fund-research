@@ -221,3 +221,7 @@ PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线�
 [Apache-2.0](LICENSE)。第三方声明：[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 **免责声明：本插件只产出研究制品，其任何输出均不构成投资建议。**
+
+### 从 DSH Desktop 市场安装
+
+所有 PerryLink 插件均可在 DSH Desktop 内置市场中浏览：**市场 → 来源 → 添加来源 → 粘贴** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ 选中**。安装仍需通过市场的 npm 身份校验与你的确认。
