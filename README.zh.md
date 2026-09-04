@@ -73,7 +73,7 @@ dsh plugin --profile web add dsh-fund-research     # 安装（npm 或 tarball）
 dsh plugin --profile web remove dsh-fund-research  # 卸载
 ```
 
-安装后重启 profile 生效（bundle 以重启方式激活）。bundle patch 会组合快照层所需的存储栈（`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`）。
+安装后重启 profile 生效（bundle 以重启方式激活）。官方随附的 profile 通过 dsh-base 组合存储栈（`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`）；bundle patch 只挂载插件行。
 
 ## Configuration
 

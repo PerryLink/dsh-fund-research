@@ -31,10 +31,11 @@ import { VERSION } from './version.ts'
 export const name = 'dsh-fund-research'
 
 /**
- * Hard services: the tool registry and the durable snapshot domain (the bundle
- * patch composes the storage stack). `jobs`, `skills`, `systemPrompt`, and
- * `dataQuality` stay optional `ctx.get` lookups so the plugin still activates
- * in leaner compositions.
+ * Hard services: the tool registry and the durable snapshot domain (shipped
+ * profiles compose the storage stack via `dsh-base`; the bundle patch mounts
+ * only this plugin row). `jobs`, `skills`, `systemPrompt`, and `dataQuality`
+ * stay optional `ctx.get` lookups so the plugin still activates in leaner
+ * compositions.
  */
 export const inject = ['tools', 'storageDomain']
 

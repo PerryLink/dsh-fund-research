@@ -75,7 +75,7 @@ dsh plugin --profile web add dsh-fund-research     # install (npm or tarball)
 dsh plugin --profile web remove dsh-fund-research  # uninstall
 ```
 
-Restart the profile after installing (bundle activation is restart-based). The bundle patch composes the storage stack (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) the snapshot layer needs.
+Restart the profile after installing (bundle activation is restart-based). The shipped profiles compose the storage stack through `dsh-base` (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`); the bundle patch mounts only the plugin row.
 
 ## Configuration
 

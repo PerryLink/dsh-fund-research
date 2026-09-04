@@ -73,7 +73,7 @@ dsh plugin --profile web add dsh-fund-research     # instalar (npm o tarball)
 dsh plugin --profile web remove dsh-fund-research  # desinstalar
 ```
 
-Reinicia el perfil tras instalar (la activación del bundle es por reinicio). El parche del bundle compone la pila de almacenamiento (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) que necesita la capa de instantáneas.
+Reinicia el perfil tras instalar (la activación del bundle es por reinicio). Los perfiles incluidos componen la pila de almacenamiento mediante `dsh-base` (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`); el parche del bundle monta solo la fila del plugin.
 
 ## Configuration
 

@@ -73,7 +73,7 @@ dsh plugin --profile web add dsh-fund-research     # स्थापित क�
 dsh plugin --profile web remove dsh-fund-research  # हटाएँ
 ```
 
-स्थापित करने के बाद प्रोफ़ाइल पुनः आरंभ करें (बंडल सक्रियण restart-आधारित है)। बंडल पैच स्टोरेज स्टैक (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) को रचता है जिसकी स्नैपशॉट परत को आवश्यकता है।
+स्थापित करने के बाद प्रोफ़ाइल पुनः आरंभ करें (बंडल सक्रियण restart-आधारित है)। शिप किए गए प्रोफ़ाइल `dsh-base` के माध्यम से स्टोरेज स्टैक (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) बनाते हैं; बंडल पैच केवल प्लगइन पंक्ति माउंट करता है।
 
 ## Configuration
 

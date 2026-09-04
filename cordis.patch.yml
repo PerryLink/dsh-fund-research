@@ -1,25 +1,13 @@
 # dsh-fund-research bundle patch: mount the mutual-fund research plugin.
 #
-# The storage stack rows come first: the plugin injects `storageDomain` for its
-# snapshot layer, and the shipped `dsh-base` bundle does not compose it — a
-# bare profile would otherwise hang with `pending (waiting for service:
-# storageDomain)`. Every config key below is a Schemastery field of the owning
-# plugin; invalid values fail the profile load loudly. See README.md
+# The plugin injects `storageDomain` for its snapshot layer. The shipped
+# profiles (web/headless/sdk/acp) compose the storage stack (storage +
+# storage-json + storage-domain) through the dsh-base bundle, so this patch
+# mounts only the plugin row. A bare profile without dsh-base must compose the
+# storage stack itself. Every config key below is a Schemastery field of the
+# owning plugin; invalid values fail the profile load loudly. See README.md
 # "Configuration" for the full table.
 - insert:
-    - id: storage
-      name: '@deepseek-ai/dsh-storage'
-
-    - id: storage-json
-      name: '@deepseek-ai/dsh-storage-json'
-      config:
-        root: !!js dshHomePath('storages')
-
-    - id: storage-domain
-      name: '@deepseek-ai/dsh-storage-domain'
-      config:
-        backend: json
-
     - id: dsh-fund-research
       name: dsh-fund-research
       config:
