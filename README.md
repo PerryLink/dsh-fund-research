@@ -130,7 +130,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Reads** the public Tiantian Fund / Eastmoney endpoints (`fund.eastmoney.com/pingzhongdata/*.js`, `fundf10.eastmoney.com` F10 pages, `push2.eastmoney.com` quotes) with a browser User-Agent and configurable polite pacing. No key, no login, no paid API, no anti-crawler circumvention.
 - **Writes** only under the configured report root inside the session workspace, plus the `dsh_fund_research` storage domain (latest snapshot per fund).
 - **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
-- Session events are log-only audit records that ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (rc.6–rc.8, `0.1.1-rc.2`, and `0.1.2-rc.1`, which removed the envelope and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail.
+- Session events are log-only audit records that ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (rc.6–rc.8, `0.1.1-rc.2`, and `0.1.2-rc.1`, which retains the envelope field for stored-log read compatibility only and cannot stamp it, and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail.
 0.1.2-rc.1 (adapted 2026-09-02): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged.
 
 ## Security boundaries
