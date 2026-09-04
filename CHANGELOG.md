@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Align the devDependency pins to the published dsh `0.1.2-rc.1` line, refresh `dshWorkshop.dshVersions` and the five-language README version strings, point the compat workflow probes at `0.1.2-rc.1`, and re-verify the adaptation claims; no behavior change.
+
 ## [0.4.2] - 2026-09-02
 
 ### Changed
