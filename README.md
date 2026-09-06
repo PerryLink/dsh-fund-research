@@ -25,7 +25,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `0.1.2-rc.1` (peer dependencies pinned). Verified 2026-09-06 against the dsh-v0.1.3-alpha.1 master checkout (full gate chain + profile install smoke). |
+| DeepSeek Harness | `dsh-v0.1.3-alpha.1` (peer dependencies pinned). Verified 2026-09-06 against the dsh-v0.1.3-alpha.1 master checkout (full gate chain + profile install smoke). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
