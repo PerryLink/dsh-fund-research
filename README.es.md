@@ -24,7 +24,7 @@
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `0.1.2-rc.1` (dependencias peer fijadas) |
+| DeepSeek Harness | `0.1.2-rc.1` (dependencias peer fijadas). Verificado el 2026-09-06 contra el master checkout dsh-v0.1.3-alpha.1 (cadena completa de gates + smoke de instalación de perfil). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
