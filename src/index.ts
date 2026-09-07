@@ -76,6 +76,8 @@ export type { ResearchValue, BackgroundValue, SummaryValue } from './tools/resea
 export { runResearch, runResearchFanOut, runSnapshotCard, renderSnapshotCard, assertFundCode, workspaceOf, reportRootOf } from './tools/shared.ts'
 export type { ToolDeps, ResearchRun, ResearchOptions, SnapshotCardRun, FundRunSummaryEntry } from './tools/shared.ts'
 
+// Service Definition — the structural contracts of the optional systemPrompt
+// and skills services (local interfaces, never imported).
 /** The structural surface of the optional `ctx.systemPrompt` service (section registration only). */
 interface SystemPromptLike {
   section(section: { name: string, order: number, text: string }): () => void
@@ -126,11 +128,16 @@ export async function apply(ctx: Context, config: Config = {}): Promise<void> {
     generator: `dsh-fund-research@${VERSION}`,
   }
 
+  // Service Provider — registers the fund_snapshot / fund_research tools on
+  // ctx.tools and the bundled methodology skill on ctx.skills below; every
+  // registration is an effect on this fiber.
   ctx.effect(() => ctx.tools.register(buildSnapshotTool(deps)), 'dsh-fund-research: fund_snapshot tool')
   ctx.effect(() => ctx.tools.register(buildResearchTool(deps)), 'dsh-fund-research: fund_research tool')
 
   // Short role-statement prompt section: the compliance stance and when to use
   // the tools. The assembled prompt is logged via request/header events.
+  // Consumer — reads the optional systemPrompt (and skills below) through
+  // ctx.get so the plugin still activates when those services are not mounted.
   const systemPrompt = ctx.get('systemPrompt') as unknown as SystemPromptLike | undefined
   if (systemPrompt !== undefined && typeof systemPrompt.section === 'function') {
     ctx.effect(() => systemPrompt.section({
