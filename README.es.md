@@ -24,7 +24,7 @@
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.3-alpha.1` (dependencias peer fijadas). Verificado el 2026-09-06 contra el master checkout dsh-v0.1.3-alpha.1 (cadena completa de gates + smoke de instalación de perfil). |
+| DeepSeek Harness | `dsh-v0.1.5-alpha.1` (dependencias peer fijadas; la línea `0.1.2-rc.1` sigue soportada). Verificado el 2026-09-09 contra el master checkout dsh-v0.1.5-alpha.1 (cadena completa de gates); el smoke de instalación de perfil corre en el workflow Compat mensual. |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
@@ -46,7 +46,7 @@
 - **Revisión de solo lectura** — tras el sellado, un job `fund-review` revisa los artefactos sellados (completitud de la declaración de huecos, consistencia de la tabla de trazabilidad, descargo) y escribe `review-note.md`; se omite con elegancia (registrado en run-state) cuando no hay servicio de jobs.
 - **Señales de calidad por fuente** — cada fuente lleva metadatos de calidad deterministas (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`), presentados en el apéndice y en los valores de herramienta para que el downstream pueda rebajar (nunca filtrar de forma dura) una fuente de baja calidad.
 - **Resumen de estabilidad walk-forward** — `includeWalkForward: true` añade una sección 样本外稳定性摘要: persistencia de signo de retorno/Sharpe en ventanas deslizantes y media/desviación, etiquetada explícitamente como descripción estadística, no una predicción.
-- **Eventos de auditoría de sesión** — los eventos solo-registro `fund-research/snapshot` y `fund-research/report` llevan el código, el directorio de versión, el hash del manifiesto y la lista de huecos (visible para el modelo ⟺ registrado).
+- **Eventos de auditoría de sesión (según el host)** — los eventos solo-registro `fund-research/snapshot` y `fund-research/report` llevan el código, el directorio de versión, el hash del manifiesto y la lista de huecos (visible para el modelo ⟺ registrado) *cuando el host admite tipos de evento fuera del repositorio*; en hosts `0.1.2-alpha.1`–`0.1.5-alpha.1` el catálogo de tipos conocidos se genera en el build dentro del repositorio, así que la puerta no añade nada y los resultados de las herramientas más los artefactos sellados son la pista de auditoría.
 - **Skill de metodología** — un skill `fund-research` integrado enseña al modelo las definiciones de métricas (口径), el manejo de huecos y el lenguaje de cumplimiento. El cálculo permanece en el código.
 
 ## Quick start
@@ -128,8 +128,8 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 - **Lee** los endpoints públicos de Tiantian Fund / Eastmoney (`fund.eastmoney.com/pingzhongdata/*.js`, páginas F10 de `fundf10.eastmoney.com`, cotizaciones de `push2.eastmoney.com`) con User-Agent de navegador y ritmo cortés configurable. Sin clave, sin login, sin API de pago, sin eludir anti-bots.
 - **Escribe** solo bajo la raíz de informes configurada dentro del workspace de la sesión, más el dominio de almacenamiento `dsh_fund_research` (última instantánea por fondo).
 - **Nunca** evalúa JavaScript remoto (el bloque pingzhongdata se escanea, nunca se ejecuta), nunca almacena credenciales, nunca opera.
-- Los eventos de sesión son registros de auditoría solo-registro que cruzan una puerta adaptativa: los hosts que conocen el vocabulario agregan directamente, los hosts con el sobre `ignorable` agregan con el marcador, y los hosts sin sobre (rc.6–rc.8, `0.1.1-rc.2` y `0.1.2-rc.1`, que conserva el campo del sobre solo para compatibilidad de lectura de logs almacenados y no puede estamparlo, y falla cerrado ante tipos desconocidos en lectura) no reciben append — los resultados de las herramientas y los artefactos sellados siguen siendo la pista reconstruible.
-0.1.2-rc.1 (adaptado el 2026-09-02): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia.
+- Los eventos de sesión son registros de auditoría solo-registro que cruzan una puerta adaptativa en `src/events.ts`: solo se añaden cuando el host admite un tipo fuera del repositorio — su conjunto de tipos conocidos cubre el vocabulario, o su `Session.append` acepta un sobre `ignorable`. Desde `0.1.2-alpha.1` (incluido `0.1.5-alpha.1`) no se cumple ninguna: `KNOWN_SESSION_EVENT_TYPES` es un catálogo generado en el build dentro del repositorio que excluye por construcción los eventos externos, y `Session.append` no tiene opción `ignorable`, así que la puerta no añade nada — los resultados de las herramientas y los artefactos sellados siguen siendo la pista de auditoría reconstruible, y un append fallido nunca cambia el resultado de una herramienta.
+0.1.5-alpha.1 (adaptado el 2026-09-09): puerta re-verificada en la nueva base — el catálogo sigue excluyendo eventos externos y `Session.append` sigue sin poder estampar un sobre `ignorable`, por lo que el comportamiento de la puerta no cambia.
 
 ## Security boundaries
 
@@ -151,7 +151,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # tipos, incl. modo estricto CI
-pnpm test                                     # 124 pruebas sobre seams reales
+pnpm test                                     # 176 pruebas sobre seams reales
 pnpm run test:e2e                              # E2E opcional en red REAL (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + declaraciones tsc
 pnpm run verify:self-contained                # sin specs de dependencias externas
@@ -160,7 +160,7 @@ node scripts/check-endpoints.mjs              # sondeo de actividad M3 (4 hosts 
 pnpm pack                                     # tarball
 ```
 
-Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.2-rc.1; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
+Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.5-alpha.1; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
 
 ## Topics
 
@@ -175,7 +175,7 @@ Sin contribuidores externos aún — 0 PRs/issues de la comunidad fusionados. Ab
 
 ## PerryLink DSH Plugin Family
 
-Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.2-rc.1 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
+Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.5-alpha.1 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
 
 ## PerryLink DSH Plugin Family
 

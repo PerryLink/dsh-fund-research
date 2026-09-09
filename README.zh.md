@@ -24,7 +24,7 @@
 
 | 组件 | 版本 |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.3-alpha.1`（peer 依赖钉版）。已于 2026-09-06 对照 dsh-v0.1.3-alpha.1 master 检出核验（完整门禁链 + profile 安装冒烟）。 |
+| DeepSeek Harness | `dsh-v0.1.5-alpha.1`（peer 依赖钉版；`0.1.2-rc.1` 线仍受支持）。已于 2026-09-09 对照 dsh-v0.1.5-alpha.1 master 检出核验（完整门禁链）；profile 安装冒烟由每月 Compat workflow 覆盖。 |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | 包管理器 | `pnpm@11.7.0` |
 | 平台 | Windows / macOS / Linux（纯宿主插件） |
@@ -46,7 +46,7 @@
 - **只读复核** —— 封存后派生 `fund-review` 只读复核 job（缺口声明完整性、数字回溯表一致性、免责声明）并写回 `review-note.md`；无 jobs 服务时优雅跳过（记录于状态文件）。
 - **逐源质量信号** —— 每源携带确定性质量元数据（`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`），呈现在附录并进入工具值，供下游降权（而非硬过滤）低质量源。
 - **样本外稳定性摘要** —— `includeWalkForward: true` 追加"样本外稳定性摘要"章节：确定性滚动窗口的收益/夏普符号持续率与均值/标准差，显式标注仅为统计描述、不构成预测。
-- **会话审计事件** —— `fund-research/snapshot` 与 `fund-research/report` 仅日志事件，携带代码、版本目录、manifest 哈希与缺口清单（模型可见 ⟺ 已记录）。
+- **会话审计事件（取决于宿主）** —— 宿主允许仓外事件类型时，`fund-research/snapshot` 与 `fund-research/report` 仅日志事件携带代码、版本目录、manifest 哈希与缺口清单（模型可见 ⟺ 已记录）；在 `0.1.2-alpha.1`–`0.1.5-alpha.1` 宿主上，已知类型目录是构建期生成的仓内清单，门控不追加任何事件，工具结果与封存产物即审计轨迹。
 - **方法论 skill** —— 内置 `fund-research` skill 教模型指标口径、缺口处理与合规话术；计算始终在代码里。
 
 ## Quick start
@@ -128,8 +128,8 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 - **读取**天天基金 / 东方财富公开端点（`fund.eastmoney.com/pingzhongdata/*.js`、`fundf10.eastmoney.com` F10 页面、`push2.eastmoney.com` 行情），带浏览器 UA 与可配置的礼貌间隔。免 key、免登录、无付费 API、不绕反爬。
 - **只写**会话工作区内配置的报告根目录，以及 `dsh_fund_research` 存储域（每只基金最新快照）。
 - **绝不**执行远程 JavaScript（pingzhongdata 块只扫描不执行）、绝不存取凭据、绝不交易。
-- 会话事件为仅日志审计记录，走自适应门：认识该词汇的宿主直接追加，带 `ignorable` 信封的宿主带标记追加，无信封宿主（rc.6–rc.8、`0.1.1-rc.2` 以及保留信封字段但仅用于存量日志读取兼容且无法盖章，并对未知类型读取即失败的 `0.1.2-rc.1`）不追加——工具结果与封存产物仍是可重建的审计轨迹。
-0.1.2-rc.1（2026-09-02 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。
+- 会话事件为仅日志审计记录，走 `src/events.ts` 的自适应门：只有宿主允许仓外类型时才追加——其已知类型集合覆盖该词汇，或其 `Session.append` 接受 `ignorable` 信封。自 `0.1.2-alpha.1` 起（含 `0.1.5-alpha.1`）两者均不成立：`KNOWN_SESSION_EVENT_TYPES` 是构建期生成的仓内清单，按构造排除仓外事件；`Session.append` 也没有 `ignorable` 选项，因此门控不追加任何事件——工具结果与封存产物仍是可重建的审计轨迹，且追加失败永不改变工具结果。
+0.1.5-alpha.1（2026-09-09 已适配）：在新基线上复核门控——目录仍排除仓外事件，`Session.append` 仍无法盖 `ignorable` 信封，门控行为不变。
 
 ## Security boundaries
 
@@ -151,7 +151,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # 类型（含 CI 严格档）
-pnpm test                                     # 124 个真实接缝测试
+pnpm test                                     # 176 个真实接缝测试
 pnpm run test:e2e                              # 可选的真网 E2E（LIVE_E2E=1）
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc 声明
 pnpm run verify:self-contained                # 无出仓依赖规格
@@ -160,7 +160,7 @@ node scripts/check-endpoints.mjs              # M3 端点存活探测（4 个 ea
 pnpm pack                                     # tarball
 ```
 
-测试使用来自 0.1.2-rc.1 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
+测试使用来自 0.1.5-alpha.1 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
 
 ## Topics
 
@@ -175,7 +175,7 @@ pnpm pack                                     # tarball
 
 ## PerryLink DSH Plugin Family
 
-PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.2-rc.1 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
+PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.5-alpha.1 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
 
 ## PerryLink DSH Plugin Family
 

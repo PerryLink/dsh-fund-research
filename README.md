@@ -25,7 +25,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.3-alpha.1` (peer dependencies pinned). Verified 2026-09-06 against the dsh-v0.1.3-alpha.1 master checkout (full gate chain + profile install smoke). |
+| DeepSeek Harness | `dsh-v0.1.5-alpha.1` (peer dependencies pinned; the `0.1.2-rc.1` line stays supported). Verified 2026-09-09 against the dsh-v0.1.5-alpha.1 master checkout (full gate chain); the profile install smoke runs in the monthly Compat workflow. |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
@@ -47,7 +47,7 @@
 - **Read-only review** — after sealing, a `fund-review` job reviews the sealed artifacts (gap-declaration completeness, traceability-table consistency, disclaimer) and writes `review-note.md`; it skips gracefully (recorded in run-state) when no jobs service is present.
 - **Per-source quality signals** — every source carries deterministic quality metadata (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`), rendered in the appendix and surfaced in tool values so downstream can downweight (never hard-filter) a low-quality source.
 - **Walk-forward stability summary** — `includeWalkForward: true` adds a 样本外稳定性摘要 section: deterministic rolling-window return/Sharpe sign persistence and mean/std, explicitly labelled as statistical description only, not a prediction.
-- **Session audit events** — `fund-research/snapshot` and `fund-research/report` log-only events carry the code, version directory, manifest hash, and gap list (model-visible ⟺ logged).
+- **Session audit events (host-dependent)** — `fund-research/snapshot` and `fund-research/report` log-only events carry the code, version directory, manifest hash, and gap list (model-visible ⟺ logged) *when the host admits out-of-repo event types*; on `0.1.2-alpha.1`–`0.1.5-alpha.1` hosts the known-type catalog is build-generated in-repo, so the gate appends nothing and the tool results plus sealed artifacts are the audit trail.
 - **Methodology skill** — a bundled `fund-research` skill teaches the model the metric口径 (definitions), gap handling, and compliance wording. Computation stays in code.
 
 ## Quick start
@@ -130,8 +130,8 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Reads** the public Tiantian Fund / Eastmoney endpoints (`fund.eastmoney.com/pingzhongdata/*.js`, `fundf10.eastmoney.com` F10 pages, `push2.eastmoney.com` quotes) with a browser User-Agent and configurable polite pacing. No key, no login, no paid API, no anti-crawler circumvention.
 - **Writes** only under the configured report root inside the session workspace, plus the `dsh_fund_research` storage domain (latest snapshot per fund).
 - **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
-- Session events are log-only audit records that ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts (rc.6–rc.8, `0.1.1-rc.2`, and `0.1.2-rc.1`, which retains the envelope field for stored-log read compatibility only and cannot stamp it, and fails closed on unknown types at read) get no append — the tool results and sealed artifacts remain the reconstructable audit trail.
-0.1.2-rc.1 (adapted 2026-09-02): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged.
+- Session events are log-only audit records that ride an adaptive gate in `src/events.ts`: they append only when the host admits an out-of-repo type — its known-type set covers the vocabulary, or its `Session.append` takes an `ignorable` envelope. From `0.1.2-alpha.1` on (including `0.1.5-alpha.1`) neither holds: `KNOWN_SESSION_EVENT_TYPES` is a build-generated in-repo catalog that excludes out-of-repo events by construction, and `Session.append` has no `ignorable` option, so the gate appends nothing — the tool results and sealed artifacts remain the reconstructable audit trail, and a failed append never changes a tool outcome.
+- 0.1.5-alpha.1 (adapted 2026-09-09): re-verified the gate on the new baseline — the catalog still excludes out-of-repo events and `Session.append` still cannot stamp an `ignorable` envelope, so audit-gate behavior is unchanged.
 
 ## Security boundaries
 
@@ -153,7 +153,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 ```sh
 pnpm install
 pnpm run typecheck && pnpm run typecheck:ci   # types, incl. CI-strict
-pnpm test                                     # 124 tests over real harness seams
+pnpm test                                     # 176 tests over real harness seams
 pnpm run test:e2e                              # opt-in LIVE-network E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc declarations
 pnpm run verify:self-contained                # no out-of-repo dependency specs
@@ -162,7 +162,7 @@ node scripts/check-endpoints.mjs              # M3 endpoint-liveness probe (4 ea
 pnpm pack                                     # tarball
 ```
 
-Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.2-rc.1 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
+Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.5-alpha.1 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
 
 ## Topics
 
@@ -177,7 +177,7 @@ No external contributors yet — 0 community PRs/issues merged. Open an issue vi
 
 ## PerryLink DSH Plugin Family
 
-Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.2-rc.1 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
+Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.5-alpha.1 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
 
 ## PerryLink DSH Plugin Family
 
