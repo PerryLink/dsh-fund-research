@@ -14,7 +14,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import Storage from '@deepseek-ai/dsh-storage'
-import AgentRegistry, { Inbox } from '@deepseek-ai/dsh-agent'
+import AgentRegistry from '@deepseek-ai/dsh-agent'
 import LocalJobRegistry from '@deepseek-ai/dsh-jobs-local'
 import { DomainFacility } from '@deepseek-ai/dsh-storage-domain'
 import ToolRuntime from '@deepseek-ai/dsh-tools'
@@ -37,11 +37,28 @@ export interface BaseHarness {
 
 /** Build a structurally complete fake agent over a real session. */
 function makeAgent(session: Session, scopeCtx: Context): Agent {
+  // 0.1.5-alpha.1 keeps the concrete inbox loop-internal and exposes only the
+  // `Inbox` interface, so the stub is the contract itself (the shape of
+  // `unsupportedInbox()` in the official agent-loop-testkit): empty pending
+  // lists and mutation methods that throw, so a test that ever reaches for an
+  // Inbox mutation fails loudly instead of silently doing nothing.
+  const rejectInboxMutation = (): never => {
+    throw new Error('this test Agent does not support Inbox mutations')
+  }
   const fake = {
     id: session.id,
     options: { provider: 'deepseek', model: 'demo-model' },
     session,
-    inbox: new Inbox(session, { inserted: () => {}, discarded: () => {}, claimed: () => {} }),
+    inbox: {
+      nextTurn: [],
+      nextStep: [],
+      clear: rejectInboxMutation,
+      append: rejectInboxMutation,
+      prepend: rejectInboxMutation,
+      replace: rejectInboxMutation,
+      remove: rejectInboxMutation,
+      splice: rejectInboxMutation,
+    },
     status: 'idle' as const,
     ctx: scopeCtx,
     send: () => undefined,
