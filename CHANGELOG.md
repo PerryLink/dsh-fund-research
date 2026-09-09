@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Adapt the test harness to the 0.1.5 `Inbox` interface: `@deepseek-ai/dsh-agent` no longer exports a constructible `Inbox` class (the concrete inbox is loop-internal since `0.1.5-alpha.1`), so `test/harness.ts` now builds the official agent-loop-testkit stub shape (empty `nextTurn`/`nextStep` plus mutation methods that throw) instead of `new Inbox(session, …)`, and the new `test/harness.spec.ts` pins that contract. This unblocks the 39 failing tests and both typecheck gates; no runtime behavior change.
+
+### Changed
+
+- Pin the verified baseline to dsh `0.1.5-alpha.1`: devDependencies resolve the `0.1.5-alpha.1` peers, the six `@deepseek-ai/dsh-*` peer ranges accept both lines (`>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`), and `dshWorkshop.compatibility.dshVersions` declares both `0.1.2-rc.1` and `0.1.5-alpha.1`.
+- Point the Compat workflow (`dsh` / `dsh-base` / `dsh-headless`) and the CI typecheck step name at the `0.1.5-alpha.1` baseline; source-level support for the `0.1.2-rc.1` line is unchanged.
+- Keep the audit gate in `src/events.ts` as-is and correct its documentation instead: from `0.1.2-alpha.1` on (including `0.1.5-alpha.1`), `KNOWN_SESSION_EVENT_TYPES` is a build-generated in-repo catalog that excludes out-of-repo events and `Session.append` takes no `ignorable` envelope, so both gate branches are unreachable and no session event is appended. Appending unconditionally would make `0.1.5`+ readers refuse the stored log, so the tool results and sealed artifacts stay the audit trail.
+
+### Docs
+
+- Refresh the five-language READMEs and `AGENTS.md`: the compatibility row now names `dsh-v0.1.5-alpha.1` (verified 2026-09-09, with the profile smoke left to the monthly Compat workflow), the harness-peer wording points at the `0.1.5-alpha.1` devDeps, the test count reflects the current suite (176), and the session-audit wording states the host-dependent behavior above.
+
 ## [0.4.7] - 2026-09-08
 
 ### Docs
