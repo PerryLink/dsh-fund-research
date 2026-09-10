@@ -25,7 +25,7 @@
 
 | Componente | Versão |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.5-alpha.1` (peer dependencies fixadas; a linha `0.1.2-rc.1` continua suportada). Verificado em 2026-09-09 contra o checkout master dsh-v0.1.5-alpha.1 (cadeia completa de gates); o smoke de instalação de perfil roda no workflow Compat mensal. |
+| DeepSeek Harness | `dsh-v0.1.5-rc.1` (peer dependencies fixadas; a linha `0.1.2-rc.1` continua suportada). Verificado em 2026-09-10 contra o checkout master dsh-v0.1.5-rc.1 (cadeia completa de gates); o smoke de instalação de perfil roda no workflow Compat mensal. |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gerenciador de pacotes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin somente host) |
@@ -131,6 +131,7 @@ Todas as chaves são opcionais (padrões mostrados); valores inválidos falham r
 - **Nunca** avalia JavaScript remoto (o bloco pingzhongdata é escaneado, nunca executado), nunca armazena credenciais, nunca opera.
 - Eventos de sessão são registros de auditoria somente-log que cruzam uma porta adaptativa em `src/events.ts`: só acrescentam quando o host admite um tipo fora do repositório — seu conjunto de tipos conhecidos cobre o vocabulário, ou seu `Session.append` aceita um envelope `ignorable`. De `0.1.2-alpha.1` em diante (incluindo `0.1.5-alpha.1`) nenhum dos dois vale: `KNOWN_SESSION_EVENT_TYPES` é um catálogo gerado no build dentro do repositório que exclui por construção os eventos externos, e `Session.append` não tem opção `ignorable`, então a porta não acrescenta nada — os resultados das ferramentas e os artefatos selados continuam sendo a trilha reconstruível, e um append falho nunca muda o resultado de uma ferramenta.
 0.1.5-alpha.1 (adaptado em 2026-09-09): porta re-verificada na nova base — o catálogo ainda exclui eventos externos e `Session.append` ainda não consegue estampar um envelope `ignorable`, então o comportamento da porta não muda.
+0.1.5-rc.1 (adaptado em 2026-09-10): os pins de dependências passam para a linha publicada 0.1.5-rc.1; nenhuma mudança de seam afeta o comportamento deste plugin.
 
 ## Security boundaries
 
@@ -161,7 +162,7 @@ node scripts/check-endpoints.mjs              # sonda de atividade M3 (4 hosts e
 pnpm pack                                     # tarball
 ```
 
-Os testes usam os seams REAIS `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage dos peers 0.1.5-alpha.1; a rede é substituída apenas na fronteira de fetch por fixtures de respostas reais salvas (`fixtures/`, fundo 161725). Atualize os fixtures com os scripts de `.tmp/`.
+Os testes usam os seams REAIS `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage dos peers 0.1.5-rc.1; a rede é substituída apenas na fronteira de fetch por fixtures de respostas reais salvas (`fixtures/`, fundo 161725). Atualize os fixtures com os scripts de `.tmp/`.
 
 ## Topics
 
@@ -176,7 +177,7 @@ Sem contribuidores externos ainda — 0 PRs/issues da comunidade mesclados. Abra
 
 ## PerryLink DSH Plugin Family
 
-Parte de uma família de plugins independentes do DeepSeek Harness compartilhando uma mesma base de engenharia: peers 0.1.5-alpha.1 fixados, config Schemastery com falha ruidosa, READMEs em cinco idiomas e cobertura vitest sobre seams reais.
+Parte de uma família de plugins independentes do DeepSeek Harness compartilhando uma mesma base de engenharia: peers 0.1.5-rc.1 fixados, config Schemastery com falha ruidosa, READMEs em cinco idiomas e cobertura vitest sobre seams reais.
 
 ## PerryLink DSH Plugin Family
 

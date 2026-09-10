@@ -26,7 +26,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.5-alpha.1` (peer dependencies pinned; the `0.1.2-rc.1` line stays supported). Verified 2026-09-09 against the dsh-v0.1.5-alpha.1 master checkout (full gate chain); the profile install smoke runs in the monthly Compat workflow. |
+| DeepSeek Harness | `dsh-v0.1.5-rc.1` (peer dependencies pinned; the `0.1.2-rc.1` line stays supported). Verified 2026-09-10 against the dsh-v0.1.5-rc.1 master checkout (full gate chain); the profile install smoke runs in the monthly Compat workflow. |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
@@ -133,6 +133,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
 - Session events are log-only audit records that ride an adaptive gate in `src/events.ts`: they append only when the host admits an out-of-repo type — its known-type set covers the vocabulary, or its `Session.append` takes an `ignorable` envelope. From `0.1.2-alpha.1` on (including `0.1.5-alpha.1`) neither holds: `KNOWN_SESSION_EVENT_TYPES` is a build-generated in-repo catalog that excludes out-of-repo events by construction, and `Session.append` has no `ignorable` option, so the gate appends nothing — the tool results and sealed artifacts remain the reconstructable audit trail, and a failed append never changes a tool outcome.
 - 0.1.5-alpha.1 (adapted 2026-09-09): re-verified the gate on the new baseline — the catalog still excludes out-of-repo events and `Session.append` still cannot stamp an `ignorable` envelope, so audit-gate behavior is unchanged.
+- 0.1.5-rc.1 (adapted 2026-09-10): dependency pins move to the published 0.1.5-rc.1 line; no seam change affects this plugin's behavior.
 
 ## Security boundaries
 
@@ -163,7 +164,7 @@ node scripts/check-endpoints.mjs              # M3 endpoint-liveness probe (4 ea
 pnpm pack                                     # tarball
 ```
 
-Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.5-alpha.1 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
+Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.5-rc.1 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
 
 ## Topics
 
@@ -178,7 +179,7 @@ No external contributors yet — 0 community PRs/issues merged. Open an issue vi
 
 ## PerryLink DSH Plugin Family
 
-Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.5-alpha.1 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
+Part of a family of standalone DeepSeek Harness plugins sharing one engineering baseline: pinned 0.1.5-rc.1 peers, fail-loud Schemastery config, five-language READMEs, and real-seam vitest coverage.
 
 ## PerryLink DSH Plugin Family
 

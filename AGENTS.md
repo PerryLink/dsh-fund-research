@@ -15,7 +15,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-fund-research`). Development
 - `src/tools/*.ts` — `fund_snapshot`, `fund_research` (+ the `fund-report` background-job producer), and the shared pipeline (`shared.ts`).
 - `skills/fund-research/SKILL.md` — the methodology skill (口径定义、缺口处理、合规话术); computation stays in code.
 - `scripts/` — `prepare.mjs` (build), `fix-dts.mjs`, `verify-self-contained.mjs`, `verify-artifacts.mjs`, `check-readme-sync.mjs` (five-language gate), `release.mjs` (bump + stamp + gate + commit + tag, never pushes), `changelog-section.mjs`.
-- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`ToolRuntime`/`LocalJobRegistry` and the REAL storage seam over an in-memory backend from the 0.1.5-alpha.1 peers. The network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`). `test/e2e.live.spec.ts` is an opt-in REAL-network E2E (`LIVE_E2E=1 pnpm run test:e2e`) that seals a report for 161725 and spot-checks five numbers against the snapshot and a second independent fetch.
+- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`ToolRuntime`/`LocalJobRegistry` and the REAL storage seam over an in-memory backend from the 0.1.5-rc.1 peers. The network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`). `test/e2e.live.spec.ts` is an opt-in REAL-network E2E (`LIVE_E2E=1 pnpm run test:e2e`) that seals a report for 161725 and spot-checks five numbers against the snapshot and a second independent fetch.
 - `fixtures/` — real collected payloads for fund 161725 (pingzhongdata block, F10 holdings/manager pages, per-stock quotes). `.tmp/` collector scripts refresh them.
 
 ## Hard rules applied here
@@ -32,7 +32,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-fund-research`). Development
 
 `pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run verify:artifacts && node scripts/check-readme-sync.mjs && pnpm pack`
 
-- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.5-alpha.1 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
+- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.5-rc.1 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 - oxlint discovers files only after `git init` (the parent checkout's `.oxlintrc.json` otherwise matches nothing here).
 
 ## Release

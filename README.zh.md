@@ -25,7 +25,7 @@
 
 | 组件 | 版本 |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.5-alpha.1`（peer 依赖钉版；`0.1.2-rc.1` 线仍受支持）。已于 2026-09-09 对照 dsh-v0.1.5-alpha.1 master 检出核验（完整门禁链）；profile 安装冒烟由每月 Compat workflow 覆盖。 |
+| DeepSeek Harness | `dsh-v0.1.5-rc.1`（peer 依赖钉版；`0.1.2-rc.1` 线仍受支持）。已于 2026-09-10 对照 dsh-v0.1.5-rc.1 master 检出核验（完整门禁链）；profile 安装冒烟由每月 Compat workflow 覆盖。 |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | 包管理器 | `pnpm@11.7.0` |
 | 平台 | Windows / macOS / Linux（纯宿主插件） |
@@ -131,6 +131,7 @@ dsh plugin --profile web remove dsh-fund-research  # 卸载
 - **绝不**执行远程 JavaScript（pingzhongdata 块只扫描不执行）、绝不存取凭据、绝不交易。
 - 会话事件为仅日志审计记录，走 `src/events.ts` 的自适应门：只有宿主允许仓外类型时才追加——其已知类型集合覆盖该词汇，或其 `Session.append` 接受 `ignorable` 信封。自 `0.1.2-alpha.1` 起（含 `0.1.5-alpha.1`）两者均不成立：`KNOWN_SESSION_EVENT_TYPES` 是构建期生成的仓内清单，按构造排除仓外事件；`Session.append` 也没有 `ignorable` 选项，因此门控不追加任何事件——工具结果与封存产物仍是可重建的审计轨迹，且追加失败永不改变工具结果。
 0.1.5-alpha.1（2026-09-09 已适配）：在新基线上复核门控——目录仍排除仓外事件，`Session.append` 仍无法盖 `ignorable` 信封，门控行为不变。
+0.1.5-rc.1（2026-09-10 已适配）：依赖钉号移至已发布的 0.1.5-rc.1 线；无接缝变化影响本插件行为。
 
 ## Security boundaries
 
@@ -161,7 +162,7 @@ node scripts/check-endpoints.mjs              # M3 端点存活探测（4 个 ea
 pnpm pack                                     # tarball
 ```
 
-测试使用来自 0.1.5-alpha.1 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
+测试使用来自 0.1.5-rc.1 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
 
 ## Topics
 
@@ -176,7 +177,7 @@ pnpm pack                                     # tarball
 
 ## PerryLink DSH Plugin Family
 
-PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.5-alpha.1 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
+PerryLink 独立 DeepSeek Harness 插件家族成员，共享同一工程基线：钉版 0.1.5-rc.1 peers、响亮失败的 Schemastery 配置、五语 README、真实接缝 vitest 覆盖。
 
 ## PerryLink DSH Plugin Family
 
