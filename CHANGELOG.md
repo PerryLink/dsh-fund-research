@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- The monthly **Endpoint liveness** workflow never probed anything: `actions/setup-node@v5`
+  auto-enables package-manager caching from `package.json#packageManager` (pnpm here), so the
+  step failed with `Unable to locate executable file: pnpm` and the probe step was skipped on
+  every scheduled run (observed on the 2026-09-01 run). The job only runs `node`, so the
+  automatic cache is now disabled with `package-manager-cache: false` instead of installing a
+  package manager it does not use.
+- The liveness probe now sends the same browser identity and per-endpoint `Referer` the
+  collector sends (`COLLECTOR_HEADERS` in `src/sources/eastmoney.ts`). The F10 archive
+  endpoints answer `404` to a bare request and `200` to a browser-identified one, so the
+  probe previously reported a false outage for `f10-holdings`. Verified locally: 4/4
+  endpoints ALIVE (was 3/4).
+
 ## [0.4.9] - 2026-09-10
 
 ### Changed

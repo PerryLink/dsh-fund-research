@@ -13,6 +13,11 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          # setup-node@v5 auto-enables package-manager caching from package.json#packageManager
+          # (pnpm here). This job only runs `node`, so requiring pnpm on PATH made the step fail
+          # with "Unable to locate executable file: pnpm" before any probe ran. Disable the
+          # automatic cache instead of installing a package manager this job does not use.
+          package-manager-cache: false
       - name: Probe declared endpoints
         run: node scripts/check-endpoints.mjs
         env:

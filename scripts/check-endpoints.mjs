@@ -4,22 +4,29 @@
 // declares four public Tiantian Fund / Eastmoney endpoints (no key, no login).
 // Run locally with `node scripts/check-endpoints.mjs` or on the monthly
 // `.github/workflows/check-endpoints.yml` schedule.
+//
+// The probe MUST send the same browser identity the collector sends
+// (`COLLECTOR_HEADERS` in src/sources/eastmoney.ts) and the same per-endpoint
+// Referer: the F10 archive endpoints answer 404 to a bare request and 200 to a
+// browser-identified one, so a probe without them reports a false outage.
 import { request } from 'node:https'
 
+const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+
 const ENDPOINTS = [
-  { name: 'pingzhongdata', url: 'https://fund.eastmoney.com/pingzhongdata/161725.js' },
-  { name: 'f10-holdings', url: 'https://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=161725&topline=10&year=&month=' },
-  { name: 'f10-manager', url: 'https://fundf10.eastmoney.com/jjjl_161725.html' },
-  { name: 'push2-quote', url: 'https://push2.eastmoney.com/api/qt/stock/get?secid=1.600519&fields=f57,f58,f116,f117,f162,f167' },
+  { name: 'pingzhongdata', url: 'https://fund.eastmoney.com/pingzhongdata/161725.js', referer: 'https://fund.eastmoney.com/' },
+  { name: 'f10-holdings', url: 'https://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=161725&topline=10&year=&month=', referer: 'https://fundf10.eastmoney.com/' },
+  { name: 'f10-manager', url: 'https://fundf10.eastmoney.com/jjjl_161725.html', referer: 'https://fundf10.eastmoney.com/' },
+  { name: 'push2-quote', url: 'https://push2.eastmoney.com/api/qt/stock/get?secid=1.600519&fields=f57,f58,f116,f117,f162,f167', referer: 'https://quote.eastmoney.com/' },
 ]
 
 const TIMEOUT_MS = Number(process.env.TIMEOUT_MS ?? 15000)
 
-function probe(url) {
+function probe(url, referer) {
   return new Promise((resolve) => {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
-    const req = request(url, { method: 'GET', headers: { 'user-agent': 'dsh-endpoint-liveness/1.0' }, signal: controller.signal }, (res) => {
+    const req = request(url, { method: 'GET', headers: { 'user-agent': BROWSER_UA, ...(referer ? { Referer: referer } : {}) }, signal: controller.signal }, (res) => {
       res.resume()
       clearTimeout(timer)
       resolve({ status: res.statusCode })
@@ -38,7 +45,7 @@ function probe(url) {
 
 const failures = []
 for (const endpoint of ENDPOINTS) {
-  const result = await probe(endpoint.url)
+  const result = await probe(endpoint.url, endpoint.referer)
   const status = result.status
   const alive = status === 200 || (status !== null && status >= 400 && status !== 404 && status !== 410)
   const verdict = alive ? 'ALIVE' : 'FAIL'
