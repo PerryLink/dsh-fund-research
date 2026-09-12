@@ -25,7 +25,7 @@
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.5-rc.1` (dependencias peer fijadas; la línea `0.1.2-rc.1` sigue soportada). Verificado el 2026-09-10 contra el master checkout dsh-v0.1.5-rc.1 (cadena completa de gates); el smoke de instalación de perfil corre en el workflow Compat mensual. |
+| DeepSeek Harness | `dsh-v0.1.5-rc.2` (dependencias peer fijadas; la línea `0.1.2-rc.1` sigue soportada). Verificado el 2026-09-11 contra el master checkout dsh-v0.1.5-rc.2 (cadena completa de gates); el smoke de instalación de perfil corre en el workflow Compat mensual. |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
@@ -132,6 +132,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 - Los eventos de sesión son registros de auditoría solo-registro que cruzan una puerta adaptativa en `src/events.ts`: solo se añaden cuando el host admite un tipo fuera del repositorio — su conjunto de tipos conocidos cubre el vocabulario, o su `Session.append` acepta un sobre `ignorable`. Desde `0.1.2-alpha.1` (incluido `0.1.5-alpha.1`) no se cumple ninguna: `KNOWN_SESSION_EVENT_TYPES` es un catálogo generado en el build dentro del repositorio que excluye por construcción los eventos externos, y `Session.append` no tiene opción `ignorable`, así que la puerta no añade nada — los resultados de las herramientas y los artefactos sellados siguen siendo la pista de auditoría reconstruible, y un append fallido nunca cambia el resultado de una herramienta.
 0.1.5-alpha.1 (adaptado el 2026-09-09): puerta re-verificada en la nueva base — el catálogo sigue excluyendo eventos externos y `Session.append` sigue sin poder estampar un sobre `ignorable`, por lo que el comportamiento de la puerta no cambia.
 0.1.5-rc.1 (adaptado el 2026-09-10): los pines de dependencias pasan a la línea publicada 0.1.5-rc.1; ningún cambio de seam afecta el comportamiento de este plugin.
+0.1.5-rc.2 (adaptado el 2026-09-11): los pines de dependencias pasan a la línea publicada 0.1.5-rc.2; ningún cambio de seam afecta el comportamiento de este plugin.
 
 ## Security boundaries
 
@@ -162,7 +163,7 @@ node scripts/check-endpoints.mjs              # sondeo de actividad M3 (4 hosts 
 pnpm pack                                     # tarball
 ```
 
-Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.5-rc.1; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
+Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.5-rc.2; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
 
 ## Topics
 
@@ -177,7 +178,7 @@ Sin contribuidores externos aún — 0 PRs/issues de la comunidad fusionados. Ab
 
 ## PerryLink DSH Plugin Family
 
-Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.5-rc.1 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
+Parte de una familia de plugins independientes de DeepSeek Harness que comparten una base de ingeniería: peers 0.1.5-rc.2 fijados, configuración Schemastery de fallo ruidoso, READMEs en cinco idiomas y cobertura vitest sobre seams reales.
 
 ## PerryLink DSH Plugin Family
 
