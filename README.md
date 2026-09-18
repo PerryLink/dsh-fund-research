@@ -26,7 +26,7 @@
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.5-rc.2` (peer dependencies pinned; the `0.1.2-rc.1` line stays supported). Verified 2026-09-11 against the dsh-v0.1.5-rc.2 master checkout (full gate chain); the profile install smoke runs in the monthly Compat workflow. |
+| DeepSeek Harness | `dsh-v0.1.6-alpha.2` (peer range admits the alpha.2 line: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0`). On this line `Session.append`'s third parameter is a `SurfaceIntent` for surface-eligible types only, so the `fund-research/*` audit events stay unappended (the tool results and sealed snapshot/report remain the audit trail). Verified 2026-09-18 (dual typecheck rulers + 176 tests). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
