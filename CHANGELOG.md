@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.12] - 2026-09-18
+
+### Changed
+
+- Remove the `ignorable`-envelope source-text probe from the audit gate. On the `0.1.6-alpha.2` line `Session.append`'s third parameter is a `SurfaceIntent` and exists only for surface-eligible event types, so the non-surface `fund-research/*` events cannot be stamped and are simply not appended (the tool results and the sealed snapshot/report remain the audit trail). A hard-rule comment plus a real-session test pin the removal so the marked append cannot be resurrected.
+- Skip the bundled-skill provider registration when the plugin fiber was disposed while the optional `@deepseek-ai/dsh-skill-filesystem` import was in flight (A02): the registration is no longer attempted into a dead fiber, and a remount registers exactly one provider.
+- Declare `dsh.manifestVersion: 1` and the canonical three-clause `engines.dsh` (G-3).
+
+### Docs
+
+- Re-anchor the five-language compatibility baseline to `dsh-v0.1.6-alpha.2` and state the audit-event gap explicitly.
+
 ## [0.4.11] - 2026-09-12
 
 ### Changed

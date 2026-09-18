@@ -1,17 +1,21 @@
 /**
  * Session audit events for `dsh-fund-research` (model-visible ⟺ logged) and
- * the adaptive append gate. Both events are log-only records of facts the
- * tool results already carry: the snapshot acquisition
- * (`fund-research/snapshot`) and the sealed report (`fund-research/report`).
+ * the append gate. Both events are log-only records of facts the tool results
+ * already carry: the snapshot acquisition (`fund-research/snapshot`) and the
+ * sealed report (`fund-research/report`).
  *
- * The gate appends only when the host can carry the events safely:
- * - hosts whose known-type set covers the vocabulary append plainly;
- * - hosts with an `ignorable` append option (pre-0.1.2 master builds) append
- *   with the marker, so builds that do not know the type skip it on restore;
- * - envelope-less hosts (0.1.0-rc.6/rc.8, 0.1.1-rc.2, and 0.1.2-rc.1,
- *   which fails closed on unknown types at read) get no append — the tool
- *   results and the sealed snapshot/report remain the reconstructable audit
- *   trail. On 0.1.2-rc.1 the envelope field is restored for stored-log read compatibility only - its Session.append still cannot stamp the marker, so the gate behavior is unchanged.
+ * The gate appends only when the host's known-type set covers the vocabulary
+ * (a future harness that adopts these events) and otherwise does nothing — the
+ * tool results and the sealed snapshot/report remain the reconstructable audit
+ * trail.
+ *
+ * HARD RULE (measured on the 0.1.6-alpha.2 line): `Session.append`'s third
+ * parameter carries a `SurfaceIntent`, and only for surface-eligible event
+ * types; it is never an `ignorable` envelope. An out-of-repo non-surface type
+ * therefore cannot be stamped, and an unmarked unknown event makes a 0.1.5+
+ * reader refuse the whole stored log. Do not reintroduce any form of marked or
+ * unconditional append here — the source-text probe that used to look for an
+ * `ignorable` option was removed for exactly that reason.
  * @module dsh-fund-research/events
  */
 
@@ -90,12 +94,13 @@ export interface ReportAuditData {
   gaps: string[]
 }
 
-/** Loose append shape probed at runtime (envelope-less hosts take no options; pre-0.1.2 master builds took `ignorable`). */
-type AppendProbe = (type: string, data: unknown, options?: { ignorable: true }) => unknown
-
 /**
- * Append one fund-research audit event when the host can carry it safely;
- * skip silently otherwise (see the module doc for the three host classes).
+ * Append one fund-research audit event when the host's known-type set covers
+ * the vocabulary; do nothing otherwise (the tool results and the sealed
+ * snapshot/report stay the reconstructive audit trail). There is deliberately
+ * no probe path: `Session.append` cannot stamp an `ignorable` marker on a
+ * non-surface type on any supported line, and writing an unmarked unknown
+ * event would make a 0.1.5+ reader refuse the stored log.
  * @param session - the calling session.
  * @param type - the audit event type.
  * @param data - the audit payload.
@@ -105,13 +110,7 @@ export function appendAuditEvent(
   type: typeof SNAPSHOT_EVENT | typeof REPORT_EVENT,
   data: SnapshotAuditData | ReportAuditData,
 ): void {
-  if (KNOWN_SESSION_EVENT_TYPES.has(type)) {
-    if (type === SNAPSHOT_EVENT) session.append(type, data as SnapshotAuditData)
-    else session.append(type, data as ReportAuditData)
-    return
-  }
-  const append = session.append as AppendProbe
-  if (Function.prototype.toString.call(append).includes('ignorable')) {
-    append.call(session, type, data, { ignorable: true })
-  }
+  if (!KNOWN_SESSION_EVENT_TYPES.has(type)) return
+  if (type === SNAPSHOT_EVENT) session.append(type, data as SnapshotAuditData)
+  else session.append(type, data as ReportAuditData)
 }
