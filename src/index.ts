@@ -160,6 +160,12 @@ export async function apply(ctx: Context, config: Config = {}): Promise<void> {
   if (skills !== undefined && skillsRoot !== undefined) {
     try {
       const filesystem = await import('@deepseek-ai/dsh-skill-filesystem')
+      // A02: the dynamic import opens an await window inside `apply`. If the
+      // fiber was disposed while the module resolved, registering now would
+      // throw INACTIVE_EFFECT and lose the provider silently; skip instead —
+      // the unmounted plugin must not register anything, and a remount runs
+      // this whole path again (G-9 roundtrip keeps exactly one provider).
+      if (ctx.fiber.uid === null) return
       ctx.effect(() => skills.registerProvider(control => new filesystem.FileSystemSkillProvider(ctx, control as never, {
         providerName: 'dsh-fund-research',
         includeDefaultRoots: false,
