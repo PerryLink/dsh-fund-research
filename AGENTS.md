@@ -30,7 +30,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-fund-research`). Development
 
 ## Checks
 
-`pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run verify:artifacts && node scripts/check-readme-sync.mjs && pnpm pack`
+`pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run check:lockfile && pnpm run verify:artifacts && pnpm run check:lockfile && node scripts/check-readme-sync.mjs && pnpm pack`
 
 - `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.5-rc.2 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 - oxlint discovers files only after `git init` (the parent checkout's `.oxlintrc.json` otherwise matches nothing here).
