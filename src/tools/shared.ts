@@ -329,9 +329,24 @@ export async function runResearch(
   return { snapshot, seal, outcome, live, sections: body.renderedSections, verdicts, discovery }
 }
 
+/**
+ * The 0.1.7 producer face: the registry hands `run` a handle whose `append`
+ * pushes one chunk into the job's output ring. The pre-0.1.7 lines handed no
+ * handle at all and read the producer's narration through `JobHooks.readOutput`,
+ * so both faces are fed (see `emit` below).
+ */
+export interface JobOutputAppendLike {
+  append(text: string, options?: { channel?: 'stdout' | 'stderr' | 'log' }): void
+}
+
 /** The structural surface of the optional `ctx.jobs` service the review stage uses. */
 interface ReviewJobsLike {
-  start(spec: { kind: 'fund-review', label: string, owner: Agent, run: () => JobHooks }): string
+  start(spec: {
+    kind: 'fund-review'
+    label: string
+    owner: string
+    run: (handle?: JobOutputAppendLike) => JobHooks
+  }): string
 }
 
 /**
@@ -356,25 +371,38 @@ async function scheduleReview(deps: ToolDeps, agent: Agent | undefined, versionD
   const jobId = jobs.start({
     kind: FUND_REVIEW_JOB_KIND,
     label: `fund review ${state.code}`,
-    owner: agent,
-    run: (): JobHooks => {
+    // The 0.1.7 jobs line fences a job by the owner's SESSION ID (`JobSpec.owner`),
+    // where the pre-0.1.7 line took the live Agent instance itself.
+    owner: agent.id,
+    run: (handle?: JobOutputAppendLike): JobHooks => {
       const progress: string[] = []
+      // Feed both producer faces with one call: the 0.1.7 output ring (the handle)
+      // and the pre-0.1.7 progress cursor (`readOutput`) the older lines read.
+      const emit = (line: string): void => {
+        progress.push(line)
+        handle?.append(line)
+      }
       const done = (async (): Promise<JobOutcome> => {
         try {
           const { markdown } = await reviewSealedReport(versionDir)
-          progress.push(markdown)
-          return { status: 'completed', detail: 'review-note.md written', output: markdown }
+          emit(markdown)
+          return { status: 'completed', detail: 'review-note.md written', result: markdown, output: markdown } as JobOutcome
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error)
-          progress.push(`failed: ${message}`)
+          emit(`failed: ${message}`)
           return { status: 'failed', detail: message }
         }
       })()
+      // `readOutput` is the pre-0.1.7 progress cursor and `output` is the
+      // pre-0.1.7 final-text field: the 0.1.7 line removed both from the published
+      // types (JobHooks lost `readOutput`, JobOutcome renamed `output` to `result`)
+      // in favour of the ring plus the one-shot `result`. Emitting both shapes
+      // structurally keeps the older declared lines streaming and is inert on 0.1.7.
       return {
         cancel: () => {},
         done,
         readOutput: () => progress.splice(0).join('\n'),
-      }
+      } as JobHooks
     },
   })
   state.review = `queued(${String(jobId)})`

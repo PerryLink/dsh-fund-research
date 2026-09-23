@@ -103,6 +103,17 @@ export async function mountBase(sessionId = 'fund-harness', options: { jobs?: bo
   return { ctx, session, agent, workspace, backend }
 }
 
+/**
+ * The text one job read exposes. The 0.1.7 `JobRead` is a chunk ring plus the
+ * settled producer's one-shot `result`, where the pre-0.1.7 line exposed a single
+ * `text`; tests render both into the one string they assert on.
+ * @param read - one `JobRegistry.read` result.
+ * @returns the chunks' text followed by the settled result, when present.
+ */
+export function readJobText(read: { chunks: readonly { text: string }[], result?: string }): string {
+  return read.chunks.map(chunk => chunk.text).join('') + (read.result ?? '')
+}
+
 /** Remove the temp workspace a base was mounted on (only own mkdtemp dirs). */
 export async function unmountBase(base: BaseHarness): Promise<void> {
   const expected = path.join(tmpdir(), 'fund-test-')

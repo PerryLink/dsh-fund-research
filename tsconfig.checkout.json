@@ -1,0 +1,36 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+      "@deepseek-ai/cordis/*": ["../../../../deepseek-harness/vendor/cordis/lib/types/*"],
+      "@deepseek-ai/cordis": ["../../../../deepseek-harness/vendor/cordis/lib/types/index.d.ts"],
+      "@deepseek-ai/cordis-plugin-include/*": ["../../../../deepseek-harness/vendor/include/lib/types/*"],
+      "@deepseek-ai/cordis-plugin-include": ["../../../../deepseek-harness/vendor/include/lib/types/index.d.ts"],
+      "@deepseek-ai/cordis-plugin-loader/*": ["../../../../deepseek-harness/vendor/loader/lib/types/*"],
+      "@deepseek-ai/cordis-plugin-loader": ["../../../../deepseek-harness/vendor/loader/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-agent/*": ["../../../../deepseek-harness/packages/core/agent/lib/types/*"],
+      "@deepseek-ai/dsh-agent": ["../../../../deepseek-harness/packages/core/agent/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-jobs/*": ["../../../../deepseek-harness/packages/jobs/jobs/lib/types/*"],
+      "@deepseek-ai/dsh-jobs": ["../../../../deepseek-harness/packages/jobs/jobs/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-jobs-local/*": ["../../../../deepseek-harness/packages/jobs/jobs-local/lib/types/*"],
+      "@deepseek-ai/dsh-jobs-local": ["../../../../deepseek-harness/packages/jobs/jobs-local/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-session/*": ["../../../../deepseek-harness/packages/core/session/lib/types/*"],
+      "@deepseek-ai/dsh-session": ["../../../../deepseek-harness/packages/core/session/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-skill-filesystem/*": ["../../../../deepseek-harness/packages/skill/skill-filesystem/lib/types/*"],
+      "@deepseek-ai/dsh-skill-filesystem": ["../../../../deepseek-harness/packages/skill/skill-filesystem/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-storage/*": ["../../../../deepseek-harness/packages/storage/storage/lib/types/*"],
+      "@deepseek-ai/dsh-storage": ["../../../../deepseek-harness/packages/storage/storage/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-storage-domain/*": ["../../../../deepseek-harness/packages/storage/storage-domain/lib/types/*"],
+      "@deepseek-ai/dsh-storage-domain": ["../../../../deepseek-harness/packages/storage/storage-domain/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-storage-json/*": ["../../../../deepseek-harness/packages/storage/storage-json/lib/types/*"],
+      "@deepseek-ai/dsh-storage-json": ["../../../../deepseek-harness/packages/storage/storage-json/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-system-prompt/*": ["../../../../deepseek-harness/packages/core/system-prompt/lib/types/*"],
+      "@deepseek-ai/dsh-system-prompt": ["../../../../deepseek-harness/packages/core/system-prompt/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-tools/*": ["../../../../deepseek-harness/packages/core/tools/lib/types/*"],
+      "@deepseek-ai/dsh-tools": ["../../../../deepseek-harness/packages/core/tools/lib/types/index.d.ts"],
+      "@deepseek-ai/schemastery/*": ["../../../../deepseek-harness/vendor/schemastery/lib/types/*"],
+      "@deepseek-ai/schemastery": ["../../../../deepseek-harness/vendor/schemastery/lib/types/index.d.ts"],
+      "zod": ["./node_modules/zod"]
+    }
+  }
+}

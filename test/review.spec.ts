@@ -16,7 +16,7 @@ import { fundResearchDomainSpec } from '../src/store.ts'
 import { resolveConfig } from '../src/config.ts'
 import { runResearch } from '../src/tools/shared.ts'
 import { readRunStateMap } from '../src/run-state.ts'
-import { mountBase, unmountBase, type BaseHarness } from './harness.ts'
+import { mountBase, readJobText, unmountBase, type BaseHarness } from './harness.ts'
 import { PoliteFetcher } from '../src/sources/eastmoney.ts'
 
 function forbiddenFetch(): typeof fetch {
@@ -92,12 +92,12 @@ describe('review scheduling', () => {
 
       const jobId = /^queued\((.+)\)$/u.exec(state?.review ?? '')?.[1]
       expect(jobId).toBeDefined()
-      const settled = await base.ctx.jobs.wait(JobId(jobId!), 15_000, base.agent)
+      const settled = await base.ctx.jobs.wait(JobId(jobId!), 15_000, base.agent.id)
       expect(settled.status).toBe('completed')
 
       const note = await readFile(path.join(run.seal.versionDir, 'review-note.md'), 'utf8')
       expect(note).toContain('# 复核审阅记录')
-      expect(base.ctx.jobs.read(JobId(jobId!), base.agent).text).toContain('复核审阅记录')
+      expect(readJobText(base.ctx.jobs.read(JobId(jobId!), base.agent.id))).toContain('复核审阅记录')
       await domain.close()
     } finally {
       await unmountBase(base)

@@ -15,7 +15,7 @@ import { CallId } from './call-id.ts'
 import { JobId } from '@deepseek-ai/dsh-jobs'
 import type { ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 import { afterEach, describe, expect, it } from 'vitest'
-import { mountBase, unmountBase, type BaseHarness } from './harness.ts'
+import { mountBase, readJobText, unmountBase, type BaseHarness } from './harness.ts'
 import { buildFixtureSnapshot, FIXTURE_CODE, loadFixtures } from './fixtures.ts'
 import { fundResearchDomainSpec } from '../src/store.ts'
 import { resolveConfig } from '../src/config.ts'
@@ -208,9 +208,9 @@ describe('fund_research (offline)', () => {
     const result = await callTool(base, 'fund_research', { code: 'abc', background: true })
     expect(result.isError).toBe(false)
     const jobId = String((result.value as Record<string, unknown>).jobId)
-    const settled = await base.ctx.jobs.wait(JobId(jobId), 15_000, base.agent)
+    const settled = await base.ctx.jobs.wait(JobId(jobId), 15_000, base.agent.id)
     expect(settled.status).toBe('failed')
-    expect(base.ctx.jobs.read(JobId(jobId), base.agent).text).toContain('failed: fund code must be exactly six digits')
+    expect(readJobText(base.ctx.jobs.read(JobId(jobId), base.agent.id))).toContain('failed: fund code must be exactly six digits')
   })
 
   it('runs as a background job and settles with the sealed summary', async () => {
@@ -222,10 +222,10 @@ describe('fund_research (offline)', () => {
     const jobId = String(value.jobId)
     expect(jobId).toMatch(/^fund-report-/u)
 
-    const settled = await base.ctx.jobs.wait(JobId(jobId), 15_000, base.agent)
+    const settled = await base.ctx.jobs.wait(JobId(jobId), 15_000, base.agent.id)
     expect(settled.status).toBe('completed')
-    const read = base.ctx.jobs.read(JobId(jobId), base.agent)
-    expect(read.text).toContain('研究报告已封存')
+    const read = base.ctx.jobs.read(JobId(jobId), base.agent.id)
+    expect(readJobText(read)).toContain('研究报告已封存')
   })
 
   it('renders only requested sections', async () => {

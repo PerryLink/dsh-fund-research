@@ -28,7 +28,7 @@
 
 | घटक | संस्करण |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.7-alpha.1` (peer रेंज alpha.2 लाइन को स्वीकार करती है: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0`)। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `fund-research/*` ऑडिट इवेंट अब भी दर्ज नहीं होते (टूल परिणाम तथा सील किया स्नैपशॉट/रिपोर्ट ही ऑडिट ट्रेल हैं)। 2026-09-18 को सत्यापित (दोहरा typecheck + 176 टेस्ट)। |
+| DeepSeek Harness | `dsh-v0.1.7-alpha.2` (peer रेंज alpha.2 लाइन को स्वीकार करती है: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`)। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `fund-research/*` ऑडिट इवेंट अब भी दर्ज नहीं होते (टूल परिणाम तथा सील किया स्नैपशॉट/रिपोर्ट ही ऑडिट ट्रेल हैं)। 2026-09-18 को सत्यापित (दोहरा typecheck + 176 टेस्ट)। |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | पैकेज प्रबंधक | `pnpm@11.7.0` |
 | प्लेटफ़ॉर्म | Windows / macOS / Linux (केवल होस्ट प्लगइन) |
@@ -156,7 +156,7 @@ dsh plugin --profile web remove dsh-fund-research  # हटाएँ
 
 ```sh
 pnpm install
-pnpm run typecheck && pnpm run typecheck:ci   # प्रकार, सहित। CI-सख्त
+pnpm run typecheck && pnpm run typecheck:ci && pnpm run typecheck:checkout   # प्रकार, सहित। CI-सख्त
 pnpm test                                     # वास्तविक seams पर 176 परीक्षण
 pnpm run test:e2e                              # वैकल्पिक वास्तविक-नेटवर्क E2E (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + tsc घोषणाएँ
@@ -166,7 +166,7 @@ node scripts/check-endpoints.mjs              # M3 एंडपॉइंट-ल�
 pnpm pack                                     # tarball
 ```
 
-परीक्षण 0.1.5-rc.2 peers के वास्तविक `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/स्टोरेज seam का उपयोग करते हैं; नेटवर्क केवल fetch सीमा पर सहेजे गए वास्तविक-प्रतिक्रिया फिक्स्चर (`fixtures/`, फंड 161725) द्वारा प्रतिस्थापित होता है। `.tmp/` के कलेक्टर स्क्रिप्ट से फिक्स्चर ताज़ा करें।
+परीक्षण 0.1.7-alpha.2 peers के वास्तविक `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/स्टोरेज seam का उपयोग करते हैं; नेटवर्क केवल fetch सीमा पर सहेजे गए वास्तविक-प्रतिक्रिया फिक्स्चर (`fixtures/`, फंड 161725) द्वारा प्रतिस्थापित होता है। `.tmp/` के कलेक्टर स्क्रिप्ट से फिक्स्चर ताज़ा करें।
 
 ## Topics
 

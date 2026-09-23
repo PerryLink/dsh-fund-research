@@ -13,7 +13,7 @@ import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
 import type { SectionId } from '../report.ts'
 import { sourceQualityOf, type SourceQualityEntry } from '../discovery.ts'
-import { runResearch, runResearchFanOut, type FundRunSummaryEntry, type ResearchRun, type ToolDeps } from './shared.ts'
+import { runResearch, runResearchFanOut, type FundRunSummaryEntry, type JobOutputAppendLike, type ResearchRun, type ToolDeps } from './shared.ts'
 
 /** The background-job kind this producer registers (declaration-merged into JobKindMap). */
 export const FUND_REPORT_JOB_KIND = 'fund-report' as const
@@ -166,8 +166,9 @@ interface JobsLike {
   start(spec: {
     kind: 'fund-report'
     label: string
-    owner: Agent
-    run: () => JobHooks
+    /** 0.1.7 fences a job by the owner's session id; pre-0.1.7 took the Agent. */
+    owner: string
+    run: (handle?: JobOutputAppendLike) => JobHooks
   }): string
 }
 
@@ -366,27 +367,42 @@ export function buildResearchTool(deps: ToolDeps) {
         const jobId = jobs.start({
           kind: FUND_REPORT_JOB_KIND,
           label: `fund_research ${codes.join(',')}`,
-          owner,
-          run: (): JobHooks => {
+          // The 0.1.7 jobs line fences a job by the owner's SESSION ID
+          // (`JobSpec.owner`), where the pre-0.1.7 line took the live Agent itself.
+          owner: owner.id,
+          run: (handle?: JobOutputAppendLike): JobHooks => {
             const abort = new AbortController()
-            const progress: string[] = [`fund_research ${codes.join(',')}: started`]
+            const progress: string[] = []
+            // Feed both producer faces with one call: the 0.1.7 output ring (the
+            // handle) and the pre-0.1.7 progress cursor (`readOutput`).
+            const emit = (line: string): void => {
+              progress.push(line)
+              handle?.append(line)
+            }
+            emit(`fund_research ${codes.join(',')}: started`)
             const done = (async (): Promise<JobOutcome> => {
               try {
                 const value = await pipeline(owner, abort.signal)
-                progress.push(renderResearch(value))
+                emit(renderResearch(value))
                 const detail = value.kind === 'sealed' ? `sealed ${value.version}` : value.kind === 'summary' ? `summary ${value.funds.length} funds` : 'background'
-                return { status: 'completed', detail, output: renderResearch(value) }
+                return { status: 'completed', detail, result: renderResearch(value), output: renderResearch(value) } as JobOutcome
               } catch (error) {
                 const message = error instanceof Error ? error.message : String(error)
-                progress.push(`failed: ${message}`)
+                emit(`failed: ${message}`)
                 return { status: abort.signal.aborted ? 'killed' : 'failed', detail: message }
               }
             })()
+            // `readOutput` is the pre-0.1.7 progress cursor and `output` is the
+            // pre-0.1.7 final-text field: the 0.1.7 line removed both from the
+            // published types (JobHooks lost `readOutput`, JobOutcome renamed
+            // `output` to `result`) in favour of the ring plus the one-shot
+            // `result`. Emitting both shapes structurally keeps the older declared
+            // lines streaming and is inert on 0.1.7.
             return {
               cancel: () => { abort.abort() },
               done,
               readOutput: () => progress.splice(0).join('\n'),
-            }
+            } as JobHooks
           },
         })
         return { kind: 'background', jobId: String(jobId) } satisfies BackgroundValue

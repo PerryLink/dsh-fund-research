@@ -28,7 +28,7 @@
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.7-alpha.1` (el rango de peers admite la línea alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0`). En esta línea el tercer parámetro de `Session.append` es un `SurfaceIntent` solo para tipos de superficie, así que los eventos de auditoría `fund-research/*` siguen sin registrarse (los resultados de herramientas y el snapshot/informe sellado son el rastro de auditoría). Verificado el 2026-09-18 (doble typecheck + 176 pruebas). |
+| DeepSeek Harness | `dsh-v0.1.7-alpha.2` (el rango de peers admite la línea alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). En esta línea el tercer parámetro de `Session.append` es un `SurfaceIntent` solo para tipos de superficie, así que los eventos de auditoría `fund-research/*` siguen sin registrarse (los resultados de herramientas y el snapshot/informe sellado son el rastro de auditoría). Verificado el 2026-09-18 (doble typecheck + 176 pruebas). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
@@ -156,7 +156,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 
 ```sh
 pnpm install
-pnpm run typecheck && pnpm run typecheck:ci   # tipos, incl. modo estricto CI
+pnpm run typecheck && pnpm run typecheck:ci && pnpm run typecheck:checkout   # tipos, incl. modo estricto CI
 pnpm test                                     # 176 pruebas sobre seams reales
 pnpm run test:e2e                              # E2E opcional en red REAL (LIVE_E2E=1)
 pnpm run build && pnpm run verify:artifacts   # tsdown + declaraciones tsc
@@ -166,7 +166,7 @@ node scripts/check-endpoints.mjs              # sondeo de actividad M3 (4 hosts 
 pnpm pack                                     # tarball
 ```
 
-Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.5-rc.2; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
+Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/almacenamiento de los peers 0.1.7-alpha.2; la red se reemplaza solo en la frontera de fetch por fixtures de respuestas reales guardadas (`fixtures/`, fondo 161725). Refresca los fixtures con los scripts de `.tmp/`.
 
 ## Topics
 
