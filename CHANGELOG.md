@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.14] - 2026-09-23
+
+### Fixed
+
+- The `ctx.jobs` rework on the `0.1.7` line took the whole suite down with it. The declaration build failed with `'output' does not exist in type 'JobOutcome'` and `'readOutput' does not exist in type 'JobHooks'`, and at runtime the registry threw `session "[object Object]" has no live agent (background job owner must be live)` because `JobSpec.owner` is now a `SessionId`, not the live `Agent`; that error was folded into the tool value, so 17 tests across seven spec files went red — including specs that never mention jobs. Both producers (the `fund-report` job in `src/tools/research.ts` and the `fund-review` job in `src/tools/shared.ts`) now pass `owner: <agent>.id`, matching the sibling producers already on this line, and their `run` feeds ONE `emit(line)` helper that writes to both producer faces: the ring through `JobHandle.append` (the `0.1.7` face) and the local progress array behind `readOutput` (the pre-`0.1.7` lines). `JobOutcome` literals carry `result` alongside the pre-`0.1.7` `output` with the same text, so the plugin stays off the host's types for this optional seam and a host on either line behaves identically. The two specs that asserted on a job read go through a new `readJobText(read)` harness helper that renders the `0.1.7` `chunks` plus the settled `result`; the asserted content is unchanged. No assertion was weakened, skipped or deleted.
+
+### Changed
+
+- Move the `@deepseek-ai/dsh-*` dev/test pins to `0.1.7-alpha.2`, and the `@deepseek-ai/cordis` / `@deepseek-ai/schemastery` dev carets to the versions that line declares, so the repo and the harness packages resolve one Schemastery copy.
+- Every declared host range — `engines.dsh` and the six `peerDependencies` bands — gains the `|| >=0.1.7-0 <0.2.0` arm, so the bands now admit the `0.1.7` prerelease line. Under semver's prerelease rule a range whose only prerelease comparators sit on earlier version tuples cannot admit a later alpha, so the previous three-clause form excluded the very host this release targets. No existing arm was removed or narrowed.
+- `dshWorkshop.compatibility.dshVersions` gains `0.1.7-alpha.2`, and all five READMEs name the verified line.
+- A new `typecheck:checkout` ruler (`tsc -p tsconfig.checkout.json --noEmit`) compiles against the local harness checkout's built type faces alongside the published-face ruler.
+- The compat workflow now installs the `0.1.7-alpha.2` host instead of `0.1.6-alpha.2`, so the scheduled end-to-end run exercises the line this package declares.
+
 ## [0.4.13] - 2026-09-19
 
 ### Added
