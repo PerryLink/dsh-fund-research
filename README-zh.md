@@ -35,7 +35,7 @@
 
 | 组件 | 版本 |
 |---|---|
-| DeepSeek Harness | `dsh-v0.1.7-rc.1`（peer 范围已接纳 alpha.2 线：`>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`）。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `fund-research/*` 审计事件仍不落盘（工具结果与已封存快照/报告即审计轨迹）。已于 2026-09-24 核验（双 typecheck 尺子 + 176 项测试）。 |
+| DeepSeek Harness | `dsh-v0.1.7-rc.2`（peer 范围已接纳 alpha.2 线：`>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`）。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `fund-research/*` 审计事件仍不落盘（工具结果与已封存快照/报告即审计轨迹）。已于 2026-09-24 核验（双 typecheck 尺子 + 176 项测试）。 |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | 包管理器 | `pnpm@11.7.0` |
 | 平台 | Windows / macOS / Linux（纯宿主插件） |
@@ -173,7 +173,7 @@ node scripts/check-endpoints.mjs              # M3 端点存活探测（4 个 ea
 pnpm pack                                     # tarball
 ```
 
-测试使用来自 0.1.7-rc.1 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
+测试使用来自 0.1.7-rc.2 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。
 
 ## Topics
 
