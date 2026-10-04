@@ -34,6 +34,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-fund-research`). Development
 
 - `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.7-rc.2 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types; `typecheck:checkout` compiles against the local harness checkout's built types through `tsconfig.checkout.json` (the only ruler with `paths`). All three must stay green.
 - oxlint discovers files only after `git init` (the parent checkout's `.oxlintrc.json` otherwise matches nothing here).
+- `test/composition.spec.ts` drives `scripts/loader-runner.mjs` in a child process. `cordis-plugin-loader` 1.0.6 no longer makes `loader.await()` reject when a row's `apply` threw (`Entry._reload()` swallows the throw into `fiber._error` in the same turn it resolves `fiber.inertia`), so the runner re-awaits every `FAILED` row — `Fiber.await()` still rethrows the stored error — and rethrows the first failure. Without that walk the invalid-config negative is judged on the downstream symptom ("tool is missing from the tools registry") instead of the cause. The two reports are mutually exclusive — the rethrow precedes the registry check — and the suite asserts exactly that, so a symptom-only stderr fails. `DSH_LOADER_RUNNER_NO_RETHROW=1` disables the walk for re-measurement only.
 
 ## Release
 
