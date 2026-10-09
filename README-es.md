@@ -33,6 +33,14 @@
 Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryLink) (más de 40, todos Apache-2.0). Si te resulta útil, **dale una estrella**: no desbloquea nada, pero ayuda a que la siguiente persona lo encuentre antes.
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-fund-research?
+
+Informes de investigación deterministas para fondos mutuos públicos chinos, sobre DeepSeek Harness.
+
+Cada cifra clave de cada informe se remonta a una instantánea fuente con hash — los huecos se declaran, nunca se inventan. Solo para investigación; no es asesoramiento de inversión.
+
+![Demostración de terminal de dsh-fund-research: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
+
 ## Compatibility
 
 | Componente | Versión |
@@ -63,6 +71,10 @@ Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryL
 - **Skill de metodología** — un skill `fund-research` integrado enseña al modelo las definiciones de métricas (口径), el manejo de huecos y el lenguaje de cumplimiento. El cálculo permanece en el código.
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-fund-research
+```
 
 ```text
 > 用 fund_research 出一份 161725 的研究报告

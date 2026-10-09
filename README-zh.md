@@ -33,6 +33,14 @@
 这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-fund-research?
+
+DeepSeek Harness 上的中国公募基金确定性研究报告插件。
+
+报告中每个关键数字都可回溯到带哈希的源快照——缺口显式声明，绝不编造。仅供研究，不构成投资建议。
+
+![dsh-fund-research 终端演示：dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
+
 ## Compatibility
 
 | 组件 | 版本 |
@@ -63,6 +71,10 @@
 - **方法论 skill** —— 内置 `fund-research` skill 教模型指标口径、缺口处理与合规话术；计算始终在代码里。
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-fund-research
+```
 
 ```text
 > 用 fund_research 出一份 161725 的研究报告

@@ -33,6 +33,14 @@
 यह प्लगइन [DSH प्लगइन परिवार](https://github.com/PerryLink) का हिस्सा है (40+ प्लगइन, सभी Apache-2.0)। अगर यह उपयोगी लगे, तो **एक स्टार दें** — इससे कोई सुविधा अनलॉक नहीं होती, पर अगला व्यक्ति इसे खोज में आसानी से पा लेता है।
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-fund-research?
+
+DeepSeek Harness पर चीनी सार्वजनिक म्यूचुअल फंडों के लिए नियतिवादी शोध रिपोर्ट।
+
+हर रिपोर्ट का हर प्रमुख आँकड़ा हैश किए गए स्रोत स्नैपशॉट तक जाता है — अंतराल घोषित किए जाते हैं, कभी गढ़े नहीं जाते। केवल शोध; निवेश सलाह नहीं।
+
+![dsh-fund-research का टर्मिनल डेमो: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
+
 ## Compatibility
 
 | घटक | संस्करण |
@@ -63,6 +71,10 @@
 - **पद्धति स्किल** — एक बंडलित `fund-research` स्किल मॉडल को मेट्रिक परिभाषाएँ (口径), अंतराल-संचालन और अनुपालन शब्दावली सिखाता है। गणना कोड में ही रहती है।
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-fund-research
+```
 
 ```text
 > 用 fund_research 出一份 161725 的研究报告

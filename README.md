@@ -35,6 +35,14 @@
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
 
+## What is dsh-fund-research?
+
+Deterministic research reports for Chinese public mutual funds, on DeepSeek Harness.
+
+Every key number in every report traces back to a hashed source snapshot — gaps declared, never invented. Research only; not investment advice.
+
+![Terminal demo of dsh-fund-research: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
+
 ## Compatibility
 
 | Component | Version |
@@ -65,6 +73,10 @@
 - **Methodology skill** — a bundled `fund-research` skill teaches the model the metric口径 (definitions), gap handling, and compliance wording. Computation stays in code.
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-fund-research
+```
 
 ```text
 > 用 fund_research 出一份 161725 的研究报告
