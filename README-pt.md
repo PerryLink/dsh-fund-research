@@ -42,6 +42,10 @@ Cada número-chave de cada relatório remonta a um snapshot-fonte com hash — l
 
 ![Demonstração de terminal do dsh-fund-research: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
 
+![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+
+*A mesma execução, animada.*
+
 ## Compatibility
 
 | Componente | Versão |

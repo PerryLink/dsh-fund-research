@@ -42,6 +42,10 @@ DeepSeek Harness 上的中国公募基金确定性研究报告插件。
 
 ![dsh-fund-research 终端演示：dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
 
+![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+
+*同一次运行，动图版。*
+
 ## Compatibility
 
 | 组件 | 版本 |

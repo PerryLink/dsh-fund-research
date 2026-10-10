@@ -42,6 +42,10 @@ DeepSeek Harness पर चीनी सार्वजनिक म्यूच
 
 ![dsh-fund-research का टर्मिनल डेमो: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.png)
 
+![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+
+*वही रन, एनिमेटेड।*
+
 ## Compatibility
 
 | घटक | संस्करण |
