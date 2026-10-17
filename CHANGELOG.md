@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.22] - 2026-10-18
+
+### Changed
+
+- Compatibility: `engines.dsh` -> `>=0.2.1-0 <0.3.0`; devDependencies to `0.2.1-rc.2`; add `@deepseek-ai/dsh-working-directory`; pin `zod` 4.4.3; `dshVersions` includes rc.2.
+
 ## [0.4.21] - 2026-10-18
 
 ### Fixed
