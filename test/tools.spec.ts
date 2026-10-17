@@ -238,6 +238,18 @@ describe('fund_research (offline)', () => {
     expect(report).not.toContain('## 业绩拆解')
   })
 
+
+  it('accepts the benchmark section and rejects code+codes together', async () => {
+    const base = await mountOfflinePlugin()
+    const result = await callTool(base, 'fund_research', { code: FIXTURE_CODE, sections: ['benchmark'] })
+    expect(result.isError).toBe(false)
+    const value = result.value as Record<string, unknown>
+    expect(value.sections).toEqual(['benchmark'])
+    const report = await readFile(path.join(base.workspace, String(value.reportPath)), 'utf8')
+    expect(report).toContain('## 同类/指数基准对比')
+    const both = await callTool(base, 'fund_research', { code: FIXTURE_CODE, codes: ['000001'] })
+    expect(both.isError).toBe(true)
+  })
   it('rejects an unknown section id loudly', async () => {
     const base = await mountOfflinePlugin()
     const result = await callTool(base, 'fund_research', { code: FIXTURE_CODE, sections: ['bogus'] })

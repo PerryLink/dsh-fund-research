@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.21] - 2026-10-18
+
+### Fixed
+
+- **`sections: ["benchmark"]` is accepted, and `code` + `codes` is a loud error.** The known-section set matched the old chapter list; it now derives from `ALL_SECTIONS` minus the appendix, so the documented benchmark chapter is selectable. Passing both fund arguments, or an empty `codes`, fails with a clear message instead of silently dropping `code`.
+
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

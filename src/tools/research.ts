@@ -11,7 +11,7 @@ import path from 'node:path'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
-import type { SectionId } from '../report.ts'
+import { ALL_SECTIONS, type SectionId } from '../report.ts'
 import { sourceQualityOf, type SourceQualityEntry } from '../discovery.ts'
 import { runResearch, runResearchFanOut, type FundRunSummaryEntry, type JobOutputAppendLike, type ResearchRun, type ToolDeps } from './shared.ts'
 
@@ -76,6 +76,12 @@ function summaryValueOf(entries: FundRunSummaryEntry[]): SummaryValue {
 
 /** Resolve the requested fund codes from `code` and/or `codes` (validated later, per run). */
 function resolveCodes(args: { code?: string, codes?: string[] }): string[] {
+  if (args.code !== undefined && args.codes !== undefined) {
+    throw new Error('fund_research accepts only one of `code` or `codes`, not both')
+  }
+  if (args.codes !== undefined && args.codes.length === 0) {
+    throw new Error('fund_research `codes` must be a non-empty array')
+  }
   const raw = args.codes ?? (args.code === undefined ? [] : [args.code])
   if (raw.length === 0) {
     throw new Error('fund_research requires `code` or a non-empty `codes` array')
@@ -152,7 +158,7 @@ function researchValueOf(run: ResearchRun, offline: boolean): ResearchValue {
 /** Validate the section selection against the known section ids. */
 function parseSections(input: string[] | undefined): SectionId[] | undefined {
   if (input === undefined) return undefined
-  const known = new Set<string>(['overview', 'performance', 'holdings', 'style', 'manager', 'risk', 'disclaimer', 'appendix'])
+  const known = new Set<string>(ALL_SECTIONS.filter(id => id !== 'appendix'))
   for (const section of input) {
     if (!known.has(section)) {
       throw new Error(`unknown section ${JSON.stringify(section)}; known: ${[...known].join(', ')}`)
