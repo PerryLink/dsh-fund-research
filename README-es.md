@@ -50,7 +50,7 @@ Cada cifra clave de cada informe se remonta a una instantánea fuente con hash �
 
 | Componente | Versión |
 |---|---|
-| DeepSeek Harness | `dsh-v0.2.1-alpha.1` (el rango de peers admite la línea alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). En esta línea el tercer parámetro de `Session.append` es un `SurfaceIntent` solo para tipos de superficie, así que los eventos de auditoría `fund-research/*` siguen sin registrarse (los resultados de herramientas y el snapshot/informe sellado son el rastro de auditoría). Verificado el 2026-09-24 (doble typecheck + 176 pruebas). |
+| DeepSeek Harness | `dsh-v0.2.1-rc.2` (el rango de peers admite la línea alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). En esta línea el tercer parámetro de `Session.append` es un `SurfaceIntent` solo para tipos de superficie, así que los eventos de auditoría `fund-research/*` siguen sin registrarse (los resultados de herramientas y el snapshot/informe sellado son el rastro de auditoría). Verificado el 2026-09-24 (doble typecheck + 176 pruebas). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Gestor de paquetes | `pnpm@11.7.0` |
 | Plataforma | Windows / macOS / Linux (plugin solo de host) |
@@ -133,7 +133,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 |---|---|---|
 | `code` | string | Código de fondo de seis dígitos, p. ej. `"161725"` (fondo único). Mutuamente excluyente con `codes`. |
 | `codes` | string[] | Varios códigos de seis dígitos: fan-out con aislamiento de fallos por fondo (devuelve un resumen). Mutuamente excluyente con `code`. |
-| `sections` | string[] | Secciones a renderizar (`overview`/`performance`/`holdings`/`style`/`manager`/`risk`/`disclaimer`). Por defecto: todas. |
+| `sections` | string[] | Secciones a renderizar (`overview`/`performance`/`holdings`/`style`/`manager`/`benchmark`/`risk`/`disclaimer`). Por defecto: todas. |
 | `offline` | boolean | Leer solo la capa de instantáneas (sin red). Por defecto: configuración del plugin. |
 | `asOfDate` | string | Corte ISO 8601 (`YYYY-MM-DD`): solo se usan datos en/o antes de esa fecha (serie NAV truncada). Vacío = sin corte; fechas futuras fallan en voz alta. |
 | `resume` | boolean | Reanuda la ejecución registrada en `.run-state.json` desde la primera etapa incompleta (reutiliza artefactos sellados); rechaza una huella que no coincida. Por defecto: `false`. |

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.24] - 2026-10-18
+
+### Changed
+
+- Docs: five READMEs name `dsh-v0.2.1-rc.2`; the `sections` lists include `benchmark` in every language; the limitation now states that `codes` is a multi-fund fan-out, not “one fund per call”.
+
 ## [0.4.23] - 2026-10-18
 
 ### Changed

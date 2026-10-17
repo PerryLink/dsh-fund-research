@@ -51,7 +51,7 @@ Every key number in every report traces back to a hashed source snapshot — gap
 
 | Component | Version |
 |---|---|
-| DeepSeek Harness | `dsh-v0.2.1-alpha.1` (peer range admits the alpha.2 line: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). On this line `Session.append`'s third parameter is a `SurfaceIntent` for surface-eligible types only, so the `fund-research/*` audit events stay unappended (the tool results and sealed snapshot/report remain the audit trail). Verified 2026-09-24 (dual typecheck rulers + 176 tests). |
+| DeepSeek Harness | `dsh-v0.2.1-rc.2` (peer range admits the alpha.2 line: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). On this line `Session.append`'s third parameter is a `SurfaceIntent` for surface-eligible types only, so the `fund-research/*` audit events stay unappended (the tool results and sealed snapshot/report remain the audit trail). Verified 2026-09-24 (dual typecheck rulers + 176 tests). |
 | Node.js | `^22.19.0 \|\| >=24.0.0` |
 | Package manager | `pnpm@11.7.0` |
 | Platform | Windows / macOS / Linux (host-only plugin) |
@@ -177,7 +177,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - **Upstream structure drift.** The parsers are strict by design: if Tiantian Fund changes a `var Data_*` shape or an F10 table layout, the affected source throws a `SourceParseError` naming the field, and the section degrades to a declared gap (the core pingzhongdata block failing aborts the run loudly). This is deliberate — a silent misparse is worse than a declared gap.
 - **Style attribution is估算口径.** Fixed size bands (≥1000亿 / 300–1000亿 / <300亿) and PE bands, plus within-holdings quintiles — no full-market distribution is consulted. The report labels this.
 - **Holdings are quarterly disclosure data** (披露滞后); the F10 page carries the latest two quarters.
-- **One fund per call; no portfolio analysis, no PDF annual reports, no real-time quotes** (the `fundgz.1234567.com.cn` realtime endpoint is dead and deliberately unused).
+- **Single-`code` calls are one fund; `codes` is a fan-out over multiple funds.** No cross-fund portfolio analysis, no PDF annual reports, no real-time quotes (the `fundgz.1234567.com.cn` realtime endpoint is dead and deliberately unused).
 - The Web UI "deliverables" turn row keys off mutation-tool call cards; this plugin's produced files surface through the tool call card's follow-along location (the fund's report directory), not per-file rows.
 
 ## Development
