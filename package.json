@@ -1,6 +1,6 @@
 {
   "name": "dsh-fund-research",
-  "version": "0.4.24",
+  "version": "0.4.25",
   "description": "Research plugin for Chinese public mutual funds on DeepSeek Harness: collects fund data from public sources (Tiantian Fund / Eastmoney), computes deterministic metrics (manager profile, holdings penetration, style attribution, performance decomposition), and seals versioned Markdown research reports whose every key number traces back to a hashed source snapshot. Research only — no trading, no investment advice.",
   "author": "dsh-fund-research contributors",
   "repository": {
@@ -129,10 +129,7 @@
       "optional": true
     }
   },
-  "dependencies": {
-    "tsdown": "^0.22.14",
-    "typescript": "^5.9.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@deepseek-ai/dsh-attachment": "0.2.1-rc.2",
     "@deepseek-ai/cordis": "^4.0.5-alpha.1",
@@ -156,7 +153,9 @@
     "oxlint": "0.18.1",
     "vitest": "^3.2.0",
     "zod": "4.4.3",
-    "@deepseek-ai/dsh-working-directory": "0.2.1-rc.2"
+    "@deepseek-ai/dsh-working-directory": "0.2.1-rc.2",
+    "tsdown": "^0.22.14",
+    "typescript": "^5.9.0"
   },
   "scripts": {
     "build": "node scripts/prepare.mjs",
