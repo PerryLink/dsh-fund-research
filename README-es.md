@@ -20,6 +20,11 @@
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-fund-research
+```
+
+
 </div>
 
 ---
@@ -28,6 +33,15 @@
 **📖 Base de conocimiento del ecosistema** — datos medidos, no marketing: [guía de desarrollo · datos de selección · criterios de mantenimiento](https://perrylink.github.io/dsh-plugin-guide/).
 
 <!-- star-cta -->
+## Install & uninstall
+
+```sh
+dsh plugin --profile web add dsh-fund-research     # instalar (npm o tarball)
+dsh plugin --profile web remove dsh-fund-research  # desinstalar
+```
+
+Reinicia el perfil tras instalar (la activación del bundle es por reinicio). Los perfiles incluidos componen la pila de almacenamiento mediante `dsh-base` (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`); el parche del bundle monta solo la fila del plugin.
+
 ## ⭐ 如果它帮到了你
 
 Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryLink) (más de 40, todos Apache-2.0). Si te resulta útil, **dale una estrella**: no desbloquea nada, pero ayuda a que la siguiente persona lo encuentre antes.
@@ -95,15 +109,6 @@ fund-reports/161725/20260819-153012/
 ```
 
 Cada cifra del apéndice de `report.md` lleva un veredicto `verified` / `mismatch` / `not-found` / `unverifiable` contra `snapshot.json` — recalcula cualquiera desde `raw.*` con las definiciones documentadas para auditar el propio plugin.
-
-## Install & uninstall
-
-```sh
-dsh plugin --profile web add dsh-fund-research     # instalar (npm o tarball)
-dsh plugin --profile web remove dsh-fund-research  # desinstalar
-```
-
-Reinicia el perfil tras instalar (la activación del bundle es por reinicio). Los perfiles incluidos componen la pila de almacenamiento mediante `dsh-base` (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`); el parche del bundle monta solo la fila del plugin.
 
 ## Configuration
 

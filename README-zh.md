@@ -20,6 +20,11 @@
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-fund-research
+```
+
+
 </div>
 
 ---
@@ -28,6 +33,15 @@
 **📖 生态实测知识库**（实测数据，不是营销）：[插件开发指南 · 选型实测数据 · 维护取舍判据](https://perrylink.github.io/dsh-plugin-guide/)。
 
 <!-- star-cta -->
+## Install & uninstall
+
+```sh
+dsh plugin --profile web add dsh-fund-research     # 安装（npm 或 tarball）
+dsh plugin --profile web remove dsh-fund-research  # 卸载
+```
+
+安装后重启 profile 生效（bundle 以重启方式激活）。官方随附的 profile 通过 dsh-base 组合存储栈（`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`）；bundle patch 只挂载插件行。
+
 ## ⭐ 如果它帮到了你
 
 这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
@@ -95,15 +109,6 @@ fund-reports/161725/20260819-153012/
 ```
 
 `report.md` 附录中每个数字都带 `verified` / `mismatch` / `not-found` / `unverifiable` 结论；任何人可用文档化口径从 `raw.*` 重算，对插件本身进行审计。
-
-## Install & uninstall
-
-```sh
-dsh plugin --profile web add dsh-fund-research     # 安装（npm 或 tarball）
-dsh plugin --profile web remove dsh-fund-research  # 卸载
-```
-
-安装后重启 profile 生效（bundle 以重启方式激活）。官方随附的 profile 通过 dsh-base 组合存储栈（`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`）；bundle patch 只挂载插件行。
 
 ## Configuration
 

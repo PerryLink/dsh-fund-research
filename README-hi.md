@@ -20,6 +20,11 @@
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-fund-research
+```
+
+
 </div>
 
 ---
@@ -28,6 +33,15 @@
 **📖 इकोसिस्टम नॉलेज बेस** — मापे गए आँकड़े, मार्केटिंग नहीं: [डेवलपमेंट गाइड · चयन डेटा · रखरखाव मानदंड](https://perrylink.github.io/dsh-plugin-guide/)।
 
 <!-- star-cta -->
+## Install & uninstall
+
+```sh
+dsh plugin --profile web add dsh-fund-research     # स्थापित करें (npm या tarball)
+dsh plugin --profile web remove dsh-fund-research  # हटाएँ
+```
+
+स्थापित करने के बाद प्रोफ़ाइल पुनः आरंभ करें (बंडल सक्रियण restart-आधारित है)। शिप किए गए प्रोफ़ाइल `dsh-base` के माध्यम से स्टोरेज स्टैक (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) बनाते हैं; बंडल पैच केवल प्लगइन पंक्ति माउंट करता है।
+
 ## ⭐ 如果它帮到了你
 
 यह प्लगइन [DSH प्लगइन परिवार](https://github.com/PerryLink) का हिस्सा है (40+ प्लगइन, सभी Apache-2.0)। अगर यह उपयोगी लगे, तो **एक स्टार दें** — इससे कोई सुविधा अनलॉक नहीं होती, पर अगला व्यक्ति इसे खोज में आसानी से पा लेता है।
@@ -95,15 +109,6 @@ fund-reports/161725/20260819-153012/
 ```
 
 `report.md` के परिशिष्ट में हर आँकड़ा `snapshot.json` के विरुद्ध `verified` / `mismatch` / `not-found` / `unverifiable` फैसला रखता है — दस्तावेज़ित口径 के साथ `raw.*` से इनमें से कोई भी पुनर्गणना करके प्लगइन की ही ऑडिट करें।
-
-## Install & uninstall
-
-```sh
-dsh plugin --profile web add dsh-fund-research     # स्थापित करें (npm या tarball)
-dsh plugin --profile web remove dsh-fund-research  # हटाएँ
-```
-
-स्थापित करने के बाद प्रोफ़ाइल पुनः आरंभ करें (बंडल सक्रियण restart-आधारित है)। शिप किए गए प्रोफ़ाइल `dsh-base` के माध्यम से स्टोरेज स्टैक (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`) बनाते हैं; बंडल पैच केवल प्लगइन पंक्ति माउंट करता है।
 
 ## Configuration
 
