@@ -117,7 +117,23 @@ fund-reports/161725/20260819-153012/
 
 #### विस्तृत उदाहरण
 
-- `fund_research`
+**कमांड**
+
+~~~sh
+fund_research({ code: "161725", sections: ["overview", "disclaimer"] })
+~~~
+
+**आउटपुट**
+
+~~~text
+招商中证白酒指数(LOF)A（161725）研究报告已封存 — 仅供研究参考，不构成投资建议
+版本目录 20261019-124928；报告 fund-reports/161725/20261019-124928/report.md
+manifest fund-reports/161725/20261019-124928/manifest.json（报告 sha256 f74b1446d544…）
+数字回溯表核查（builtin-fallback）：verified 5 / mismatch 0 / not-found 0 / unverifiable 0
+采集方式：快照复用（offline）；章节：overview、disclaimer
+~~~
+
+*स्रोत `README.md:99-113,149-161; test/tools.spec.ts:150-171; src/tools/research.ts:121-130`*
 
 #### संक्षिप्त उदाहरण
 
