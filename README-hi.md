@@ -135,6 +135,22 @@ manifest fund-reports/161725/20261019-124928/manifest.json（报告 sha256 f74b1
 
 *स्रोत `README.md:99-113,149-161; test/tools.spec.ts:150-171; src/tools/research.ts:121-130`*
 
+#### विफलता शाखा
+
+**इनपुट**
+
+~~~text
+{"code":"161725","asOfDate":"2024-02-30"}
+~~~
+
+**आउटपुट**
+
+~~~text
+isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-30"
+~~~
+
+*स्रोत `plugins/dsh-fund-research/src/sources/snapshot.ts:167 (parseAsOfDate); plugins/dsh-fund-research/README.md:173 (invalid dates fail loudly); exercised through plugins/dsh-fund-research/test/harness.ts`*
+
 #### संक्षिप्त उदाहरण
 
 - `fund_snapshot`
