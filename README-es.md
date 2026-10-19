@@ -210,7 +210,7 @@ Las pruebas usan los seams REALES `Context`/`SessionStore`/`ToolRuntime`/`LocalJ
 
 Sin contribuidores externos aún — 0 PRs/issues de la comunidad fusionados. Abre un issue con los formularios de `.github/ISSUE_TEMPLATE/` o un pull request contra `main` para aparecer aquí.
 
-## Familia de plugins DSH de PerryLink
+## PerryLink DSH Plugin Family
 
 Este proyecto forma parte de la familia de plugins de DeepSeek Harness de [PerryLink](https://github.com/PerryLink). El registro permanece plegado abajo para que cada README conserve una primera pantalla corta; expándelo para ver cada fila y su estado.
 
