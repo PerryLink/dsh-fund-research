@@ -55,11 +55,11 @@ Deterministic research reports for Chinese public mutual funds, on DeepSeek Harn
 
 Every key number in every report traces back to a hashed source snapshot — gaps declared, never invented. Research only; not investment advice.
 
-![Terminal demo of dsh-fund-research: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-hero.png)
+![Workflow diagram for dsh-fund-research: question → sealed sources → report.](docs/assets/dsh-fund-research-flow.svg)
 
-![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+*Workflow overview: question → sealed sources → report. The examples below use the real command surface.*
 
-*The same run, animated.*
+
 
 ## Compatibility
 
@@ -111,6 +111,18 @@ fund-reports/161725/20260819-153012/
 ```
 
 `.run-state.json` sits at the report root and records the pipeline stages for `resume: true`. Every number in `report.md`'s appendix carries a `verified` / `mismatch` / `not-found` / `unverifiable` verdict against `snapshot.json` — recompute any of them from `raw.*` with the documented口径 to audit the plugin itself.
+
+### Examples
+
+These are the plugin's real entry points; install once, then call one.
+
+#### Detailed example
+
+- `fund_research`
+
+#### Brief examples
+
+- `fund_snapshot`
 
 ## Configuration
 

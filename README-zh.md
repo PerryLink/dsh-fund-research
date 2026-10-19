@@ -54,9 +54,10 @@ DeepSeek Harness 上的中国公募基金确定性研究报告插件。
 
 报告中每个关键数字都可回溯到带哈希的源快照——缺口显式声明，绝不编造。仅供研究，不构成投资建议。
 
-![dsh-fund-research 终端演示：dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-hero.png)
+![dsh-fund-research 工作流图：问题 → 封存来源 → 报告。](docs/assets/dsh-fund-research-flow.svg)
 
-![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+*工作流概览：问题 → 封存来源 → 报告。下面的示例使用实际命令面。*
+
 
 *同一次运行，动图版。*
 
@@ -109,6 +110,18 @@ fund-reports/161725/20260819-153012/
 ```
 
 `report.md` 附录中每个数字都带 `verified` / `mismatch` / `not-found` / `unverifiable` 结论；任何人可用文档化口径从 `raw.*` 重算，对插件本身进行审计。
+
+### 示例
+
+以下为插件真实入口；安装后调用一个即可。
+
+#### 详细示例
+
+- `fund_research`
+
+#### 简短示例
+
+- `fund_snapshot`
 
 ## Configuration
 

@@ -54,9 +54,10 @@ DeepSeek Harness पर चीनी सार्वजनिक म्यूच
 
 हर रिपोर्ट का हर प्रमुख आँकड़ा हैश किए गए स्रोत स्नैपशॉट तक जाता है — अंतराल घोषित किए जाते हैं, कभी गढ़े नहीं जाते। केवल शोध; निवेश सलाह नहीं।
 
-![dsh-fund-research का टर्मिनल डेमो: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-hero.png)
+![dsh-fund-research कार्यप्रवाह आरेख: प्रश्न → सीलबंद स्रोत → रिपोर्ट।](docs/assets/dsh-fund-research-flow.svg)
 
-![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+*कार्यप्रवाह: प्रश्न → सीलबंद स्रोत → रिपोर्ट। नीचे के उदाहरण वास्तविक कमांड सतह का उपयोग करते हैं।*
+
 
 *वही रन, एनिमेटेड।*
 
@@ -109,6 +110,18 @@ fund-reports/161725/20260819-153012/
 ```
 
 `report.md` के परिशिष्ट में हर आँकड़ा `snapshot.json` के विरुद्ध `verified` / `mismatch` / `not-found` / `unverifiable` फैसला रखता है — दस्तावेज़ित口径 के साथ `raw.*` से इनमें से कोई भी पुनर्गणना करके प्लगइन की ही ऑडिट करें।
+
+### उदाहरण
+
+ये वास्तविक प्रवेश बिंदु हैं; इंस्टॉल के बाद एक चलाएँ।
+
+#### विस्तृत उदाहरण
+
+- `fund_research`
+
+#### संक्षिप्त उदाहरण
+
+- `fund_snapshot`
 
 ## Configuration
 

@@ -54,9 +54,10 @@ Informes de investigación deterministas para fondos mutuos públicos chinos, so
 
 Cada cifra clave de cada informe se remonta a una instantánea fuente con hash — los huecos se declaran, nunca se inventan. Solo para investigación; no es asesoramiento de inversión.
 
-![Demostración de terminal de dsh-fund-research: dsh-fund-research — one fund_research call, the sealed day directory](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-hero.png)
+![Diagrama de flujo de dsh-fund-research: pregunta → fuentes selladas → informe.](docs/assets/dsh-fund-research-flow.svg)
 
-![Animated terminal demo of dsh-fund-research](https://raw.githubusercontent.com/PerryLink/dsh-fund-research/main/docs/assets/dsh-fund-research-demo.gif)
+*Resumen del flujo: pregunta → fuentes selladas → informe. Los ejemplos siguientes usan la superficie de comandos real.*
+
 
 *La misma ejecución, animada.*
 
@@ -109,6 +110,18 @@ fund-reports/161725/20260819-153012/
 ```
 
 Cada cifra del apéndice de `report.md` lleva un veredicto `verified` / `mismatch` / `not-found` / `unverifiable` contra `snapshot.json` — recalcula cualquiera desde `raw.*` con las definiciones documentadas para auditar el propio plugin.
+
+### Ejemplos
+
+Son los puntos de entrada reales; instala y llama a uno.
+
+#### Ejemplo detallado
+
+- `fund_research`
+
+#### Ejemplos breves
+
+- `fund_snapshot`
 
 ## Configuration
 
