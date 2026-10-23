@@ -162,6 +162,7 @@ isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-
 | Key | Default | Description |
 |---|---|---|
 | `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
+| `promptSection` | `false` | 把简短的基金研究角色说明注册到部署级 system prompt。默认关闭；`true` 会对 profile 内每个 session 生效。 |
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | 天天基金 pingzhongdata 主机。 |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | 天天基金 F10 主机（持仓 + 经理页）。 |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | 东方财富行情主机（个股估值快照）。 |
@@ -212,6 +213,7 @@ isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-
 0.1.5-alpha.1（2026-09-09 已适配）：在新基线上复核门控——目录仍排除仓外事件，`Session.append` 仍无法盖 `ignorable` 信封，门控行为不变。
 0.1.5-rc.1（2026-09-10 已适配）：依赖钉号移至已发布的 0.1.5-rc.1 线；无接缝变化影响本插件行为。
 0.1.5-rc.2（2026-09-11 已适配）：依赖钉号移至已发布的 0.1.5-rc.2 线；无接缝变化影响本插件行为。
+- 基金研究角色说明是**可选开启**的（`promptSection: true`）；开启后作用于整个部署：profile 内所有能看到基金工具的 session 都会带上它，包括从未调用过基金工具的 session。
 
 ## Security boundaries
 

@@ -11,6 +11,7 @@ describe('resolveConfig', () => {
     const resolved = resolveConfig({})
     expect(resolved).toEqual({
       enabled: true,
+      promptSection: false,
       eastmoneyBaseUrl: 'https://fund.eastmoney.com',
       f10BaseUrl: 'https://fundf10.eastmoney.com',
       quoteBaseUrl: 'https://push2.eastmoney.com',
@@ -27,7 +28,8 @@ describe('resolveConfig', () => {
   })
 
   it('honors overrides', () => {
-    const resolved = resolveConfig({ requestIntervalMs: 2000, riskFreeRate: 0.03, offline: true, reportRoot: 'reports' })
+    const resolved = resolveConfig({ promptSection: true, requestIntervalMs: 2000, riskFreeRate: 0.03, offline: true, reportRoot: 'reports' })
+    expect(resolved.promptSection).toBe(true)
     expect(resolved.requestIntervalMs).toBe(2000)
     expect(resolved.riskFreeRate).toBe(0.03)
     expect(resolved.offline).toBe(true)

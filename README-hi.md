@@ -162,6 +162,7 @@ isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-
 | Key | Default | Description |
 |---|---|---|
 | `enabled` | `true` | मुख्य स्विच; `false` कुछ भी माउंट नहीं करता। |
+| `promptSection` | `false` | संपूर्ण डिप्लॉयमेंट के system prompt में संक्षिप्त फंड-रिसर्च भूमिका विवरण जोड़ता है। डिफ़ॉल्ट रूप से बंद; `true` प्रोफ़ाइल के हर सत्र पर लागू होता है। |
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Tiantian Fund pingzhongdata होस्ट। |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Tiantian Fund F10 होस्ट (होल्डिंग्स + प्रबंधक पृष्ठ)। |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | प्रति-स्टॉक मूल्यांकन स्नैपशॉट हेतु Eastmoney कोट होस्ट। |
@@ -212,6 +213,7 @@ isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-
 0.1.5-alpha.1 (2026-09-09 को अनुकूलित): नई बेसलाइन पर द्वार पुनः सत्यापित — कैटलॉग अभी भी रेपो-बाहरी इवेंट को बाहर रखता है और `Session.append` अभी भी `ignorable` लिफ़ाफ़ा स्टैम्प नहीं कर सकता, इसलिए द्वार व्यवहार अपरिवर्तित है।
 0.1.5-rc.1 (2026-09-10 को अनुकूलित): निर्भरता पिन प्रकाशित 0.1.5-rc.1 लाइन पर चले जाते हैं; कोई seam परिवर्तन इस plugin के व्यवहार को प्रभावित नहीं करता।
 0.1.5-rc.2 (2026-09-11 को अनुकूलित): निर्भरता पिन प्रकाशित 0.1.5-rc.2 लाइन पर चले जाते हैं; कोई seam परिवर्तन इस plugin के व्यवहार को प्रभावित नहीं करता।
+- फंड-रिसर्च भूमिका विवरण **वैकल्पिक** है (`promptSection: true`) और सक्षम होने पर पूरे डिप्लॉयमेंट पर लागू होता है: प्रोफ़ाइल के हर उस सत्र पर जिसे फंड टूल दिखते हैं, उन सत्रों पर भी जो उन्हें कभी नहीं चलाते।
 
 ## Security boundaries
 

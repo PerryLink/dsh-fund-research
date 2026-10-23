@@ -14,6 +14,12 @@ import z from '@deepseek-ai/schemastery'
 export interface Config {
   /** Master switch. `false` mounts nothing at all. Default true. */
   enabled?: boolean
+  /**
+   * Register the short fund-research role statement in the deployment-wide
+   * system prompt. Default false: the section would otherwise render for every
+   * session in the profile, including sessions that never call fund tools.
+   */
+  promptSection?: boolean
   /** Base URL of the Tiantian Fund pingzhongdata endpoint host. */
   eastmoneyBaseUrl?: string
   /** Base URL of the Tiantian Fund F10 host (fundf10). */
@@ -43,6 +49,7 @@ export interface Config {
 /** Fully resolved config handed to the runtime. */
 export interface ResolvedConfig {
   readonly enabled: boolean
+  readonly promptSection: boolean
   readonly eastmoneyBaseUrl: string
   readonly f10BaseUrl: string
   readonly quoteBaseUrl: string
@@ -60,6 +67,7 @@ export interface ResolvedConfig {
 /** Schemastery schema: the loader validates and fills defaults before `apply`. */
 export const Config: z<Config> = z.object({
   enabled: z.boolean().default(true),
+  promptSection: z.boolean().default(false),
   eastmoneyBaseUrl: z.string().default('https://fund.eastmoney.com'),
   f10BaseUrl: z.string().default('https://fundf10.eastmoney.com'),
   quoteBaseUrl: z.string().default('https://push2.eastmoney.com'),
@@ -136,6 +144,7 @@ export function resolveConfig(config: Config = {}): ResolvedConfig {
 
   return {
     enabled: config.enabled ?? true,
+    promptSection: config.promptSection ?? false,
     eastmoneyBaseUrl,
     f10BaseUrl,
     quoteBaseUrl,

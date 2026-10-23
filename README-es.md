@@ -162,6 +162,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 | Key | Default | Description |
 |---|---|---|
 | `enabled` | `true` | Interruptor maestro; `false` no monta nada. |
+| `promptSection` | `false` | Registra la breve declaración de rol de investigación de fondos en el system prompt de todo el despliegue. Desactivado por defecto; `true` la aplica a todas las sesiones del perfil. |
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Host pingzhongdata de Tiantian Fund. |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Host F10 de Tiantian Fund (páginas de posiciones y gestor). |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | Host de cotizaciones Eastmoney para valoraciones por acción. |
@@ -212,6 +213,7 @@ Todas las claves son opcionales (valores por defecto mostrados); los valores inv
 0.1.5-alpha.1 (adaptado el 2026-09-09): puerta re-verificada en la nueva base — el catálogo sigue excluyendo eventos externos y `Session.append` sigue sin poder estampar un sobre `ignorable`, por lo que el comportamiento de la puerta no cambia.
 0.1.5-rc.1 (adaptado el 2026-09-10): los pines de dependencias pasan a la línea publicada 0.1.5-rc.1; ningún cambio de seam afecta el comportamiento de este plugin.
 0.1.5-rc.2 (adaptado el 2026-09-11): los pines de dependencias pasan a la línea publicada 0.1.5-rc.2; ningún cambio de seam afecta el comportamiento de este plugin.
+- La declaración de rol de investigación de fondos es **opcional** (`promptSection: true`) y, cuando se activa, es para todo el despliegue: se aplica a todas las sesiones del perfil que ven las herramientas de fondos, incluidas las que nunca las usan.
 
 ## Security boundaries
 

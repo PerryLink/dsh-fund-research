@@ -13,6 +13,10 @@
       config:
         # Master switch. On by default; `false` mounts nothing at all.
         enabled: true
+        # Register the short fund-research role statement in the deployment-wide
+        # system prompt. Off by default; `true` applies it to every session in
+        # the profile (issue #17).
+        promptSection: false
         # Data-source endpoints (public Tiantian Fund / Eastmoney pages; no
         # key, no login). Override only to point at a mirror.
         eastmoneyBaseUrl: 'https://fund.eastmoney.com'

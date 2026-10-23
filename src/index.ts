@@ -80,7 +80,16 @@ export type { ToolDeps, ResearchRun, ResearchOptions, SnapshotCardRun, FundRunSu
 // and skills services (local interfaces, never imported).
 /** The structural surface of the optional `ctx.systemPrompt` service (section registration only). */
 interface SystemPromptLike {
-  section(section: { name: string, order: number, text: string }): () => void
+  section(section: {
+    name: string
+    order: number
+    text: string | ((context: { scope?: unknown }) => string)
+  }): () => void
+}
+
+/** The structural surface of the tools registry used by the conditional prompt text. */
+interface ToolsLike {
+  get(name: string, scope?: unknown): unknown
 }
 
 /** The structural surface of the optional `ctx.skills` service (provider registration only). */
@@ -138,18 +147,23 @@ export async function apply(ctx: Context, config: Config = {}): Promise<void> {
   // the tools. The assembled prompt is logged via request/header events.
   // Consumer — reads the optional systemPrompt (and skills below) through
   // ctx.get so the plugin still activates when those services are not mounted.
-  const systemPrompt = ctx.get('systemPrompt') as unknown as SystemPromptLike | undefined
-  if (systemPrompt !== undefined && typeof systemPrompt.section === 'function') {
-    ctx.effect(() => systemPrompt.section({
-      name: 'fund-research',
-      order: 150,
-      text: [
-        '你是基金研究助手：经 fund_snapshot / fund_research 获取中国公募基金数据与版本化研究报告；所有指标由插件确定性计算，禁止心算或编造数字。',
-        '报告与表述仅供研究参考，不构成投资建议；引用结论时保留数据截止（asOf）与缺口声明。方法论细节见 fund-research skill。',
-      ].join('\n'),
-    }), 'dsh-fund-research: prompt section')
-  } else {
-    logger.info('systemPrompt service not mounted; skipping the prompt section')
+  if (resolved.promptSection) {
+    const systemPrompt = ctx.get('systemPrompt') as unknown as SystemPromptLike | undefined
+    if (systemPrompt !== undefined && typeof systemPrompt.section === 'function') {
+      const tools = ctx.tools as unknown as ToolsLike
+      ctx.effect(() => systemPrompt.section({
+        name: 'fund-research',
+        order: 1900,
+        text: ({ scope }) => {
+          const snapshot = tools.get('fund_snapshot', scope) !== undefined
+          const research = tools.get('fund_research', scope) !== undefined
+          if (!snapshot && !research) return ''
+          return '处理中国公募基金任务时，使用 fund_snapshot / fund_research 获取数据与版本化报告；指标由插件确定性计算，引用结论时保留数据截止（asOf）与缺口声明；结论仅供研究参考，不构成投资建议。方法论见 fund-research skill。'
+        },
+      }), 'dsh-fund-research: prompt section')
+    } else {
+      logger.info('systemPrompt service not mounted; skipping the prompt section')
+    }
   }
 
   // Bundled methodology skill via the official filesystem provider. Dynamic

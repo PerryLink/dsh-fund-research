@@ -162,6 +162,7 @@ Todas as chaves são opcionais (padrões mostrados); valores inválidos falham r
 | Key | Default | Description |
 |---|---|---|
 | `enabled` | `true` | Interruptor mestre; `false` não monta nada. |
+| `promptSection` | `false` | Registra a breve declaração de função de pesquisa de fundos no system prompt de toda a implantação. Desativado por padrão; `true` aplica a todas as sessões do perfil. |
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Host pingzhongdata do Tiantian Fund. |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Host F10 do Tiantian Fund (páginas de posições e gestor). |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | Host de cotações Eastmoney para snapshots de avaliação por ação. |
@@ -212,6 +213,7 @@ Todas as chaves são opcionais (padrões mostrados); valores inválidos falham r
 0.1.5-alpha.1 (adaptado em 2026-09-09): porta re-verificada na nova base — o catálogo ainda exclui eventos externos e `Session.append` ainda não consegue estampar um envelope `ignorable`, então o comportamento da porta não muda.
 0.1.5-rc.1 (adaptado em 2026-09-10): os pins de dependências passam para a linha publicada 0.1.5-rc.1; nenhuma mudança de seam afeta o comportamento deste plugin.
 0.1.5-rc.2 (adaptado em 2026-09-11): os pins de dependências passam para a linha publicada 0.1.5-rc.2; nenhuma mudança de seam afeta o comportamento deste plugin.
+- A declaração de função de pesquisa de fundos é **opcional** (`promptSection: true`) e, quando ativada, vale para toda a implantação: aplica-se a todas as sessões do perfil que veem as ferramentas de fundos, inclusive as que nunca as usam.
 
 ## Security boundaries
 

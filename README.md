@@ -163,6 +163,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 | Key | Default | Description |
 |---|---|---|
 | `enabled` | `true` | Master switch; `false` mounts nothing at all. |
+| `promptSection` | `false` | Register the short fund-research role statement in the deployment-wide system prompt. Off by default; `true` applies it to every session in the profile. |
 | `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Tiantian Fund pingzhongdata host. |
 | `f10BaseUrl` | `https://fundf10.eastmoney.com` | Tiantian Fund F10 host (holdings + manager pages). |
 | `quoteBaseUrl` | `https://push2.eastmoney.com` | Eastmoney quote host for per-stock valuation snapshots. |
@@ -213,6 +214,7 @@ All keys are optional (defaults shown); invalid values fail loudly at load.
 - 0.1.5-alpha.1 (adapted 2026-09-09): re-verified the gate on the new baseline — the catalog still excludes out-of-repo events and `Session.append` still cannot stamp an `ignorable` envelope, so audit-gate behavior is unchanged.
 - 0.1.5-rc.1 (adapted 2026-09-10): dependency pins move to the published 0.1.5-rc.1 line; no seam change affects this plugin's behavior.
 - 0.1.5-rc.2 (adapted 2026-09-11): dependency pins move to the published 0.1.5-rc.2 line; no seam change affects this plugin's behavior.
+- The fund-research role statement is **opt-in** (`promptSection: true`) and, when enabled, is deployment-wide: it applies to every session in the profile that sees the fund tools, including sessions that never call them.
 
 ## Security boundaries
 

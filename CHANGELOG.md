@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0] - 2026-10-23
+
+### Changed
+
+- **The fund-research system-prompt section is now opt-in and tool-scoped (issue #17).** The section was registered globally from the plugin's profile-root context, so every session in the profile received the “基金研究助手” persona, including unrelated work. `promptSection` now defaults to `false`; set it to `true` to restore the section. When enabled it is registered at order 1900 (tool-guidance band) with a render-time text that returns empty unless `fund_snapshot` / `fund_research` are visible in the assembling scope, and the copy no longer claims the assistant's identity. `true` remains deployment-wide for scopes that see the tools, including sessions that never call them; mount the row in a preset for per-session isolation. All five READMEs document the key and the opt-in semantics.
+
 ## [0.4.25] - 2026-10-18
 
 ### Changed
