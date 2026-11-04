@@ -39,13 +39,14 @@ describe.skipIf(!LIVE)('fund_research (live network)', () => {
     const fiber = await base.ctx.plugin(plugin as never, {} as never)
     fibers.push(fiber)
 
-    const result = await base.ctx.tools.execute({
-      callId: CallId('fund-e2e-live-call'),
-      name: 'fund_research',
-      arguments: { code: CODE },
+    // 0.2.2: execute() takes a batch and settles one result per call.
+    const batch = await base.ctx.tools.execute({
+      calls: [{ type: 'tool-call', id: CallId('fund-e2e-live-call'), name: 'fund_research', arguments: JSON.stringify({ code: CODE }) }],
       agent: base.agent,
       signal: new AbortController().signal,
     })
+    const result = batch.results[0]?.result
+    if (result === undefined) throw new Error('fund_research settled no result')
     expect(result.isError, JSON.stringify(result.error)).toBe(false)
     const value = result.value as Record<string, unknown>
     expect(value.kind).toBe('sealed')

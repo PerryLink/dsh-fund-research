@@ -97,13 +97,14 @@ describe('quality in the tool value (real harness)', () => {
     const fiber = await base.ctx.plugin(plugin as never, { offline: true } as never)
     fibers.push(fiber)
 
-    const result = await base.ctx.tools.execute({
-      callId: CallId('fund-quality-spec'),
-      name: 'fund_research',
-      arguments: { code: FIXTURE_CODE },
+    // 0.2.2: execute() takes a batch and settles one result per call.
+    const batch = await base.ctx.tools.execute({
+      calls: [{ type: 'tool-call', id: CallId('fund-quality-spec'), name: 'fund_research', arguments: JSON.stringify({ code: FIXTURE_CODE }) }],
       agent: base.agent,
       signal: new AbortController().signal,
     })
+    const result = batch.results[0]?.result
+    if (result === undefined) throw new Error('fund_research settled no result')
     expect(result.isError).toBe(false)
     const value = result.value as { sourceQuality: Array<{ source: string, requested: number, degraded: boolean }> }
     expect(Array.isArray(value.sourceQuality)).toBe(true)

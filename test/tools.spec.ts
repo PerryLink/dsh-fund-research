@@ -36,13 +36,17 @@ let callCounter = 0
 /** Dispatch one tool call through the real registry. */
 async function callTool(base: BaseHarness, name: string, args: unknown): Promise<ToolExecutionResult> {
   callCounter += 1
-  return base.ctx.tools.execute({
-    callId: CallId(`fund-tools-spec-${callCounter}`),
-    name,
-    arguments: args,
+  // 0.2.2: execute() takes a whole batch and settles one result per call.
+  const encoded = JSON.stringify(args)
+  if (encoded === undefined) throw new TypeError('tool arguments must encode as JSON')
+  const batch = await base.ctx.tools.execute({
+    calls: [{ type: 'tool-call', id: CallId(`fund-tools-spec-${callCounter}`), name, arguments: encoded }],
     agent: base.agent,
     signal: new AbortController().signal,
   })
+  const outcome = batch.results[0]
+  if (outcome === undefined) throw new Error(`tool executor settled no result for ${name}`)
+  return outcome.result
 }
 
 /** Mount a base, seed the snapshot domain, then mount the plugin offline. */

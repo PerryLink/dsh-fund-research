@@ -15,9 +15,11 @@ import path from 'node:path'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import Storage from '@deepseek-ai/dsh-storage'
 import AgentRegistry from '@deepseek-ai/dsh-agent'
+import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import LocalJobRegistry from '@deepseek-ai/dsh-jobs-local'
 import { DomainFacility } from '@deepseek-ai/dsh-storage-domain'
 import ToolRuntime from '@deepseek-ai/dsh-tools'
+import * as NativeToolExecutor from '@deepseek-ai/dsh-tool-executor-native'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import { MemoryStorageBackend } from './helpers/memory-backend.ts'
 
@@ -92,6 +94,10 @@ export async function mountBase(sessionId = 'fund-harness', options: { jobs?: bo
   ctx.provide('storageDomain', facility)
   ctx.provide('systemPrompt', { tools: () => () => undefined, section: () => () => undefined, context: () => () => undefined } as never)
   await ctx.plugin(ToolRuntime)
+  // 0.2.2: raw batch execution lives behind a pluggable executor.
+  await ctx.plugin(NativeToolExecutor)
+  // 0.2.2: AgentRegistry injects the projection registry.
+  await ctx.plugin(SessionProjectionRegistry)
   await ctx.plugin(AgentRegistry)
   if (options.jobs !== false) {
     await ctx.plugin(LocalJobRegistry)
