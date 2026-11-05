@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-label="dsh-fund-research pipeline">
+<title>dsh-fund-research pipeline</title>
+<rect width="1200" height="400" rx="18" fill="#ffffff"/>
+<text x="60" y="62" fill="#1f2328" font-family="ui-sans-serif,system-ui,sans-serif" font-size="30" font-weight="700">dsh-fund-research</text>
+<text x="60" y="94" fill="#57606a" font-family="ui-monospace,monospace" font-size="16">fund_research · pingzhongdata → snapshot.json → report.md</text>
+<line x1="60" y1="116" x2="1140" y2="116" stroke="#d0d7de"/>
+<rect x="60" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="150" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">fund_research</text>
+<text x="150" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">code · codes</text>
+<path d="M246 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M277 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="285" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#4B67B4" stroke-width="2"/>
+<text x="375" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">pingzhongdata</text>
+<text x="375" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">F10 · push2 · TTL</text>
+<path d="M471 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M502 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="510" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="600" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">snapshot.json</text>
+<text x="600" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">sha256 · asOfDate</text>
+<path d="M696 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M727 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="735" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="825" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">verify</text>
+<text x="825" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">dataQuality | fallback</text>
+<path d="M921 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M952 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="960" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#16a34a" stroke-width="2"/>
+<text x="1050" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">report.md</text>
+<text x="1050" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">manifest.json · seal</text>
+<path d="M600 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<path d="M1050 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<rect x="510" y="285" width="630" height="52" rx="12" fill="#f6f8fa" stroke="#4B67B4" stroke-width="2"/>
+<text x="825" y="307" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13">verify engine: dataQuality | builtin-fallback</text>
+<text x="825" y="327" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">value ↔ snapshot.json path · recorded in manifest.json</text>
+<text x="60" y="378" fill="#57606a" font-family="ui-monospace,monospace" font-size="12">fund-reports/{code}/{YYYYMMDD-HHmmss}/ · sources-discovery.json · report.md · manifest.json · .run-state.json · .tracking.jsonl</text>
+</svg>

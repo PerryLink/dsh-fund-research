@@ -1,285 +1,355 @@
 <div align="center">
 
-# 📊 dsh-fund-research
-- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-fund-research` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
-[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-fund-research)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-dark.svg">
+  <img src="docs/assets/dsh-fund-research-flow-light.svg" width="100%" alt="dsh-fund-research 管线：fund_research → pingzhongdata / F10 / push2 → snapshot.json → 数字核查 → report.md + manifest.json 封存">
+</picture>
+
+# dsh-fund-research
+
+**输入六位基金代码，拿到一份每个数字都可回溯、缺口显式声明的封存研究报告。**
+
+面向 DeepSeek Harness 的中国公募基金研究插件：从天天基金 / 东方财富公开端点礼貌采集，指标全部由代码确定性计算，报告与源快照一起封存进工作区——仅供研究，不构成投资建议。
+
+[安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
+[![DSH](https://img.shields.io/badge/DSH-%E2%89%A50.2.1%20%3C0.3.0-4B67B4?style=flat-square&labelColor=2B3245)](#兼容性)
+[![npm](https://img.shields.io/npm/v/dsh-fund-research?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-fund-research)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI&style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-fund-research/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-339933?style=flat-square&labelColor=2B3245)](#兼容性)
+
+[![Stars](https://img.shields.io/github/stars/PerryLink/dsh-fund-research?style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-fund-research/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-fund-research)
 [![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-fund-research?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-fund-research?ref=badge)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-fund-research/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-fund-research)
-
-**Deterministic research reports for Chinese public mutual funds, on DeepSeek Harness.**
-
-*Every key number in every report traces back to a hashed source snapshot — gaps declared, never invented. Research only; not investment advice.*
-
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![DSH plugin](https://img.shields.io/badge/dsh--plugin-🧩-green)](https://github.com/topics/dsh-plugin)
-[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-fund-research.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
-[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
-[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
-[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-fund-research/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-fund-research/actions)
-[![npm version](https://img.shields.io/npm/v/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
-[![npm downloads](https://img.shields.io/npm/dm/dsh-fund-research)](https://www.npmjs.com/package/dsh-fund-research)
-
-[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-fund-research/badge)](https://securityscorecards.dev/viewer/?uri=github.com/PerryLink/dsh-fund-research)
+[![DSH Market](https://img.shields.io/badge/DSH_Market-listed-4B67B4?style=flat-square&labelColor=2B3245)](https://dsh.market/)
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-C71D23?style=flat-square&labelColor=2B3245&logo=gitee)](https://gitee.com/perrylink/dsh-fund-research)
 
 ```sh
 dsh plugin --profile <name> add dsh-fund-research
 ```
 
-
 </div>
 
----
+<sub>社区插件，与 DeepSeek 官方无关。唯一仓库：<https://github.com/PerryLink/dsh-fund-research>（Gitee 为镜像）。</sub>
 
-**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+## 它是什么
 
-<!-- star-cta -->
-## Install & uninstall
+给模型一个六位基金代码，`dsh-fund-research` 会采集这只基金的公开数据、跑一套确定性指标、在封存前把每个关键数字对照源快照核查一遍，然后把报告连同快照、采集记录与清单一起写进工作区。报告附录里每个数字都有「数值 ↔ 快照 JSON 路径 ↔ 核查结论」的对应关系——你可以按文档口径从 `raw.*` 重算，反过来审计插件本身。数据源失败或降级时，报告里会出现显式的「数据缺口」声明，插件绝不用编造的数字填坑。纯宿主插件：不交易、不预测、不构成投资建议。
 
-```sh
-dsh plugin --profile web add dsh-fund-research     # install (npm or tarball)
-dsh plugin --profile web remove dsh-fund-research  # uninstall
-```
+## 三步上手
 
-Restart the profile after installing (bundle activation is restart-based). The shipped profiles compose the storage stack through `dsh-base` (`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`); the bundle patch mounts only the plugin row.
+1. **安装**（三选一）：
 
-## ⭐ 如果它帮到了你
+   ```sh
+   # npm 通道（已发布版本）
+   dsh plugin --profile web add dsh-fund-research
+   # git 通道（最新 main）
+   dsh plugin --profile web add github:PerryLink/dsh-fund-research
+   # tarball 通道：本仓库 pnpm pack 后
+   dsh plugin --profile web add ./dsh-fund-research-<version>.tgz
+   ```
 
-这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（95 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+   安装后重启 profile 生效（bundle 以重启方式激活）。官方随附的 profile 通过 `dsh-base` 组合存储栈（`dsh-storage` + `dsh-storage-json` + `dsh-storage-domain`）；bundle patch 只挂载插件行。裸 profile 需自行组合存储栈，否则插件无法挂载。
 
-*English:* part of a 95 plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+2. **最小配置**（默认可跑；按需覆盖报告根目录与采集策略）：
 
+   ```yaml
+   - insert:
+       - id: dsh-fund-research
+         name: dsh-fund-research
+         config:
+           offline: false
+           reportRoot: fund-reports
+           cacheTtlHours: 12
+   ```
 
-## What is dsh-fund-research?
+3. **验证已生效**：对 agent 说一句即可，插件会调用 `fund_research`：
 
-Deterministic research reports for Chinese public mutual funds, on DeepSeek Harness.
+   ```text
+   > 用 fund_research 出一份 161725 的研究报告
+   ```
 
-Every key number in every report traces back to a hashed source snapshot — gaps declared, never invented. Research only; not investment advice.
+   片刻后工作区内出现版本化目录：
 
-![Workflow diagram for dsh-fund-research: question → sealed sources → report.](docs/assets/dsh-fund-research-flow.svg)
+   ```text
+   fund-reports/161725/20260819-153012/
+   ├── snapshot.json            # 原始提取数据 + 确定性计算 + 逐源 sha256
+   ├── sources-discovery.json   # 代码生成的端点清单 + 覆盖 + 缺口
+   ├── report.md                # 带数字回溯表附录的研究报告
+   └── manifest.json            # 快照/报告哈希、参数、核查引擎、缺口
+   ```
 
-*Workflow overview: question → sealed sources → report. The examples below use the real command surface.*
+**卸载**：`dsh plugin --profile web remove dsh-fund-research`（或从 profile patch 删掉该行）。
 
+### 示例
 
+以下为插件真实入口；安装后调用一个即可。
 
-## Compatibility
-
-| Component | Version |
-|---|---|
-| DeepSeek Harness | `dsh-v0.2.1-rc.2` (peer range admits the alpha.2 line: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). On this line `Session.append`'s third parameter is a `SurfaceIntent` for surface-eligible types only, so the `fund-research/*` audit events stay unappended (the tool results and sealed snapshot/report remain the audit trail). Verified 2026-09-24 (dual typecheck rulers + 176 tests). |
-| Node.js | `^22.19.0 \|\| >=24.0.0` |
-| Package manager | `pnpm@11.7.0` |
-| Platform | Windows / macOS / Linux (host-only plugin) |
-| Data sources | Tiantian Fund / Eastmoney public endpoints (no key, no login) |
-
-## What you get
-
-- **`fund_research` tool** — one fund code in, a versioned Markdown research report out: overview, performance decomposition, holdings penetration, simplified style attribution, manager profile, risk & gap declarations, disclaimer, and a **number-traceability appendix** mapping every key figure to its snapshot JSON path and verification verdict. Sealed to `fund-reports/{code}/{YYYYMMDD-HHmmss}/` as `report.md` + `manifest.json` + `snapshot.json`. `background: true` runs it as a `fund-report` background job.
-- **`fund_snapshot` tool** — a light snapshot card (latest NAV, published stage returns, scale, manager, top-3 holdings) sealed into the fund's day directory.
-- **Deterministic metrics, zero model arithmetic** — period/annualized return, volatility, max drawdown, Sharpe; top-N concentration, HHI, industry distribution, quarter-over-quarter holdings comparison; size-value style bands; manager tenure and peer comparison. All pure functions over the sealed snapshot.
-- **Traceability as a first-class feature** — before sealing, every key number is checked against the sealed `snapshot.json` through the optional [`dsh-data-quality`](https://github.com/topics/dsh-plugin) service when it is installed, or through the built-in isomorphic fallback checker (`builtin-fallback`) otherwise. The appendix table records value ↔ path ↔ verdict.
-- **Honest gaps** — a failed or degraded data source produces an explicit data-gap declaration in the affected section. The plugin never fills a gap with an invented number.
-- **Offline mode** — `offline: true` (config or tool argument) serves everything from the storage-domain snapshot layer or the newest on-disk version snapshot, with zero outbound requests. Ideal for tests and reproduction.
-- **asOf cutoff** — `asOfDate` (ISO `YYYY-MM-DD`) truncates the NAV series to data on or before that date and stamps the snapshot + report with the cutoff; invalid or future dates fail loudly.
-- **Checkpoint resume** — `<reportRoot>/.run-state.json` records each pipeline stage (snapshot/report) with timestamps and an input fingerprint; `resume: true` continues from the first incomplete stage, reusing sealed artifacts, and rejects a fingerprint mismatch.
-- **Source discovery record** — every acquisition seals a code-generated `sources-discovery.json` (endpoint roster, primary/fallback resolution, per-source coverage and gaps, degradation reasons) and folds it into the report appendix as 数据源与缺口声明.
-- **Multi-fund fan-out** — `codes` accepts an array of fund codes; each fund runs the pipeline independently with per-fund failure isolation (failures become summary gaps), and the result is a summary card (code / asOf / seal hash / verdicts / failure reason).
-- **Tracking ledger** — every successful seal appends a deterministic line to `<reportRoot>/.tracking.jsonl`; `includeComparison: true` renders a deterministic 与上次对比 section (NAV range / scale / top holdings) with a gap declaration when no prior record exists.
-- **Read-only review** — after sealing, a `fund-review` job reviews the sealed artifacts (gap-declaration completeness, traceability-table consistency, disclaimer) and writes `review-note.md`; it skips gracefully (recorded in run-state) when no jobs service is present.
-- **Per-source quality signals** — every source carries deterministic quality metadata (`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`), rendered in the appendix and surfaced in tool values so downstream can downweight (never hard-filter) a low-quality source.
-- **Walk-forward stability summary** — `includeWalkForward: true` adds a 样本外稳定性摘要 section: deterministic rolling-window return/Sharpe sign persistence and mean/std, explicitly labelled as statistical description only, not a prediction.
-- **Session audit events (host-dependent)** — `fund-research/snapshot` and `fund-research/report` log-only events carry the code, version directory, manifest hash, and gap list (model-visible ⟺ logged) *when the host admits out-of-repo event types*; on `0.1.2-alpha.1`–`0.1.5-alpha.1` hosts the known-type catalog is build-generated in-repo, so the gate appends nothing and the tool results plus sealed artifacts are the audit trail.
-- **Methodology skill** — a bundled `fund-research` skill teaches the model the metric口径 (definitions), gap handling, and compliance wording. Computation stays in code.
-
-## Quick start
+**详细示例** —— 命令：
 
 ```sh
-dsh plugin --profile web add github:PerryLink/dsh-fund-research
-```
-
-```text
-> 用 fund_research 出一份 161725 的研究报告
-```
-
-The agent calls `fund_research({ code: "161725" })`; a minute later the workspace holds:
-
-```text
-fund-reports/161725/20260819-153012/
-├── snapshot.json            # raw extracted data + computed metrics + per-source sha256
-├── sources-discovery.json   # code-generated endpoint roster + coverage + gaps
-├── report.md                # the research report with the traceability appendix
-└── manifest.json            # snapshot/report hashes, parameters, verify engine, gaps
-```
-
-`.run-state.json` sits at the report root and records the pipeline stages for `resume: true`. Every number in `report.md`'s appendix carries a `verified` / `mismatch` / `not-found` / `unverifiable` verdict against `snapshot.json` — recompute any of them from `raw.*` with the documented口径 to audit the plugin itself.
-
-### Examples
-
-These are the plugin's real entry points; install once, then call one.
-
-#### Detailed example
-
-**Command**
-
-~~~sh
 fund_research({ code: "161725", sections: ["overview", "disclaimer"] })
-~~~
+```
 
-**Output**
+输出：
 
-~~~text
+```text
 招商中证白酒指数(LOF)A（161725）研究报告已封存 — 仅供研究参考，不构成投资建议
 版本目录 20261019-124928；报告 fund-reports/161725/20261019-124928/report.md
 manifest fund-reports/161725/20261019-124928/manifest.json（报告 sha256 f74b1446d544…）
 数字回溯表核查（builtin-fallback）：verified 5 / mismatch 0 / not-found 0 / unverifiable 0
 采集方式：快照复用（offline）；章节：overview、disclaimer
-~~~
+```
 
 *Observed from `README.md:99-113,149-161; test/tools.spec.ts:150-171; src/tools/research.ts:121-130`*
 
-#### Failure branch
+**失败分支** —— 输入：
 
-**Input**
-
-~~~text
+```text
 {"code":"161725","asOfDate":"2024-02-30"}
-~~~
+```
 
-**Output**
+输出：
 
-~~~text
+```text
 isError=true; error.message=asOfDate must be a real calendar date, got "2024-02-30"
-~~~
+```
 
 *Observed from `plugins/dsh-fund-research/src/sources/snapshot.ts:167 (parseAsOfDate); plugins/dsh-fund-research/README.md:173 (invalid dates fail loudly); exercised through plugins/dsh-fund-research/test/harness.ts`*
 
-#### Brief examples
+**简短示例**：`fund_snapshot`
 
-- `fund_snapshot`
+## 核心能力
 
-## Configuration
+`dsh-fund-research` 把一次基金研究拆成「采集 → 计算 → 核查 → 封存」四段，每一步都留下可复核的产物：
 
-All keys are optional (defaults shown); invalid values fail loudly at load.
+- **`fund_research` 工具** —— 输入基金代码，产出版本化 Markdown 研究报告：概览、业绩拆解、持仓穿透、风格归因（简版）、经理画像、同类/指数基准对比、风险与缺口声明、免责声明，以及**数字回溯表附录**——把每个关键数字映射到快照 JSON 路径与核查结论。封存到 `fund-reports/{code}/{YYYYMMDD-HHmmss}/`：`report.md` + `manifest.json` + `snapshot.json`。`background: true` 可作为 `fund-report` 后台任务运行。
+- **`fund_snapshot` 工具** —— 轻量快照卡（最新净值、发布口径阶段收益、规模、经理、前三大重仓），封存进该基金当日目录。
+- **确定性指标，零模型心算** —— 区间/年化收益、波动率、最大回撤、Sharpe；前 N 大集中度、HHI、行业分布、重仓环比；规模-估值风格分档；经理任期与同类对比。全部是作用于封存快照的纯函数。
+- **回溯是第一卖点** —— 封存前，每个关键数字都会对照封存的 `snapshot.json` 核查：安装了 [`dsh-data-quality`](https://github.com/topics/dsh-plugin) 时走该服务，否则走内置同构兜底核查（`builtin-fallback`）。附录表记录 数值 ↔ 路径 ↔ 结论。
+- **诚实缺口** —— 数据源失败或降级时，对应章节显式渲染「数据缺口」声明；插件绝不用编造的数字填坑。
+- **离线模式** —— `offline: true`（配置或工具参数）下一切从存储域快照层或最新磁盘版本快照读取，零外呼。适合测试与复现。
+- **asOf 截点** —— `asOfDate`（ISO `YYYY-MM-DD`）把净值序列截断到该日期（含）之前，并在快照与报告中标注截点；非法或未来日期响亮失败。
+- **断点续跑** —— `<reportRoot>/.run-state.json` 记录各阶段（快照/报告）进度、时间戳与输入指纹；`resume: true` 从首个未完成阶段继续，复用封存产物，指纹不匹配则拒绝。
+- **数据源发现记录** —— 每次采集封存代码生成的 `sources-discovery.json`（端点清单、主/回退源、逐源覆盖与缺口、降级原因），并作为「数据源与缺口声明」并入报告附录。
+- **多基金 fan-out** —— `codes` 接受基金代码数组：逐基金独立跑管线、失败隔离（失败项进入汇总缺口），输出汇总卡（code / asOf / seal 哈希 / verdicts / 失败原因）。
+- **追踪账本** —— 每次成功封存向 `<reportRoot>/.tracking.jsonl` 确定性追加一行；`includeComparison: true` 时渲染确定性的「与上次对比」章节（净值区间 / 规模 / 前 N 重仓），无上一期记录则声明缺口。
+- **只读复核** —— 封存后派生 `fund-review` 只读复核 job（缺口声明完整性、数字回溯表一致性、免责声明）并写回 `review-note.md`；无 jobs 服务时优雅跳过（记录于状态文件）。
+- **逐源质量信号** —— 每源携带确定性质量元数据（`requested`/`succeeded`/`fieldsPresent`/`parseWarnings`/`degraded`），呈现在附录并进入工具值，供下游降权（而非硬过滤）低质量源。
+- **样本外稳定性摘要** —— `includeWalkForward: true` 追加「样本外稳定性摘要」章节：确定性滚动窗口的收益/夏普符号持续率与均值/标准差，显式标注仅为统计描述、不构成预测。
+- **会话审计事件（取决于宿主）** —— 宿主允许仓外事件类型时，`fund-research/snapshot` 与 `fund-research/report` 仅日志事件携带代码、版本目录、manifest 哈希与缺口清单（模型可见 ⟺ 已记录）；在 `0.1.2-alpha.1`–`0.1.5-alpha.1` 宿主上，已知类型目录是构建期生成的仓内清单，门控不追加任何事件，工具结果与封存产物即审计轨迹。
+- **方法论 skill** —— 内置 `fund-research` skill 教模型指标口径、缺口处理与合规话术；计算始终在代码里。
 
-| Key | Default | Description |
+### 工具与表面
+
+**`fund_research` 参数**：
+
+| 参数 | 类型 | 说明 |
 |---|---|---|
-| `enabled` | `true` | Master switch; `false` mounts nothing at all. |
-| `promptSection` | `false` | Register the short fund-research role statement in the deployment-wide system prompt. Off by default; `true` applies it to every session in the profile. |
-| `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | Tiantian Fund pingzhongdata host. |
-| `f10BaseUrl` | `https://fundf10.eastmoney.com` | Tiantian Fund F10 host (holdings + manager pages). |
-| `quoteBaseUrl` | `https://push2.eastmoney.com` | Eastmoney quote host for per-stock valuation snapshots. |
-| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | Fallback quote host tried per stock when the primary fails (Eastmoney's own delayed-quote host); `''` disables it. |
-| `requestIntervalMs` | `1000` | Minimum gap between outbound requests (polite collection). |
-| `timeoutMs` | `15000` | Per-request timeout. |
-| `retries` | `2` | Retries per request with exponential backoff. |
-| `cacheTtlHours` | `12` | Storage-domain snapshot reuse window. |
-| `riskFreeRate` | `0.02` | Annual risk-free rate for the Sharpe ratio. |
-| `offline` | `false` | Never send requests; read the snapshot layer only. |
-| `reportRoot` | `fund-reports` | Workspace-relative (or absolute) report tree root. |
-| `styleQuotes` | `true` | Fetch per-stock valuation quotes for style attribution. |
+| `code` | string | 六位基金代码，如 `"161725"`（单基金）。与 `codes` 互斥。 |
+| `codes` | string[] | 多个六位基金代码：逐基金 fan-out、失败隔离（返回汇总）。与 `code` 互斥。 |
+| `sections` | string[] | 渲染章节（`overview`/`performance`/`holdings`/`style`/`manager`/`benchmark`/`risk`/`disclaimer`），默认全部。 |
+| `offline` | boolean | 只读快照层（无网络），默认取插件配置。 |
+| `asOfDate` | string | ISO 8601 日期（`YYYY-MM-DD`）截点：只采用不晚于该日期的数据（净值序列截断）。空 = 无截点；未来日期响亮失败。 |
+| `resume` | boolean | 从 `.run-state.json` 记录的运行自首个未完成阶段续跑（复用封存产物）；指纹不匹配则拒绝。默认 `false`。 |
+| `includeComparison` | boolean | 针对上一期 `.tracking.jsonl` 记录渲染确定性的「与上次对比」章节；证据缺失声明为缺口。默认 `false`。 |
+| `includeWalkForward` | boolean | 渲染确定性的「样本外稳定性摘要」章节：滚动窗口收益/夏普符号持续率与均值/标准差。仅为统计描述，不构成预测。默认 `false`。 |
+| `background` | boolean | 以 `fund-report` 后台任务运行，返回 `{ kind: "background", jobId }`，默认 `false`。 |
 
-## Tools & surfaces
+**`fund_snapshot` 参数**：
 
-### `fund_research`
-
-| Argument | Type | Description |
+| 参数 | 类型 | 说明 |
 |---|---|---|
-| `code` | string | Six-digit fund code, e.g. `"161725"` (single fund). Mutually exclusive with `codes`. |
-| `codes` | string[] | Multiple six-digit fund codes: a fan-out with per-fund failure isolation (returns a summary). Mutually exclusive with `code`. |
-| `sections` | string[] | Section ids to render (`overview`/`performance`/`holdings`/`style`/`manager`/`benchmark`/`risk`/`disclaimer`). Default: all. |
-| `offline` | boolean | Read the snapshot layer only (no network). Default: plugin config. |
-| `asOfDate` | string | ISO 8601 date (`YYYY-MM-DD`) cutoff: only data on or before it is used (NAV series truncated). Empty = no cutoff; future dates fail loudly. |
-| `resume` | boolean | Resume the recorded `.run-state.json` run from the first incomplete stage (reuses sealed artifacts); rejects a fingerprint mismatch. Default: `false`. |
-| `includeComparison` | boolean | Render a deterministic 与上次对比 section against the previous `.tracking.jsonl` record; missing evidence is declared as a gap. Default: `false`. |
-| `includeWalkForward` | boolean | Render a deterministic 样本外稳定性摘要 (walk-forward) section: rolling-window return/Sharpe sign persistence and mean/std. Statistical description only, not a prediction. Default: `false`. |
-| `background` | boolean | Run as a `fund-report` background job; returns `{ kind: "background", jobId }`. Default: `false`. |
+| `code`（必填） | string | 六位基金代码。 |
+| `offline` | boolean | 只读快照层，默认取插件配置。 |
+| `asOfDate` | string | ISO 8601 日期（`YYYY-MM-DD`）截点：只采用不晚于该日期的数据。空 = 无截点；未来日期响亮失败。 |
 
-### `fund_snapshot`
+**报告章节**：概览 · 业绩拆解 · 持仓穿透 · 风格归因（简版） · 经理画像 · 同类/指数基准对比 · 风险与缺口声明 · 免责声明 · 附录：数字回溯表。`report.md` 附录中每个数字都带 `verified` / `mismatch` / `not-found` / `unverifiable` 结论；任何人可用文档化口径从 `raw.*` 重算，对插件本身进行审计。
 
-| Argument | Type | Description |
+## 配置
+
+所有键均可选（所示为默认值）；非法值在加载期响亮失败。`cordis.patch.yml` 逐键内联注释。
+
+最常用键：
+
+| Key | 默认值 | 含义 |
 |---|---|---|
-| `code` (required) | string | Six-digit fund code. |
-| `offline` | boolean | Read the snapshot layer only. Default: plugin config. |
-| `asOfDate` | string | ISO 8601 date (`YYYY-MM-DD`) cutoff: only data on or before it is used. Empty = no cutoff; future dates fail loudly. |
+| `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
+| `promptSection` | `false` | 把简短的基金研究角色说明注册到部署级 system prompt。默认关闭；`true` 会对 profile 内每个 session 生效。 |
+| `offline` | `false` | 永不发请求，只读快照层。 |
+| `reportRoot` | `fund-reports` | 报告树根目录（工作区相对或绝对路径）。 |
+| `cacheTtlHours` | `12` | 存储域快照复用窗口。 |
+| `requestIntervalMs` | `1000` | 出站请求最小间隔（礼貌采集）。 |
+| `riskFreeRate` | `0.02` | Sharpe 比率使用的年无风险利率。 |
 
-### Report sections
+<details>
+<summary>完整配置表（14 个键）</summary>
 
-概览 overview · 业绩拆解 performance decomposition · 持仓穿透 holdings penetration · 风格归因 style attribution (simplified) · 经理画像 manager profile · 同类/指数基准对比 benchmark & peer comparison · 风险与缺口声明 risk & gaps · 免责声明 disclaimer · 附录：数字回溯表 traceability appendix.
+| Key | 默认值 | 含义 |
+|---|---|---|
+| `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
+| `promptSection` | `false` | 把简短的基金研究角色说明注册到部署级 system prompt。默认关闭；`true` 会对 profile 内每个 session 生效。 |
+| `eastmoneyBaseUrl` | `https://fund.eastmoney.com` | 天天基金 pingzhongdata 主机。 |
+| `f10BaseUrl` | `https://fundf10.eastmoney.com` | 天天基金 F10 主机（持仓 + 经理页）。 |
+| `quoteBaseUrl` | `https://push2.eastmoney.com` | 东方财富行情主机（个股估值快照）。 |
+| `quoteFallbackBaseUrl` | `https://push2delay.eastmoney.com` | 主行情主机失败时逐股重试的兜底主机（东方财富自有的延时行情主机）；设为 `''` 关闭。 |
+| `requestIntervalMs` | `1000` | 出站请求最小间隔（礼貌采集）。 |
+| `timeoutMs` | `15000` | 单请求超时。 |
+| `retries` | `2` | 单请求重试次数（指数退避）。 |
+| `cacheTtlHours` | `12` | 存储域快照复用窗口。 |
+| `riskFreeRate` | `0.02` | Sharpe 比率使用的年无风险利率。 |
+| `offline` | `false` | 永不发请求，只读快照层。 |
+| `reportRoot` | `fund-reports` | 报告树根目录（工作区相对或绝对路径）。 |
+| `styleQuotes` | `true` | 为风格归因抓取个股估值快照。 |
 
-## Permissions & data
+</details>
 
-- **Reads** the public Tiantian Fund / Eastmoney endpoints (`fund.eastmoney.com/pingzhongdata/*.js`, `fundf10.eastmoney.com` F10 pages, `push2.eastmoney.com` quotes) with a browser User-Agent and configurable polite pacing. No key, no login, no paid API, no anti-crawler circumvention.
-- **Writes** only under the configured report root inside the session workspace, plus the `dsh_fund_research` storage domain (latest snapshot per fund).
-- **Never** evaluates remote JavaScript (the pingzhongdata block is scanned, never executed), never stores credentials, never trades.
-- Session events are log-only audit records that ride an adaptive gate in `src/events.ts`: they append only when the host admits an out-of-repo type — its known-type set covers the vocabulary, or its `Session.append` takes an `ignorable` envelope. From `0.1.2-alpha.1` on (including `0.1.5-alpha.1`) neither holds: `KNOWN_SESSION_EVENT_TYPES` is a build-generated in-repo catalog that excludes out-of-repo events by construction, and `Session.append` has no `ignorable` option, so the gate appends nothing — the tool results and sealed artifacts remain the reconstructable audit trail, and a failed append never changes a tool outcome.
-- 0.1.5-alpha.1 (adapted 2026-09-09): re-verified the gate on the new baseline — the catalog still excludes out-of-repo events and `Session.append` still cannot stamp an `ignorable` envelope, so audit-gate behavior is unchanged.
-- 0.1.5-rc.1 (adapted 2026-09-10): dependency pins move to the published 0.1.5-rc.1 line; no seam change affects this plugin's behavior.
-- 0.1.5-rc.2 (adapted 2026-09-11): dependency pins move to the published 0.1.5-rc.2 line; no seam change affects this plugin's behavior.
-- The fund-research role statement is **opt-in** (`promptSection: true`) and, when enabled, is deployment-wide: it applies to every session in the profile that sees the fund tools, including sessions that never call them.
+profile patch 覆盖示例：
 
-## Security boundaries
+```yaml
+- insert:
+    - id: dsh-fund-research
+      name: dsh-fund-research
+      config:
+        reportRoot: research/funds
+        requestIntervalMs: 1500
+        offline: false
+```
 
-- Fund codes are validated as exactly six digits before touching a path or a URL; the report root resolves inside the session workspace.
-- Source payloads are hashed (SHA-256) at acquisition; the sealed manifest lets you detect silent upstream edits between runs.
-- Verification never blocks a seal: a broken optional `dsh-data-quality` service degrades to the built-in checker, and the engine used is recorded in the manifest and the appendix.
-- See [SECURITY.md](SECURITY.md) for the reporting policy.
+## FAQ
 
-## Known limitations
+<details>
+<summary>报告和快照存在哪？会不会覆盖上一次的结果？</summary>
 
-- **Upstream structure drift.** The parsers are strict by design: if Tiantian Fund changes a `var Data_*` shape or an F10 table layout, the affected source throws a `SourceParseError` naming the field, and the section degrades to a declared gap (the core pingzhongdata block failing aborts the run loudly). This is deliberate — a silent misparse is worse than a declared gap.
-- **Style attribution is估算口径.** Fixed size bands (≥1000亿 / 300–1000亿 / <300亿) and PE bands, plus within-holdings quintiles — no full-market distribution is consulted. The report labels this.
-- **Holdings are quarterly disclosure data** (披露滞后); the F10 page carries the latest two quarters.
-- **Single-`code` calls are one fund; `codes` is a fan-out over multiple funds.** No cross-fund portfolio analysis, no PDF annual reports, no real-time quotes (the `fundgz.1234567.com.cn` realtime endpoint is dead and deliberately unused).
-- The Web UI "deliverables" turn row keys off mutation-tool call cards; this plugin's produced files surface through the tool call card's follow-along location (the fund's report directory), not per-file rows.
+每次成功封存都写入独立版本目录 `<reportRoot>/<code>/<YYYYMMDD-HHmmss>/`，不覆盖旧版本；`.tracking.jsonl` 只做确定性追加，`.run-state.json` 记录续跑状态。存储域 `dsh_fund_research` 只保留每只基金的最新快照（受 `cacheTtlHours` 复用窗口约束）。`reportRoot` 可指向工作区内的相对路径或绝对路径。
 
-## Development
+</details>
+
+<details>
+<summary>数据源挂了或页面改版了会怎样？会静默编数字吗？</summary>
+
+不会。解析器刻意严格：某个源结构漂移时抛出声名字段的 `SourceParseError`，受影响章节降级为显式「数据缺口」；核心 pingzhongdata 块失败则整次运行响亮失败。核查永不阻塞封存——可选的 `dsh-data-quality` 服务缺失或故障时自动降级为内置 `builtin-fallback`，实际使用的引擎会写进 manifest 与报告附录。
+
+</details>
+
+<details>
+<summary>会和其他插件抢工具名、服务或事件吗？</summary>
+
+不会。本插件不注册任何 waterfall 监听器、客户端 slot 或 `webServer` 前缀；两个工具名 `fund_snapshot` / `fund_research` 独立；可选服务（`jobs`、`skills`、`systemPrompt`、`dataQuality`）一律通过 `ctx.get` 读取，未挂载时跳过或降级而不是阻塞挂载；bundle patch 只 `insert` 自己一行。逐条说明见「与其他 DSH 插件的互操作性」。
+
+</details>
+
+<details>
+<summary>一次研究要多久？性能开销多大？</summary>
+
+一次 `fund_research` 是若干个受限的 HTTP 请求 + 纯函数计算 + 一次哈希封存。出站受 `requestIntervalMs`（默认 1000ms）节流，单请求 `timeoutMs` 15s、失败重试 `retries` 2 次；12 小时内重跑同一只基金可复用快照（`cacheTtlHours`），`offline: true` 则零外呼、只读已封存数据。计算本身是纯函数，没有模型参与，也不额外调用模型。
+
+</details>
+
+## 安全边界
+
+- 基金代码先校验为恰好六位数字才允许进入路径或 URL；报告根解析在会话工作区内。
+- 源载荷在采集时计算 SHA-256；封存 manifest 可检测两次运行之间的上游静默改动。
+- 核查永不阻塞封存：可选的 `dsh-data-quality` 服务故障时降级到内置核查器，所用引擎记录在 manifest 与附录中。
+- 报告政策见 [SECURITY.md](SECURITY.md)。
+
+## 权限与数据
+
+- **读取**天天基金 / 东方财富公开端点（`fund.eastmoney.com/pingzhongdata/*.js`、`fundf10.eastmoney.com` F10 页面、`push2.eastmoney.com` 行情），带浏览器 UA 与可配置的礼貌间隔。免 key、免登录、无付费 API、不绕反爬。
+- **只写**会话工作区内配置的报告根目录，以及 `dsh_fund_research` 存储域（每只基金最新快照）。
+- **绝不**执行远程 JavaScript（pingzhongdata 块只扫描不执行）、绝不存取凭据、绝不交易。
+- 会话事件为仅日志审计记录，走 `src/events.ts` 的自适应门：只有宿主允许仓外类型时才追加——其已知类型集合覆盖该词汇，或其 `Session.append` 接受 `ignorable` 信封。自 `0.1.2-alpha.1` 起（含 `0.1.5-alpha.1`）两者均不成立：`KNOWN_SESSION_EVENT_TYPES` 是构建期生成的仓内清单，按构造排除仓外事件；`Session.append` 也没有 `ignorable` 选项，因此门控不追加任何事件——工具结果与封存产物仍是可重建的审计轨迹，且追加失败永不改变工具结果。
+- 0.1.5-alpha.1（2026-09-09 已适配）：在新基线上复核门控——目录仍排除仓外事件，`Session.append` 仍无法盖 `ignorable` 信封，门控行为不变。
+- 0.1.5-rc.1（2026-09-10 已适配）：依赖钉号移至已发布的 0.1.5-rc.1 线；无接缝变化影响本插件行为。
+- 0.1.5-rc.2（2026-09-11 已适配）：依赖钉号移至已发布的 0.1.5-rc.2 线；无接缝变化影响本插件行为。
+- 基金研究角色说明是**可选开启**的（`promptSection: true`）；开启后作用于整个部署：profile 内所有能看到基金工具的 session 都会带上它，包括从未调用过基金工具的 session。
+
+## 已知限制
+
+- **上游结构漂移风险。** 解析器刻意严格：天天基金一旦变更 `var Data_*` 结构或 F10 表布局，受影响源抛出指名字段的 `SourceParseError`，对应章节降级为显式缺口（核心 pingzhongdata 块失败则整次运行响亮失败）。这是有意设计——静默错解析比显式缺口更糟。
+- **风格归因是估算口径。** 固定规模分档（≥1000亿 / 300–1000亿 / <300亿）与 PE 分档，外加持仓内五分位——不查询全市场分布。报告中已标注。
+- **持仓为季度披露数据**（披露滞后）；F10 页携带最近两个季度。
+- **每次调用一只基金；不做组合分析、不解析 PDF 年报、不做实时盯盘**（`fundgz.1234567.com.cn` 实时估值端点已失效，刻意不用）。`codes` 只是多基金并行 fan-out，不是组合分析。
+- Web UI 的 deliverables 行由变更类工具的调用卡片驱动；本插件的产出文件经工具调用卡片的 follow-along 位置（该基金报告目录）呈现，而非逐文件行。
+
+## 与其他 DSH 插件的互操作性
+
+本插件不注册任何 waterfall 监听器，不接管别人的事件链；它只提供两个工具、一个可选 prompt section、一个可选 skill provider 和一个存储域。逐条说明：
+
+- **无工具名冲突。** 只注册 `fund_snapshot` 与 `fund_research` 两个带命名空间的工具，不占用内置工具或其他插件的裸名。
+- **无服务键冲突。** 不提供任何服务键；`jobs`、`skills`、`systemPrompt`、`dataQuality` 都是可选的 `ctx.get` 只读查找，未挂载时安静跳过。
+- **无 slot / HTTP 路由冲突。** 纯宿主插件，不注册客户端 slot，也不注册任何 `webServer` 前缀。
+- **无 patch 层冲突。** bundle patch 只 `insert` 自己那一行，从不覆写内置行的 `config`。
+- **可选依赖是结构契约。** `dsh-data-quality` 通过本地结构接口（`src/verify-bridge.ts`）消费，从不 import 该包；服务故障时降级为内置 `builtin-fallback` 核查器，引擎记录在 manifest 与附录中。
+- **存储域隔离。** 快照写进自己的 `dsh_fund_research` 存储域；存储栈由 profile 通过 `dsh-base` 组合，插件不替代、也不改写它。
+- **不执行远程代码、不改全局。** pingzhongdata 块只扫描不执行；不 patch 原型、不改写 `process.env`、不替换全局 fetch。
+
+## 兼容性
+
+| 组件 | 版本 |
+|---|---|
+| DeepSeek Harness | `dsh-v0.2.1-rc.2`（peer 范围已接纳 alpha.2 线：`>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`）。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `fund-research/*` 审计事件仍不落盘（工具结果与已封存快照/报告即审计轨迹）。已于 2026-09-24 核验（双 typecheck 尺子 + 176 项测试）。 |
+| Node.js | `^22.19.0 \|\| >=24.9.0` |
+| 包管理器 | `pnpm@11.7.0` |
+| 平台 | Windows / macOS / Linux（纯宿主插件） |
+| 数据源 | 天天基金 / 东方财富公开端点（免 key、免登录） |
+
+## 生态与质量
+
+- [Gitee 镜像](https://gitee.com/perrylink/dsh-fund-research)（同步镜像，以 GitHub 为准）
+- [dshfind 插件页](https://dshfind.com/plugins/PerryLink/dsh-fund-research)（安装量与排名）
+- [OpenSSF Scorecard 报告](https://securityscorecards.dev/viewer/?uri=github.com/PerryLink/dsh-fund-research)（由 [.github/workflows/scorecard.yml](.github/workflows/scorecard.yml) 驱动）
+- [dsh-plugin-doctor 验证报告](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+- [DSH Market](https://dsh.market/)（已上架）
+- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-fund-research`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）
+- [生态实测知识库](https://perrylink.github.io/dsh-plugin-guide/)：插件开发指南 · 选型实测数据 · 维护取舍判据
+
+## 开发
 
 ```sh
 pnpm install
-pnpm run typecheck && pnpm run typecheck:ci && pnpm run typecheck:checkout   # types, incl. CI-strict
-pnpm test                                     # 176 tests over real harness seams
-pnpm run test:e2e                              # opt-in LIVE-network E2E (LIVE_E2E=1)
-pnpm run build && pnpm run verify:artifacts   # tsdown + tsc declarations
-pnpm run verify:self-contained                # no out-of-repo dependency specs
-node scripts/check-readme-sync.mjs            # five-language README gate
-node scripts/check-endpoints.mjs              # M3 endpoint-liveness probe (4 eastmoney hosts)
+pnpm run typecheck && pnpm run typecheck:ci && pnpm run typecheck:checkout   # 类型（含 CI 严格档）
+pnpm test                                     # 176 个真实接缝测试
+pnpm run test:e2e                             # 可选的真网 E2E（LIVE_E2E=1）
+pnpm run build && pnpm run verify:artifacts   # tsdown + tsc 声明
+pnpm run verify:self-contained                # 无出仓依赖规格
+node scripts/check-readme-sync.mjs            # 五语 README 门禁
+node scripts/check-endpoints.mjs              # M3 端点存活探测（4 个 eastmoney 主机）
 pnpm pack                                     # tarball
 ```
 
-Tests run the REAL `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/storage seam from the 0.1.7-rc.2 peers; the network is replaced only at the fetch boundary by saved real-response fixtures (`fixtures/`, fund 161725). Refresh fixtures with the collector scripts in `.tmp/`.
+测试使用来自 0.1.7-rc.2 peers 的真实 `Context`/`SessionStore`/`ToolRuntime`/`LocalJobRegistry`/存储接缝；网络仅在 fetch 边界由保存的真实响应 fixtures（`fixtures/`，基金 161725）替换。用 `.tmp/` 下的采集脚本刷新 fixtures。README 配图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Python + Pillow 字体探测，输出浅色/深色双版 SVG），可重复执行。
 
-## Topics
+Topics：`dsh` · `dsh-plugin` · `deepseek-harness` · `cordis` · `fund-research` · `mutual-fund` · `investment-research` · `finance` · `research-report`
 
-`dsh` · `dsh-plugin` · `deepseek-harness` · `cordis` · `fund-research` · `mutual-fund` · `investment-research` · `finance` · `research-report`
+## 家族与致谢
 
-## Contributors
+本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员（全部 Apache-2.0）。如果这个插件帮到了你，**给个 star**——它不解锁任何功能，但会让下一个人更容易找到它。
 
-- **PerryLink** — maintainer: the collector/metrics/report-seal pipeline, the endpoint-liveness probe, CI and releases, and the five-language docs.
-- **dsh-fund-research contributors** — collective author of the foundational build (plugin contract, config schema, tools, tests, packaging).
-
-No external contributors yet — 0 community PRs/issues merged. Open an issue via the forms in `.github/ISSUE_TEMPLATE/` or a pull request against `main` to be listed here.
-
-## PerryLink DSH Plugin Family
-
-This project is part of the DeepSeek Harness plugin family from [PerryLink](https://github.com/PerryLink). The roster stays collapsed below so every README keeps a short first screen; expand it to see every row and its status.
+- **PerryLink** —— 维护者：采集/指标/报告密封管线、端点存活探测、CI 与发布、五语文档。
+- **dsh-fund-research contributors** —— 基础构建的集体署名（插件契约、配置 schema、工具、测试、打包）。
+- 暂无外部贡献者——合并的社区 PR/issue 为 0。欢迎通过 `.github/ISSUE_TEMPLATE/` 的表单提 issue，或向 `main` 提交 pull request，即可被列在此处。
 
 <details>
-<summary>Expand all plugins</summary>
+<summary>展开全部插件</summary>
 
-| Plugin | Status |
+| 插件 | 状态 |
 |---|---|
 | **[dsh-aqua-input-check](https://github.com/PerryLink/dsh-aqua-input-check)** |  |
 | **[dsh-archive-check](https://github.com/PerryLink/dsh-archive-check)** |  |
 | **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** |  |
-| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | 🧊 FROZEN — see the repo README |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-bid-ca-precheck](https://github.com/PerryLink/dsh-bid-ca-precheck)** |  |
 | **[dsh-bid-qual-check](https://github.com/PerryLink/dsh-bid-qual-check)** |  |
-| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | 🧊 FROZEN — see the repo README |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** |  |
 | **[dsh-click](https://github.com/PerryLink/dsh-click)** |  |
 | **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** |  |
 | **[dsh-contract-stance](https://github.com/PerryLink/dsh-contract-stance)** |  |
 | **[dsh-customs-doc-check](https://github.com/PerryLink/dsh-customs-doc-check)** |  |
-| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** |  |
+| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-demurrage-ledger](https://github.com/PerryLink/dsh-demurrage-ledger)** |  |
 | **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** |  |
 | **[dsh-drill-script-check](https://github.com/PerryLink/dsh-drill-script-check)** |  |
@@ -312,7 +382,7 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-mask](https://github.com/PerryLink/dsh-mask)** |  |
 | **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** |  |
 | **[dsh-medrec-qc](https://github.com/PerryLink/dsh-medrec-qc)** |  |
-| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** |  |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-nsfc-form-check](https://github.com/PerryLink/dsh-nsfc-form-check)** |  |
 | **[dsh-nurse-record-check](https://github.com/PerryLink/dsh-nurse-record-check)** |  |
 | **[dsh-observe](https://github.com/PerryLink/dsh-observe)** |  |
@@ -324,10 +394,10 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-permit-report-check](https://github.com/PerryLink/dsh-permit-report-check)** |  |
 | **[dsh-pipeline-check](https://github.com/PerryLink/dsh-pipeline-check)** |  |
 | **[dsh-pleading-draft](https://github.com/PerryLink/dsh-pleading-draft)** |  |
-| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** |  |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | 🚫 已退役（仓库已归档） |
 | **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** |  |
-| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** |  |
-| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** |  |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | 🚫 已退役（仓库已归档） |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | 🚫 已退役（仓库已归档） |
 | **[dsh-policy-brief-draft](https://github.com/PerryLink/dsh-policy-brief-draft)** |  |
 | **[dsh-power-loss-split](https://github.com/PerryLink/dsh-power-loss-split)** |  |
 | **[dsh-power-ticket-check](https://github.com/PerryLink/dsh-power-ticket-check)** |  |
@@ -339,7 +409,7 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-review-reply-check](https://github.com/PerryLink/dsh-review-reply-check)** |  |
 | **[dsh-rulefile-check](https://github.com/PerryLink/dsh-rulefile-check)** |  |
 | **[dsh-safety-brief-check](https://github.com/PerryLink/dsh-safety-brief-check)** |  |
-| **[dsh-score](https://github.com/PerryLink/dsh-score)** |  |
+| **[dsh-score](https://github.com/PerryLink/dsh-score)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** |  |
 | **[dsh-site-log-check](https://github.com/PerryLink/dsh-site-log-check)** |  |
 | **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** |  |
@@ -351,16 +421,22 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-tender-extract](https://github.com/PerryLink/dsh-tender-extract)** |  |
 | **[dsh-tender-matrix](https://github.com/PerryLink/dsh-tender-matrix)** |  |
 | **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** |  |
-| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** |  |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | 🚫 已退役（仓库已归档） |
 | **[dsh-translate](https://github.com/PerryLink/dsh-translate)** |  |
 | **[dsh-warranty-calc](https://github.com/PerryLink/dsh-warranty-calc)** |  |
-| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 FROZEN — see the repo README |
-| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 FROZEN — see the repo README |
-| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 FROZEN — see the repo README |
-| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 FROZEN — see the repo README |
-| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 FROZEN — see the repo README |
-| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 RETIRED — see the repo README |
-| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 RETIRED — see the repo README |
-| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 RETIRED — see the repo README |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 已退役（仓库已归档） |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 已退役（仓库已归档） |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 已退役（仓库已归档） |
 
 </details>
+
+## License
+
+[LICENSE](LICENSE)（Apache License 2.0）© 2026 dsh-fund-research contributors
+
+<p align="center"><sub>Apache-2.0 · 社区插件，与 DeepSeek 无关。</sub></p>
