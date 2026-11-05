@@ -181,5 +181,6 @@
   "funding": {
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
-  }
+  },
+  "version": "0.5.3"
 }
