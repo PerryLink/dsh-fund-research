@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-fund-research structure: a four-stage staircase (collect, snapshot, compute, verify and seal) plus a dashed return loop that carries every report number back to its snapshot.json path and verdict">
+<title>dsh-fund-research: staircase pipeline with a traceability return loop</title>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#f9f6fd"/>
+    <stop offset="1" stop-color="#e4eaf8"/>
+  </linearGradient>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="180%">
+    <feDropShadow dx="0" dy="8" stdDeviation="11" flood-color="#1b1735" flood-opacity="0.10"/>
+  </filter>
+  <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+    <circle cx="1.4" cy="1.4" r="1.4" fill="#d9d3ea"/>
+  </pattern>
+</defs>
+<rect width="1100" height="660" fill="url(#bg)"/>
+<rect width="1100" height="660" fill="url(#dots)" opacity=".42"/>
+<text x="44" y="58" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="32" font-weight="700" text-anchor="start">dsh-fund-research</text>
+<text x="44" y="84" fill="#4d5261" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" text-anchor="start">six-digit code → polite collection → deterministic metrics → sealed report</text>
+<rect x="744" y="40" width="312" height="34" rx="17" fill="#ece7f9"/>
+<text x="900" y="62" fill="#4B67B4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="middle">fund-reports/161725/20260819-153012</text>
+<line x1="44" y1="104" x2="1056" y2="104" stroke="#e7e4f0" stroke-width="1.5"/>
+<g filter="url(#soft)">
+<rect x="40" y="384" width="228" height="186" rx="20" fill="#ffffff" stroke="#e4e1ee" stroke-width="1.5"/>
+</g>
+<text x="58" y="414" fill="#4B67B4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" text-anchor="start">1 · COLLECT</text>
+<text x="58" y="436" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">fund_research · 4 sources</text>
+<line x1="58" y1="448" x2="250" y2="448" stroke="#e7e4f0" stroke-width="1.2"/>
+<text x="58" y="472" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">pingzhongdata</text>
+<text x="250" y="472" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">NAV·scale</text>
+<line x1="58" y1="479" x2="250" y2="479" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="58" y="494" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">F10 jjcc</text>
+<text x="250" y="494" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">holdings</text>
+<line x1="58" y1="501" x2="250" y2="501" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="58" y="516" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">F10 jjjl</text>
+<text x="250" y="516" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">manager</text>
+<line x1="58" y1="523" x2="250" y2="523" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="58" y="538" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">push2 → delay</text>
+<text x="250" y="538" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">quotes</text>
+<text x="58" y="560" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">1000ms · retry 2 · TTL 12h</text>
+<g filter="url(#soft)">
+<rect x="304" y="300" width="228" height="186" rx="20" fill="#ffffff" stroke="#e4e1ee" stroke-width="1.5"/>
+</g>
+<text x="322" y="330" fill="#4B67B4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" text-anchor="start">2 · SNAPSHOT</text>
+<text x="322" y="352" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">snapshot.json · sha256</text>
+<line x1="322" y1="364" x2="514" y2="364" stroke="#e7e4f0" stroke-width="1.2"/>
+<text x="322" y="388" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">raw.*</text>
+<text x="514" y="388" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">10 blocks</text>
+<line x1="322" y1="395" x2="514" y2="395" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="322" y="410" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">computed.*</text>
+<text x="514" y="410" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">5 metrics</text>
+<line x1="322" y1="417" x2="514" y2="417" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="322" y="432" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">sources.*</text>
+<text x="514" y="432" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">sha256 ×4</text>
+<line x1="322" y1="439" x2="514" y2="439" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="322" y="454" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">asOf · gaps[]</text>
+<text x="514" y="454" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">cutoff</text>
+<text x="322" y="476" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">sealed before verify</text>
+<g filter="url(#soft)">
+<rect x="568" y="216" width="228" height="186" rx="20" fill="#ffffff" stroke="#e4e1ee" stroke-width="1.5"/>
+</g>
+<text x="586" y="246" fill="#4B67B4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" text-anchor="start">3 · COMPUTE</text>
+<text x="586" y="268" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">pure functions, no model</text>
+<line x1="586" y1="280" x2="778" y2="280" stroke="#e7e4f0" stroke-width="1.2"/>
+<text x="586" y="304" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">performance</text>
+<text x="778" y="304" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">return·vol·dd</text>
+<line x1="586" y1="311" x2="778" y2="311" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="586" y="326" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">holdings</text>
+<text x="778" y="326" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">topN · HHI</text>
+<line x1="586" y1="333" x2="778" y2="333" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="586" y="348" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">style</text>
+<text x="778" y="348" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">size × PE</text>
+<line x1="586" y1="355" x2="778" y2="355" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="586" y="370" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">manager</text>
+<text x="778" y="370" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">tenure</text>
+<text x="586" y="392" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">riskFreeRate 0.02 · √250</text>
+<g filter="url(#soft)">
+<rect x="832" y="132" width="228" height="186" rx="20" fill="#ffffff" stroke="#e4e1ee" stroke-width="1.5"/>
+</g>
+<text x="850" y="162" fill="#4B67B4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" text-anchor="start">4 · VERIFY → SEAL</text>
+<text x="850" y="184" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">verify then seal</text>
+<line x1="850" y1="196" x2="1042" y2="196" stroke="#e7e4f0" stroke-width="1.2"/>
+<text x="850" y="220" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">snapshot.json</text>
+<text x="1042" y="220" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">sealed</text>
+<line x1="850" y1="227" x2="1042" y2="227" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="850" y="242" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">sources-discovery</text>
+<text x="1042" y="242" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">gaps</text>
+<line x1="850" y1="249" x2="1042" y2="249" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="850" y="264" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">report.md</text>
+<text x="1042" y="264" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">appendix</text>
+<line x1="850" y1="271" x2="1042" y2="271" stroke="#e7e4f0" stroke-width="1" opacity="0.55"/>
+<text x="850" y="286" fill="#141419" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.5" font-weight="400" text-anchor="start">manifest.json</text>
+<text x="1042" y="286" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="end">sha256</text>
+<text x="850" y="308" fill="#8f94a4" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" text-anchor="start">5 verified · 0 mismatch</text>
+<path d="M268 470 H283 Q288 470 288 465 V377 Q288 372 293 372 H296" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M290 367 L296 372 L290 377" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M532 386 H547 Q552 386 552 381 V293 Q552 288 557 288 H560" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M554 283 L560 288 L554 293" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M796 302 H811 Q816 302 816 297 V209 Q816 204 821 204 H824" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M818 199 L824 204 L818 209" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M946 318 V572 Q946 596 922 596 H478 Q454 596 454 572 V500" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-dasharray="7 6" stroke-linecap="round"/>
+<path d="M448 500 L454 490 L460 500" fill="none" stroke="#4B67B4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="688" y="584" fill="#4B67B4" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="400" text-anchor="middle">trace back: report number ↔ snapshot.json path ↔ verdict</text>
+<text x="44" y="622" fill="#4d5261" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" text-anchor="start">files: snapshot.json · sources-discovery.json · report.md · manifest.json · .run-state.json · .tracking.jsonl</text>
+<text x="44" y="642" fill="#4d5261" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12.5" font-weight="400" text-anchor="start">engine: dsh-data-quality | builtin-fallback · gaps declared, never filled · research only, no trading, no advice</text>
+</svg>

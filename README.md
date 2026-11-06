@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-dark.svg">
-  <img src="docs/assets/dsh-fund-research-flow-light.svg" width="100%" alt="dsh-fund-research 管线：fund_research → pingzhongdata / F10 / push2 → snapshot.json → 数字核查 → report.md + manifest.json 封存">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-fund-research-hero-zh-light.webp" width="100%" alt="dsh-fund-research 封面：左侧标题「基金研究可回溯」；右侧是一份真实报告的封存数字回溯表——招商中证白酒指数(LOF)A（161725）的五个关键数字（最新单位净值 0.5617、近1年收益 -27.27%、最新规模 197.40 亿元、前三大合计 47.50%、股票仓位 94.79%）各自对回 snapshot.json 路径并标记 verified，底部 verified 5 / mismatch 0 / not-found 0 / unverifiable 0 与封存印章">
 </picture>
 
 # dsh-fund-research
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-fund-research
 ## 它是什么
 
 给模型一个六位基金代码，`dsh-fund-research` 会采集这只基金的公开数据、跑一套确定性指标、在封存前把每个关键数字对照源快照核查一遍，然后把报告连同快照、采集记录与清单一起写进工作区。报告附录里每个数字都有「数值 ↔ 快照 JSON 路径 ↔ 核查结论」的对应关系——你可以按文档口径从 `raw.*` 重算，反过来审计插件本身。数据源失败或降级时，报告里会出现显式的「数据缺口」声明，插件绝不用编造的数字填坑。纯宿主插件：不交易、不预测、不构成投资建议。
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="dsh-fund-research 结构图：四级阶梯——① 采集（fund_research 调 pingzhongdata / F10 jjcc / F10 jjjl / push2，1000ms 间隔、重试 2、TTL 12h）→ ② 快照（snapshot.json：raw.* 10 个区块、computed.* 5 组指标、sources.* 逐源 sha256、asOf 与 gaps[]，先封存再核查）→ ③ 计算（performance / holdings / style / manager，纯函数，riskFreeRate 0.02、年化系数 √250）→ ④ 核查与封存（snapshot.json、sources-discovery.json、report.md、manifest.json；verified 5 / mismatch 0）；底部虚线回环把报告每个数字带回 snapshot.json 路径与核查结论；页脚列出封存文件、核查引擎与「缺口显式声明，绝不填数」">
+</picture>
 
 ## 三步上手
 

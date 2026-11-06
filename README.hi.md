@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-dark.svg">
-  <img src="docs/assets/dsh-fund-research-flow-light.svg" width="100%" alt="dsh-fund-research पाइपलाइन: fund_research → pingzhongdata / F10 / push2 → snapshot.json → संख्या सत्यापन → सील्ड report.md + manifest.json">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-hero-en-dark.webp">
+  <img src="docs/assets/dsh-fund-research-hero-en-light.webp" width="100%" alt="dsh-fund-research कवर: बाईं ओर शीर्षक «Fund research»; दाईं ओर एक वास्तविक रिपोर्ट का सीलबंद ट्रेस परिशिष्ट — फंड 161725 (LOF A) के पाँच प्रमुख आँकड़े (नवीनतम NAV 0.5617, 1-वर्षीय प्रतिफल -27.27%, नवीनतम आकार 197.40 (RMB 100M), शीर्ष-3 भार 47.50%, इक्विटी एक्सपोज़र 94.79%) हर एक snapshot.json पथ से जुड़ा और verified चिह्नित; नीचे verified 5 / mismatch 0 / not-found 0 / unverifiable 0 और एक गोल सील मुहर">
 </picture>
 
 # dsh-fund-research
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-fund-research
 ## यह क्या है
 
 मॉडल को छह अंकों का फंड कोड दें और `dsh-fund-research` उस फंड का सार्वजनिक डेटा इकट्ठा करता है, मीट्रिक्स का निश्चित सेट चलाता है, सील करने से पहले हर प्रमुख आँकड़े को स्रोत स्नैपशॉट के सामने जाँचता है, और फिर रिपोर्ट को स्नैपशॉट, अधिग्रहण रिकॉर्ड और मैनिफ़ेस्ट के साथ आपके वर्कस्पेस में लिखता है। रिपोर्ट के परिशिष्ट में हर आँकड़े की एक पंक्ति होती है: मान ↔ स्नैपशॉट JSON पथ ↔ निर्णय, इसलिए आप दस्तावेज़ीकृत परिपाटियों से `raw.*` के आधार पर इसे दोबारा गणना कर सकते हैं और प्लगइन का ही ऑडिट कर सकते हैं। जब कोई डेटा स्रोत विफल या कमज़ोर होता है, प्रभावित अनुभाग में स्पष्ट डेटा-गैप घोषणा आती है; प्लगइन कभी भी गढ़े हुए आँकड़े से गैप नहीं भरता। केवल-होस्ट प्लगइन: कोई ट्रेडिंग नहीं, कोई भविष्यवाणी नहीं, निवेश सलाह नहीं।
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="dsh-fund-research संरचना: चार चरणों की सीढ़ी — 1 COLLECT (fund_research, pingzhongdata / F10 jjcc / F10 jjjl / push2 को 1000ms अंतराल, 2 पुनःप्रयास और 12h TTL के साथ कॉल करता है) → 2 SNAPSHOT (snapshot.json: raw.* 10 ब्लॉक, computed.* 5 मीट्रिक, प्रति-स्रोत sha256, asOf और gaps[], सत्यापन से पहले सीलबंद) → 3 COMPUTE (performance / holdings / style / manager शुद्ध फ़ंक्शन के रूप में, riskFreeRate 0.02, वार्षिकीकरण √250) → 4 VERIFY AND SEAL (snapshot.json, sources-discovery.json, report.md, manifest.json; verified 5 / mismatch 0); नीचे एक बिंदुदार वापसी लूप सीलबंद रिपोर्ट के हर आँकड़े को उसके snapshot.json पथ और निर्णय तक लौटाता है; पाद में सीलबंद फ़ाइलें, सत्यापन इंजन और «अंतराल घोषित, कभी नहीं भरे गए» लिखा है">
+</picture>
 
 ## तीन चरणों में शुरुआत
 

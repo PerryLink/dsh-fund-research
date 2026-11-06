@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-dark.svg">
-  <img src="docs/assets/dsh-fund-research-flow-light.svg" width="100%" alt="Pipeline de dsh-fund-research: fund_research → pingzhongdata / F10 / push2 → snapshot.json → verificación numérica → report.md + manifest.json sellados">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-hero-en-dark.webp">
+  <img src="docs/assets/dsh-fund-research-hero-en-light.webp" width="100%" alt="Portada de dsh-fund-research: a la izquierda el titular «Fund research»; a la derecha el apéndice de trazabilidad sellado de un informe real — cinco cifras clave del fondo 161725 (LOF A) (valor liquidativo 0.5617, rentabilidad a 1 año -27.27%, patrimonio 197.40 (RMB 100M), peso de las tres mayores posiciones 47.50%, exposición a renta variable 94.79%) cada una con su ruta en snapshot.json y la marca verified; el recuento muestra verified 5 / mismatch 0 / not-found 0 / unverifiable 0 junto a un sello redondo">
 </picture>
 
 # dsh-fund-research
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-fund-research
 ## Qué es
 
 Dale al modelo un código de fondo de seis dígitos y `dsh-fund-research` recoge los datos públicos de ese fondo, ejecuta un conjunto determinista de métricas, verifica cada cifra clave contra la instantánea fuente antes de sellar y escribe el informe —junto con la instantánea, el registro de adquisición y el manifiesto— en tu espacio de trabajo. Cada cifra del apéndice tiene su fila valor ↔ ruta JSON en la instantánea ↔ veredicto, así que puedes recalcularla desde `raw.*` con las convenciones documentadas y auditar el propio plugin. Cuando una fuente falla o se degrada, la sección afectada lleva una declaración explícita de hueco de datos; el plugin nunca rellena un hueco con una cifra inventada. Plugin solo de host: no opera, no predice, no es asesoramiento de inversión.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="Estructura de dsh-fund-research: una escalera de cuatro etapas — 1 COLLECT (fund_research llama a pingzhongdata / F10 jjcc / F10 jjjl / push2 con paso de 1000ms, 2 reintentos y TTL de 12h) → 2 SNAPSHOT (snapshot.json: raw.* 10 bloques, computed.* 5 métricas, sha256 por fuente, asOf y gaps[], sellado antes de verificar) → 3 COMPUTE (performance / holdings / style / manager como funciones puras, riskFreeRate 0.02, anualización √250) → 4 VERIFY AND SEAL (snapshot.json, sources-discovery.json, report.md, manifest.json; verified 5 / mismatch 0); debajo, un bucle discontinuo devuelve cada cifra del informe sellado a su ruta en snapshot.json y a su veredicto; el pie lista los ficheros sellados, el motor de verificación y «huecos declarados, nunca rellenados»">
+</picture>
 
 ## Instalación en tres pasos
 

@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-dark.svg">
-  <img src="docs/assets/dsh-fund-research-flow-light.svg" width="100%" alt="dsh-fund-research pipeline: fund_research → pingzhongdata / F10 / push2 → snapshot.json → number verification → sealed report.md + manifest.json">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-hero-en-dark.webp">
+  <img src="docs/assets/dsh-fund-research-hero-en-light.webp" width="100%" alt="dsh-fund-research cover: the headline 'Fund research' on the left; on the right the sealed trace appendix of a real report — five key numbers of fund 161725 (LOF A) (latest NAV 0.5617, 1-year return -27.27%, latest size 197.40 (RMB 100M), top-3 weight 47.50%, equity exposure 94.79%) each mapped to its snapshot.json path and marked verified; the tally strip reads verified 5 / mismatch 0 / not-found 0 / unverifiable 0 beside a round seal stamp">
 </picture>
 
 # dsh-fund-research
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-fund-research
 ## What it is
 
 Give the model a six-digit fund code and `dsh-fund-research` collects that fund's public data, runs a deterministic metric suite, checks every key number against the source snapshot before sealing, then writes the report — together with the snapshot, the acquisition record, and the manifest — into your workspace. Every number in the report appendix has a value ↔ snapshot JSON path ↔ verdict row, so you can recompute it from `raw.*` with the documented conventions and audit the plugin itself. When a data source fails or degrades, the affected section carries an explicit data-gap declaration; the plugin never fills a gap with an invented number. Pure host plugin: no trading, no predictions, not investment advice.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-fund-research-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="dsh-fund-research structure: a four-stage staircase — 1 COLLECT (fund_research calls pingzhongdata / F10 jjcc / F10 jjjl / push2 with 1000ms pacing, 2 retries and a 12h TTL) → 2 SNAPSHOT (snapshot.json: raw.* 10 blocks, computed.* 5 metrics, per-source sha256, asOf and gaps[], sealed before verification) → 3 COMPUTE (performance / holdings / style / manager as pure functions, riskFreeRate 0.02, annualisation √250) → 4 VERIFY AND SEAL (snapshot.json, sources-discovery.json, report.md, manifest.json; verified 5 / mismatch 0); underneath, a dashed return loop runs from the sealed report back to the snapshot.json path and verdict of every number; the footer lists the sealed files, the verification engine and 'gaps declared, never filled'">
+</picture>
 
 ## Three-step setup
 
