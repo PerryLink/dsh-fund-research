@@ -295,7 +295,7 @@ O plugin não registra nenhum listener waterfall e não se apropria da cadeia de
 
 | Superfície | Estado |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-rc.2` (o intervalo de peers admite a linha alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos de auditoria `fund-research/*` continuam sem registro (os resultados das ferramentas e o snapshot/relatório selado são o rastro de auditoria). Verificado em 2026-09-24 (duas réguas de typecheck + 176 testes). |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4` (o intervalo de peers admite a linha alpha.2: `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0 \|\| >=0.2.2-0 <0.3.0`). Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos de auditoria `fund-research/*` continuam sem registro (os resultados das ferramentas e o snapshot/relatório selado são o rastro de auditoria). Verificado em 2026-11-18 (duas réguas de typecheck + 176 testes). |
 | Node | `^22.19.0 \|\| >=24.9.0` |
 | Gerenciador de pacotes | `pnpm@11.7.0` |
 | Plataformas | Windows / macOS / Linux (plugin apenas de host) |
