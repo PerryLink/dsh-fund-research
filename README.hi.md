@@ -43,6 +43,11 @@ dsh plugin --profile <name> add dsh-fund-research
   <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="dsh-fund-research संरचना: चार चरणों की सीढ़ी — 1 COLLECT (fund_research, pingzhongdata / F10 jjcc / F10 jjjl / push2 को 1000ms अंतराल, 2 पुनःप्रयास और 12h TTL के साथ कॉल करता है) → 2 SNAPSHOT (snapshot.json: raw.* 10 ब्लॉक, computed.* 5 मीट्रिक, प्रति-स्रोत sha256, asOf और gaps[], सत्यापन से पहले सीलबंद) → 3 COMPUTE (performance / holdings / style / manager शुद्ध फ़ंक्शन के रूप में, riskFreeRate 0.02, वार्षिकीकरण √250) → 4 VERIFY AND SEAL (snapshot.json, sources-discovery.json, report.md, manifest.json; verified 5 / mismatch 0); नीचे एक बिंदुदार वापसी लूप सीलबंद रिपोर्ट के हर आँकड़े को उसके snapshot.json पथ और निर्णय तक लौटाता है; पाद में सीलबंद फ़ाइलें, सत्यापन इंजन और «अंतराल घोषित, कभी नहीं भरे गए» लिखा है">
 </picture>
 
+![dsh-fund-research का असली टर्मिनल रन](docs/assets/dsh-fund-research-demo.gif)
+
+*इस रिपॉज़िटरी में दर्ज असली रन का एनिमेटेड रीप्ले।*
+
+
 ## तीन चरणों में शुरुआत
 
 1. **इंस्टॉल करें** (कोई एक चैनल चुनें):

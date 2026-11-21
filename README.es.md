@@ -43,6 +43,11 @@ Dale al modelo un código de fondo de seis dígitos y `dsh-fund-research` recoge
   <img src="docs/assets/dsh-fund-research-flow-v5-light.svg" width="100%" alt="Estructura de dsh-fund-research: una escalera de cuatro etapas — 1 COLLECT (fund_research llama a pingzhongdata / F10 jjcc / F10 jjjl / push2 con paso de 1000ms, 2 reintentos y TTL de 12h) → 2 SNAPSHOT (snapshot.json: raw.* 10 bloques, computed.* 5 métricas, sha256 por fuente, asOf y gaps[], sellado antes de verificar) → 3 COMPUTE (performance / holdings / style / manager como funciones puras, riskFreeRate 0.02, anualización √250) → 4 VERIFY AND SEAL (snapshot.json, sources-discovery.json, report.md, manifest.json; verified 5 / mismatch 0); debajo, un bucle discontinuo devuelve cada cifra del informe sellado a su ruta en snapshot.json y a su veredicto; el pie lista los ficheros sellados, el motor de verificación y «huecos declarados, nunca rellenados»">
 </picture>
 
+![dsh-fund-research: ejecución real de terminal](docs/assets/dsh-fund-research-demo.gif)
+
+*Repetición animada de una ejecución real registrada en este repositorio.*
+
+
 ## Instalación en tres pasos
 
 1. **Instalar** (elige un canal):
