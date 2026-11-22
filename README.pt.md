@@ -11,6 +11,8 @@
 
 Plugin de pesquisa de fundos mútuos públicos chineses para o DeepSeek Harness: coleta dados públicos dos endpoints do Tiantian Fund / Eastmoney com ritmo educado, calcula todas as métricas de forma determinística em código e sela o relatório junto com o snapshot de origem no seu workspace — apenas para pesquisa, não é aconselhamento de investimento.
 
+Última verificação: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
+
 [Instalar](#instalação-em-três-passos) · [Configuração](#configuração) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
@@ -46,7 +48,6 @@ Dê ao modelo um código de fundo de seis dígitos e o `dsh-fund-research` colet
 ![dsh-fund-research: execução real de terminal](docs/assets/dsh-fund-research-demo.gif)
 
 *Repetição animada de uma execução real registrada neste repositório.*
-
 
 ## Instalação em três passos
 

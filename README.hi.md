@@ -11,6 +11,8 @@
 
 DeepSeek Harness के लिए चीनी सार्वजनिक म्यूचुअल फंड रिसर्च प्लगइन: यह Tiantian Fund / Eastmoney के सार्वजनिक एंडपॉइंट से विनम्र गति से डेटा इकट्ठा करता है, हर मीट्रिक की गणना कोड में निश्चित रूप से करता है, और रिपोर्ट को उसके स्रोत स्नैपशॉट के साथ आपके वर्कस्पेस में सील कर देता है — केवल रिसर्च के लिए, निवेश सलाह नहीं।
 
+अंतिम सत्यापन: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
+
 [इंस्टॉल](#तीन-चरणों-में-शुरुआत) · [कॉन्फ़िगरेशन](#कॉन्फ़िगरेशन) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
@@ -46,7 +48,6 @@ dsh plugin --profile <name> add dsh-fund-research
 ![dsh-fund-research का असली टर्मिनल रन](docs/assets/dsh-fund-research-demo.gif)
 
 *इस रिपॉज़िटरी में दर्ज असली रन का एनिमेटेड रीप्ले।*
-
 
 ## तीन चरणों में शुरुआत
 

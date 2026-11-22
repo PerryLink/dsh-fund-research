@@ -11,6 +11,8 @@
 
 面向 DeepSeek Harness 的中国公募基金研究插件：从天天基金 / 东方财富公开端点礼貌采集，指标全部由代码确定性计算，报告与源快照一起封存进工作区——仅供研究，不构成投资建议。
 
+最近一次核验：DeepSeek Harness `dsh-v0.2.3-alpha.1`（2026-11-22）。
+
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
