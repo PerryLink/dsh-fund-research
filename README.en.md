@@ -7,6 +7,8 @@
 
 # dsh-fund-research
 
+Current version `0.5.7`.
+
 **Enter a six-digit fund code, get a sealed research report whose every number is traceable and whose gaps are declared.**
 
 A research plugin for Chinese public mutual funds on DeepSeek Harness: it collects public data from Tiantian Fund / Eastmoney endpoints politely, computes every metric deterministically in code, and seals the report together with its source snapshot into your workspace — research only, not investment advice.
